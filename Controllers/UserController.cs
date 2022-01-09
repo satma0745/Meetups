@@ -4,6 +4,7 @@ using System;
 using System.Net.Mime;
 using System.Threading.Tasks;
 using AutoMapper;
+using BCrypt.Net;
 using Meetups.Context;
 using Meetups.DataTransferObjects.User;
 using Meetups.Entities;
@@ -83,6 +84,7 @@ public class UserController : ControllerBase
         
         var user = mapper.Map<User>(writeDto);
         user.Id = Guid.NewGuid();
+        user.Password = BCrypt.HashPassword(writeDto.Password);
 
         context.Users.Add(user);
         await context.SaveChangesAsync();
