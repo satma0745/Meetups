@@ -1,15 +1,19 @@
 ﻿namespace Meetups.Controllers;
 
 using System;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using Meetups.Context;
 using Meetups.DataTransferObjects;
 using Meetups.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("/api/meetups")]
+[Consumes(MediaTypeNames.Application.Json)]
+[Produces(MediaTypeNames.Application.Json)]
 public class MeetupsController : ControllerBase
 {
     private readonly MeetupsContext context;
@@ -17,7 +21,10 @@ public class MeetupsController : ControllerBase
     public MeetupsController(MeetupsContext context) =>
         this.context = context;
 
+    /// <summary> Get all meetups. </summary>
+    /// <response code="200"> Retrieved meetups successfully. </response>
     [HttpGet]
+    [ProducesResponseType(typeof(ReadMeetupDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAllMeetups()
     {
         var meetupEntities = await context.Meetups.ToListAsync();
@@ -33,24 +40,22 @@ public class MeetupsController : ControllerBase
         return Ok(readDtos);
     }
 
-    /// <example>
-    /// {
-    ///   "topic": "Microsoft naming issues.",
-    ///   "place": "Oslo",
-    ///   "duration": 180,
-    ///   "startTime": "2022-01-09T12:00:00Z"
-    /// }
-    /// </example>
+    /// <summary>Register new meetup.</summary>
+    /// <param name="writeDto">DTO to create meetup from.</param>
+    /// <response code="200">New meetup was created successfully.</response>
+    /// <response code="400">Validation failed for DTO.</response>
     [HttpPost]
-    public async Task<IActionResult> RegisterNewMeetup(CreateMeetupDto createDto)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> RegisterNewMeetup([FromBody] WriteMeetupDto writeDto)
     {
         var meetupEntity = new Meetup
         {
             Id = Guid.NewGuid(),
-            Topic = createDto.Topic,
-            Place = createDto.Place,
-            Duration = TimeSpan.FromMinutes(createDto.Duration),
-            StartTime = createDto.StartTime
+            Topic = writeDto.Topic,
+            Place = writeDto.Place,
+            Duration = TimeSpan.FromMinutes(writeDto.Duration),
+            StartTime = writeDto.StartTime
         };
         
         context.Meetups.Add(meetupEntity);
