@@ -1,18 +1,27 @@
 ﻿namespace Meetups.Controllers;
 
 using System;
-using System.Collections.Generic;
+using System.Threading.Tasks;
+using Meetups.Context;
 using Meetups.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 [ApiController]
 [Route("/api/meetups")]
 public class MeetupsController : ControllerBase
 {
-    private static readonly List<Meetup> Meetups = new();
+    private readonly MeetupsContext context;
+
+    public MeetupsController(MeetupsContext context) =>
+        this.context = context;
 
     [HttpGet]
-    public IActionResult GetAllMeetups() => Ok(Meetups);
+    public async Task<IActionResult> GetAllMeetups()
+    {
+        var allMeetups = await context.Meetups.ToListAsync();
+        return Ok(allMeetups);
+    }
 
     /// <example>
     /// {
@@ -23,7 +32,7 @@ public class MeetupsController : ControllerBase
     /// }
     /// </example>
     [HttpPost]
-    public IActionResult RegisterNewMeetup(Meetup meetup)
+    public async Task<IActionResult> RegisterNewMeetup(Meetup meetup)
     {
         // set id if requester did not bother to
         if (meetup.Id == Guid.Empty)
@@ -31,7 +40,9 @@ public class MeetupsController : ControllerBase
             meetup.Id = Guid.NewGuid();
         }
         
-        Meetups.Add(meetup);
+        context.Meetups.Add(meetup);
+        await context.SaveChangesAsync();
+        
         return Ok();
     }
 }
