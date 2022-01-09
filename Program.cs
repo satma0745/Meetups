@@ -3,6 +3,8 @@ using System.IO;
 using System.Reflection;
 using Meetups.Context;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -32,7 +34,11 @@ builder.Services.AddSwaggerGen(options =>
     var pathToCommentsFile = Path.Combine(rootDirectory, $"{projectName}.xml");
     options.IncludeXmlComments(pathToCommentsFile);
 });
-builder.Services.AddDbContext<ApplicationContext>();
+builder.Services.AddDbContext<ApplicationContext>(options =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("PostgreSQL");
+    options.UseNpgsql(connectionString);
+});
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 var app = builder.Build();
