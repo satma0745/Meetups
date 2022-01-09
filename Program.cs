@@ -32,7 +32,7 @@ builder.Services.AddSwaggerGen(options =>
     var pathToCommentsFile = Path.Combine(rootDirectory, $"{projectName}.xml");
     options.IncludeXmlComments(pathToCommentsFile);
 });
-builder.Services.AddDbContext<Context>();
+builder.Services.AddDbContext<ApplicationContext>();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 var app = builder.Build();

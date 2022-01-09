@@ -18,10 +18,10 @@ using Microsoft.EntityFrameworkCore;
 [Produces(MediaTypeNames.Application.Json)]
 public class UserController : ControllerBase
 {
-    private readonly Context context;
+    private readonly ApplicationContext context;
     private readonly IMapper mapper;
 
-    public UserController(Context context, IMapper mapper)
+    public UserController(ApplicationContext context, IMapper mapper)
     {
         this.context = context;
         this.mapper = mapper;

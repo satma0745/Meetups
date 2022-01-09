@@ -19,10 +19,10 @@ using Microsoft.EntityFrameworkCore;
 [Produces(MediaTypeNames.Application.Json)]
 public class MeetupsController : ControllerBase
 {
-    private readonly Context context;
+    private readonly ApplicationContext context;
     private readonly IMapper mapper;
 
-    public MeetupsController(Context context, IMapper mapper)
+    public MeetupsController(ApplicationContext context, IMapper mapper)
     {
         this.context = context;
         this.mapper = mapper;
