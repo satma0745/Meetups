@@ -1,4 +1,4 @@
-﻿namespace Meetups.DataTransferObjects;
+﻿namespace Meetups.DataTransferObjects.Meetup;
 
 using System;
 using System.ComponentModel.DataAnnotations;

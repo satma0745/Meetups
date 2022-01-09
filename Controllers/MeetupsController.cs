@@ -7,7 +7,7 @@ using System.Net.Mime;
 using System.Threading.Tasks;
 using AutoMapper;
 using Meetups.Context;
-using Meetups.DataTransferObjects;
+using Meetups.DataTransferObjects.Meetup;
 using Meetups.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,10 +19,10 @@ using Microsoft.EntityFrameworkCore;
 [Produces(MediaTypeNames.Application.Json)]
 public class MeetupsController : ControllerBase
 {
-    private readonly MeetupsContext context;
+    private readonly Context context;
     private readonly IMapper mapper;
 
-    public MeetupsController(MeetupsContext context, IMapper mapper)
+    public MeetupsController(Context context, IMapper mapper)
     {
         this.context = context;
         this.mapper = mapper;

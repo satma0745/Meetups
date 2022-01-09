@@ -2,7 +2,7 @@
 
 using System;
 using AutoMapper;
-using Meetups.DataTransferObjects;
+using Meetups.DataTransferObjects.Meetup;
 using Meetups.Entities;
 
 internal class MeetupMappingProfile : Profile
