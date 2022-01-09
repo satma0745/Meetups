@@ -1,6 +1,7 @@
 ﻿namespace Meetups.Controllers;
 
 using System;
+using System.Linq;
 using System.Net.Mime;
 using System.Threading.Tasks;
 using Meetups.Context;
@@ -70,11 +71,19 @@ public class MeetupsController : ControllerBase
     /// <param name="writeDto">DTO to create meetup from.</param>
     /// <response code="200">New meetup was created successfully.</response>
     /// <response code="400">Validation failed for DTO.</response>
+    /// <response code="409">The exact same topic for the meetup has already been taken up.</response>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> RegisterNewMeetup([FromBody] WriteMeetupDto writeDto)
     {
+        var topicTaken = await context.Meetups.AnyAsync(meetup => meetup.Topic == writeDto.Topic);
+        if (topicTaken)
+        {
+            return Conflict();
+        }
+        
         var meetupEntity = new Meetup
         {
             Id = Guid.NewGuid(),
@@ -96,11 +105,21 @@ public class MeetupsController : ControllerBase
     /// <response code="200">Meetup was updated successfully.</response>
     /// <response code="400">Validation failed for DTO.</response>
     /// <response code="404">Meetup with the specified id does not exist.</response>
+    /// <response code="409">The exact same topic for the meetup has already been taken up.</response>
     [HttpPut("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> UpdateSpecificMeetup([FromRoute] Guid id, [FromBody] WriteMeetupDto writeDto)
     {
+        var topicTaken = await context.Meetups
+            .Where(meetup => meetup.Id != id) // search for any other meetups
+            .AnyAsync(meetup => meetup.Topic == writeDto.Topic);
+        if (topicTaken)
+        {
+            return Conflict();
+        }
+        
         var meetup = await context.Meetups.SingleOrDefaultAsync(meetup => meetup.Id == id);
         if (meetup is null)
         {
