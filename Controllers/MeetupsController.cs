@@ -40,6 +40,32 @@ public class MeetupsController : ControllerBase
         return Ok(readDtos);
     }
 
+    /// <summary>Get specific meetup (with the specified id).</summary>
+    /// <param name="id">Id of the meetup of interest.</param>
+    /// <response code="200">Meetup was retrieved successfully.</response>
+    /// <response code="404">Meetup with the specified id does not exist.</response>
+    [HttpGet("{id:guid}")]
+    [ProducesResponseType(typeof(ReadMeetupDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetSpecificMeetup([FromRoute] Guid id)
+    {
+        var meetup = await context.Meetups.SingleOrDefaultAsync(meetup => meetup.Id == id);
+        if (meetup is null)
+        {
+            return NotFound();
+        }
+
+        var readDto = new ReadMeetupDto
+        {
+            Id = meetup.Id,
+            Topic = meetup.Topic,
+            Place = meetup.Place,
+            Duration = meetup.Duration,
+            StartTime = meetup.StartTime
+        };
+        return Ok(readDto);
+    }
+
     /// <summary>Register new meetup.</summary>
     /// <param name="writeDto">DTO to create meetup from.</param>
     /// <response code="200">New meetup was created successfully.</response>
@@ -61,6 +87,53 @@ public class MeetupsController : ControllerBase
         context.Meetups.Add(meetupEntity);
         await context.SaveChangesAsync();
         
+        return Ok();
+    }
+
+    /// <summary>Updates specific meetup (with the specified id).</summary>
+    /// <param name="id">Id of the meetup to be updated.</param>
+    /// <param name="writeDto">DTO with updated information about the meetup.</param>
+    /// <response code="200">Meetup was updated successfully.</response>
+    /// <response code="400">Validation failed for DTO.</response>
+    /// <response code="404">Meetup with the specified id does not exist.</response>
+    [HttpPut("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateSpecificMeetup([FromRoute] Guid id, [FromBody] WriteMeetupDto writeDto)
+    {
+        var meetup = await context.Meetups.SingleOrDefaultAsync(meetup => meetup.Id == id);
+        if (meetup is null)
+        {
+            return NotFound();
+        }
+
+        meetup.Topic = writeDto.Topic;
+        meetup.Place = writeDto.Place;
+        meetup.Duration = TimeSpan.FromMinutes(writeDto.Duration);
+        meetup.StartTime = writeDto.StartTime;
+        await context.SaveChangesAsync();
+
+        return Ok();
+    }
+
+    /// <summary>Deletes specific meetup (with the specified id).</summary>
+    /// <param name="id">Id of the meetup to be deleted.</param>
+    /// <response code="200">Meetup was deleted successfully.</response>
+    /// <response code="404">Meetup with the specified id does not exist.</response>
+    [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteSpecificMeetup([FromRoute] Guid id)
+    {
+        var meetupToDelete = await context.Meetups.SingleOrDefaultAsync(meetup => meetup.Id == id);
+        if (meetupToDelete is null)
+        {
+            return NotFound();
+        }
+
+        context.Remove(meetupToDelete);
+        await context.SaveChangesAsync();
+
         return Ok();
     }
 }
