@@ -1,8 +1,8 @@
-﻿namespace Meetups.Entities;
+﻿namespace Meetups.DataTransferObjects;
 
 using System;
 
-public class Meetup
+public class ReadMeetupDto
 {
     public Guid Id { get; set; }
     public string Topic { get; set; }

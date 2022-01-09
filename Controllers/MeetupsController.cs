@@ -3,6 +3,7 @@
 using System;
 using System.Threading.Tasks;
 using Meetups.Context;
+using Meetups.DataTransferObjects;
 using Meetups.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,8 +20,17 @@ public class MeetupsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllMeetups()
     {
-        var allMeetups = await context.Meetups.ToListAsync();
-        return Ok(allMeetups);
+        var meetupEntities = await context.Meetups.ToListAsync();
+        
+        var readDtos = meetupEntities.ConvertAll(meetupEntity => new ReadMeetupDto
+        {
+            Id = meetupEntity.Id,
+            Topic = meetupEntity.Topic,
+            Place = meetupEntity.Place,
+            Duration = meetupEntity.Duration,
+            StartTime = meetupEntity.StartTime
+        });
+        return Ok(readDtos);
     }
 
     /// <example>
@@ -28,19 +38,22 @@ public class MeetupsController : ControllerBase
     ///   "topic": "Microsoft naming issues.",
     ///   "place": "Oslo",
     ///   "duration": 180,
-    ///   "startTime": "2022-01-09T12:00:00.000Z"
+    ///   "startTime": "2022-01-09T12:00:00Z"
     /// }
     /// </example>
     [HttpPost]
-    public async Task<IActionResult> RegisterNewMeetup(Meetup meetup)
+    public async Task<IActionResult> RegisterNewMeetup(CreateMeetupDto createDto)
     {
-        // set id if requester did not bother to
-        if (meetup.Id == Guid.Empty)
+        var meetupEntity = new Meetup
         {
-            meetup.Id = Guid.NewGuid();
-        }
+            Id = Guid.NewGuid(),
+            Topic = createDto.Topic,
+            Place = createDto.Place,
+            Duration = TimeSpan.FromMinutes(createDto.Duration),
+            StartTime = createDto.StartTime
+        };
         
-        context.Meetups.Add(meetup);
+        context.Meetups.Add(meetupEntity);
         await context.SaveChangesAsync();
         
         return Ok();
