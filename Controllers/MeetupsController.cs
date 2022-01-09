@@ -1,9 +1,11 @@
 ﻿namespace Meetups.Controllers;
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using AutoMapper;
 using Meetups.Context;
 using Meetups.DataTransferObjects;
 using Meetups.Entities;
@@ -18,9 +20,13 @@ using Microsoft.EntityFrameworkCore;
 public class MeetupsController : ControllerBase
 {
     private readonly MeetupsContext context;
+    private readonly IMapper mapper;
 
-    public MeetupsController(MeetupsContext context) =>
+    public MeetupsController(MeetupsContext context, IMapper mapper)
+    {
         this.context = context;
+        this.mapper = mapper;
+    }
 
     /// <summary> Get all meetups. </summary>
     /// <response code="200"> Retrieved meetups successfully. </response>
@@ -30,14 +36,7 @@ public class MeetupsController : ControllerBase
     {
         var meetupEntities = await context.Meetups.ToListAsync();
         
-        var readDtos = meetupEntities.ConvertAll(meetupEntity => new ReadMeetupDto
-        {
-            Id = meetupEntity.Id,
-            Topic = meetupEntity.Topic,
-            Place = meetupEntity.Place,
-            Duration = meetupEntity.Duration,
-            StartTime = meetupEntity.StartTime
-        });
+        var readDtos = mapper.Map<IEnumerable<ReadMeetupDto>>(meetupEntities);
         return Ok(readDtos);
     }
 
@@ -56,14 +55,7 @@ public class MeetupsController : ControllerBase
             return NotFound();
         }
 
-        var readDto = new ReadMeetupDto
-        {
-            Id = meetup.Id,
-            Topic = meetup.Topic,
-            Place = meetup.Place,
-            Duration = meetup.Duration,
-            StartTime = meetup.StartTime
-        };
+        var readDto = mapper.Map<ReadMeetupDto>(meetup);
         return Ok(readDto);
     }
 
@@ -84,14 +76,8 @@ public class MeetupsController : ControllerBase
             return Conflict();
         }
         
-        var meetupEntity = new Meetup
-        {
-            Id = Guid.NewGuid(),
-            Topic = writeDto.Topic,
-            Place = writeDto.Place,
-            Duration = TimeSpan.FromMinutes(writeDto.Duration),
-            StartTime = writeDto.StartTime
-        };
+        var meetupEntity = mapper.Map<Meetup>(writeDto);
+        meetupEntity.Id = Guid.NewGuid();
         
         context.Meetups.Add(meetupEntity);
         await context.SaveChangesAsync();
@@ -126,10 +112,7 @@ public class MeetupsController : ControllerBase
             return NotFound();
         }
 
-        meetup.Topic = writeDto.Topic;
-        meetup.Place = writeDto.Place;
-        meetup.Duration = TimeSpan.FromMinutes(writeDto.Duration);
-        meetup.StartTime = writeDto.StartTime;
+        mapper.Map(writeDto, meetup);
         await context.SaveChangesAsync();
 
         return Ok();

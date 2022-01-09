@@ -33,6 +33,7 @@ builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(pathToCommentsFile);
 });
 builder.Services.AddDbContext<MeetupsContext>();
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
