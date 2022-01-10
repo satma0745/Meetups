@@ -14,7 +14,7 @@ public class User
     public string Username { get; set; }
     
     [Required]
-    [MaxLength(30)]
+    [MaxLength(60)]
     public string Password { get; set; }
     
     [Required]
