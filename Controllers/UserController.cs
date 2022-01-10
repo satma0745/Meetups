@@ -65,30 +65,83 @@ public class UserController : ControllerBase
         return Ok(readDto);
     }
 
+    [HttpGet("who-am-i")]
+    public async Task<IActionResult> GetCurrentUserInfo([FromQuery] string accessToken)
+    {
+        if (accessToken is null)
+        {
+            return BadRequest();
+        }
+        
+        var isValidAccessToken = accessToken.StartsWith("Hello, ") &&
+                                 accessToken.EndsWith(". Without further interruption, You can suck some dick!");
+        if (!isValidAccessToken)
+        {
+            return BadRequest();
+        }
+
+        var userIdAsString = accessToken
+            .Replace("Hello, ", string.Empty)
+            .Replace(". Without further interruption, You can suck some dick!", string.Empty);
+        if (!Guid.TryParse(userIdAsString, out var userId))
+        {
+            return BadRequest();
+        }
+
+        var user = await context.Users.SingleOrDefaultAsync(user => user.Id == userId);
+        if (user is null)
+        {
+            return NotFound();
+        }
+
+        var readDto = mapper.Map<ReadUserDto>(user);
+        return Ok(readDto);
+    }
+
     /// <summary>Register a new user.</summary>
-    /// <param name="writeDto">DTO to create user from.</param>
+    /// <param name="registerDto">DTO to create user from.</param>
     /// <response code="200">New user was created successfully.</response>
     /// <response code="400">Validation failed for DTO.</response>
     /// <response code="409">User with the same username already exists.</response>
-    [HttpPost]
+    [HttpPost("register")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> RegisterNewUser([FromBody] WriteUserDto writeDto)
+    public async Task<IActionResult> RegisterNewUser([FromBody] RegisterUserDto registerDto)
     {
-        var usernameTaken = await context.Users.AnyAsync(user => user.Username == writeDto.Username);
+        var usernameTaken = await context.Users.AnyAsync(user => user.Username == registerDto.Username);
         if (usernameTaken)
         {
             return Conflict();
         }
         
-        var user = mapper.Map<User>(writeDto);
+        var user = mapper.Map<User>(registerDto);
         user.Id = Guid.NewGuid();
-        user.Password = BCrypt.HashPassword(writeDto.Password);
+        user.Password = BCrypt.HashPassword(registerDto.Password);
 
         context.Users.Add(user);
         await context.SaveChangesAsync();
 
         return Ok();
+    }
+
+    [HttpPost("authenticate")]
+    public async Task<IActionResult> AuthenticateUser([FromBody] AuthenticateUserDto authenticateDto)
+    {
+        var user = await context.Users.SingleOrDefaultAsync(user => user.Username == authenticateDto.Username);
+        if (user is null)
+        {
+            return NotFound();
+        }
+
+        var passwordMatches = BCrypt.Verify(authenticateDto.Password, user.Password);
+        if (!passwordMatches)
+        {
+            return Conflict();
+        }
+
+        // TODO: Implement real JWT authentication
+        var accessToken = $"Hello, {user.Id}. Without further interruption, You can suck some dick!";
+        return Ok(accessToken);
     }
 }

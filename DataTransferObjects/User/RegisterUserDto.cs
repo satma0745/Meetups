@@ -2,9 +2,9 @@
 
 using System.ComponentModel.DataAnnotations;
 
-public class WriteUserDto
+public class RegisterUserDto
 {
-    /// <summary>Keyword used for authorization.</summary>
+    /// <summary>Public keyword used for authentication.</summary>
     /// <remarks>Also may be used as unique identifier.</remarks>
     /// <example>satma0745</example>
     [Required]
@@ -12,7 +12,7 @@ public class WriteUserDto
     [MaxLength(30)]
     public string Username { get; set; }
     
-    /// <summary>Keyword used for authentication.</summary>
+    /// <summary>Private keyword used for authentication.</summary>
     /// <example>none_of_your_business</example>
     [Required]
     [MinLength(6)]

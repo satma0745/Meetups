@@ -9,7 +9,7 @@ internal class UserMappingProfile : Profile
     public UserMappingProfile()
     {
         CreateMap<User, ReadUserDto>();
-        CreateMap<WriteUserDto, User>()
+        CreateMap<RegisterUserDto, User>()
             .ForMember(user => user.Password, config => config.Ignore());
     }
 }
