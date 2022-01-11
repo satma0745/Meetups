@@ -15,6 +15,7 @@ using Meetups.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 [ApiController]
@@ -30,19 +31,18 @@ public class UserController : ControllerBase
     private readonly TimeSpan accessTokenLifetime;
     private readonly JwtSecurityTokenHandler tokenHandler;
 
-    public UserController(ApplicationContext context, IMapper mapper)
+    public UserController(ApplicationContext context, IMapper mapper, IConfiguration configuration)
     {
         this.context = context;
         this.mapper = mapper;
 
         // This key is used to sign tokens so that no one can tamper with them.
-        // TODO: replace with easily configurable solution
-        var rawSigningKey = "cock_sucker_1337";
+        var rawSigningKey = configuration["Auth:SecretKey"];
         var signingKeyBytes = Encoding.ASCII.GetBytes(rawSigningKey);
         signingKey = new SymmetricSecurityKey(signingKeyBytes);
         
-        // TODO: replace with easily configurable solution
-        accessTokenLifetime = TimeSpan.FromMinutes(5);
+        var accessTokenLifetimeInMinutes = int.Parse(configuration["Auth:AccessTokenLifetimeInMinutes"]);
+        accessTokenLifetime = TimeSpan.FromMinutes(accessTokenLifetimeInMinutes);
 
         // Fixes JWT Claims names (by default Microsoft replaces them with links leading to nowhere) 
         tokenHandler = new JwtSecurityTokenHandler();
