@@ -27,9 +27,11 @@ public class UserController : ControllerBase
     private readonly ApplicationContext context;
     private readonly IMapper mapper;
 
-    private readonly SecurityKey signingKey;
-    private readonly TimeSpan accessTokenLifetime;
+    private readonly SigningCredentials signingCredentials;
     private readonly JwtSecurityTokenHandler tokenHandler;
+    
+    private readonly TimeSpan accessTokenLifetime;
+    private readonly TimeSpan refreshTokenLifetime;
 
     public UserController(ApplicationContext context, IMapper mapper, IConfiguration configuration)
     {
@@ -39,15 +41,19 @@ public class UserController : ControllerBase
         // This key is used to sign tokens so that no one can tamper with them.
         var rawSigningKey = configuration["Auth:SecretKey"];
         var signingKeyBytes = Encoding.ASCII.GetBytes(rawSigningKey);
-        signingKey = new SymmetricSecurityKey(signingKeyBytes);
-        
-        var accessTokenLifetimeInMinutes = int.Parse(configuration["Auth:AccessTokenLifetimeInMinutes"]);
-        accessTokenLifetime = TimeSpan.FromMinutes(accessTokenLifetimeInMinutes);
+        var signingKey = new SymmetricSecurityKey(signingKeyBytes);
+        signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha512);
 
         // Fixes JWT Claims names (by default Microsoft replaces them with links leading to nowhere) 
         tokenHandler = new JwtSecurityTokenHandler();
         tokenHandler.InboundClaimTypeMap.Clear();
         tokenHandler.OutboundClaimTypeMap.Clear();
+        
+        var accessTokenLifetimeInMinutes = int.Parse(configuration["Auth:AccessTokenLifetimeInMinutes"]);
+        accessTokenLifetime = TimeSpan.FromMinutes(accessTokenLifetimeInMinutes);
+
+        var refreshTokenLifetimeInDays = int.Parse(configuration["Auth:RefreshTokenLifetimeInDays"]);
+        refreshTokenLifetime = TimeSpan.FromDays(refreshTokenLifetimeInDays);
     }
 
     /// <summary>Get specific user (with the specified id).</summary>
@@ -91,34 +97,7 @@ public class UserController : ControllerBase
     [HttpGet("who-am-i")]
     public async Task<IActionResult> GetCurrentUserInfo([FromQuery] string accessToken)
     {
-        if (accessToken is null)
-        {
-            return Unauthorized();
-        }
-        
-        IDictionary<string, string> claims;
-        // This piece of shit throw an exception if token is invalid
-        try
-        {
-            var validationParameters = new TokenValidationParameters
-            {
-                RequireSignedTokens = true,
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = signingKey,
-                
-                ValidateAudience = false,
-                ValidateIssuer = false,
-                
-                RequireExpirationTime = true,
-                ValidateLifetime = true,
-                ClockSkew = TimeSpan.Zero
-            };
-            
-            // Never mind the "out _" part. It's just a bad library design from Microsoft
-            var claimsInfo = tokenHandler.ValidateToken(accessToken, validationParameters, out _);
-            claims = claimsInfo.Claims.ToDictionary(claim => claim.Type, claim => claim.Value);
-        }
-        catch (Exception)
+        if (!TryParseToken(accessToken, out var claims))
         {
             return Unauthorized();
         }
@@ -176,18 +155,109 @@ public class UserController : ControllerBase
             return Conflict();
         }
 
-        var accessTokenDescriptor = new SecurityTokenDescriptor
+        // Persist refresh token so it can be used later
+        var refreshToken = new RefreshToken
         {
-            Claims = new Dictionary<string, object>
-            {
-                {"sub", user.Id} // token owner id
-            },
-            Expires = DateTime.UtcNow.Add(accessTokenLifetime), // token is considered invalid after this point in time
-            SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha512)
+            TokenId = Guid.NewGuid(),
+            UserId = user.Id
         };
-        var accessToken = tokenHandler.CreateToken(accessTokenDescriptor);
-        var encodedAccessToken = tokenHandler.WriteToken(accessToken);
+        context.RefreshTokens.Add(refreshToken);
+        await context.SaveChangesAsync();
 
-        return Ok(encodedAccessToken);
+        var tokenPair = IssueTokenPair(user.Id, refreshToken.TokenId);
+        return Ok(tokenPair);
+    }
+
+    [HttpPost("refresh")]
+    public async Task<IActionResult> RefreshTokenPair([FromBody] string refreshToken)
+    {
+        if (!TryParseToken(refreshToken, out var claims))
+        {
+            return BadRequest();
+        }
+        var currentUserId = Guid.Parse(claims["sub"]);
+        var refreshTokenId = Guid.Parse(claims["jti"]);
+
+        var userExists = await context.Users.AnyAsync(user => user.Id == currentUserId);
+        var oldRefreshToken = await context.RefreshTokens
+            .SingleOrDefaultAsync(token => token.TokenId == refreshTokenId);
+        if (!userExists || oldRefreshToken is null)
+        {
+            // Cannot issue token for user that does not even exist (was deleted)
+            // Cannot use refresh token that is not persisted to a db (fake or used)
+            return BadRequest();
+        }
+
+        // Replace old refresh token with the new one
+        var newRefreshToken = new RefreshToken
+        {
+            UserId = currentUserId,
+            TokenId = Guid.NewGuid()
+        };
+        context.RefreshTokens.Remove(oldRefreshToken);
+        context.RefreshTokens.Add(newRefreshToken);
+        await context.SaveChangesAsync();
+
+        var tokenPair = IssueTokenPair(currentUserId, newRefreshToken.TokenId);
+        return Ok(tokenPair);
+    }
+
+    private bool TryParseToken(string token, out IDictionary<string, string> payload)
+    {
+        try
+        {
+            var validationParameters = new TokenValidationParameters
+            {
+                RequireSignedTokens = true,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = signingCredentials.Key,
+                
+                ValidateAudience = false,
+                ValidateIssuer = false,
+                
+                RequireExpirationTime = true,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
+            };
+            
+            var claimsInfo = tokenHandler.ValidateToken(token, validationParameters, out _);
+            payload = claimsInfo.Claims.ToDictionary(claim => claim.Type, claim => claim.Value);
+
+            return true;
+        }
+        catch (Exception)
+        {
+            payload = null;
+            return false;
+        }
+    }
+
+    private TokenPairDto IssueTokenPair(Guid userId, Guid refreshTokenId)
+    {
+        var accessToken = IssueToken(new Dictionary<string, object> {{"sub", userId}}, accessTokenLifetime);
+        var refreshToken = IssueToken(new Dictionary<string, object>
+        {
+            {"sub", userId},
+            {"jti", refreshTokenId}
+        }, refreshTokenLifetime);
+
+        return new TokenPairDto
+        {
+            AccessToken = accessToken,
+            RefreshToken = refreshToken
+        };
+    }
+
+    private string IssueToken(IDictionary<string, object> payload, TimeSpan lifetime)
+    {
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Claims = payload,
+            Expires = DateTime.UtcNow.Add(lifetime),
+            SigningCredentials = signingCredentials
+        };
+        
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+        return tokenHandler.WriteToken(token);
     }
 }
