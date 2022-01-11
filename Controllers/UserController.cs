@@ -1,7 +1,11 @@
 ﻿namespace Meetups.Controllers;
 
 using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Net.Mime;
+using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using BCrypt.Net;
@@ -11,6 +15,7 @@ using Meetups.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 [ApiController]
 [Route("/api/users")]
@@ -21,10 +26,28 @@ public class UserController : ControllerBase
     private readonly ApplicationContext context;
     private readonly IMapper mapper;
 
+    private readonly SecurityKey signingKey;
+    private readonly TimeSpan accessTokenLifetime;
+    private readonly JwtSecurityTokenHandler tokenHandler;
+
     public UserController(ApplicationContext context, IMapper mapper)
     {
         this.context = context;
         this.mapper = mapper;
+
+        // This key is used to sign tokens so that no one can tamper with them.
+        // TODO: replace with easily configurable solution
+        var rawSigningKey = "cock_sucker_1337";
+        var signingKeyBytes = Encoding.ASCII.GetBytes(rawSigningKey);
+        signingKey = new SymmetricSecurityKey(signingKeyBytes);
+        
+        // TODO: replace with easily configurable solution
+        accessTokenLifetime = TimeSpan.FromMinutes(5);
+
+        // Fixes JWT Claims names (by default Microsoft replaces them with links leading to nowhere) 
+        tokenHandler = new JwtSecurityTokenHandler();
+        tokenHandler.InboundClaimTypeMap.Clear();
+        tokenHandler.OutboundClaimTypeMap.Clear();
     }
 
     /// <summary>Get specific user (with the specified id).</summary>
@@ -70,28 +93,41 @@ public class UserController : ControllerBase
     {
         if (accessToken is null)
         {
-            return BadRequest();
+            return Unauthorized();
         }
         
-        var isValidAccessToken = accessToken.StartsWith("Hello, ") &&
-                                 accessToken.EndsWith(". Without further interruption, You can suck some dick!");
-        if (!isValidAccessToken)
+        IDictionary<string, string> claims;
+        // This piece of shit throw an exception if token is invalid
+        try
         {
-            return BadRequest();
+            var validationParameters = new TokenValidationParameters
+            {
+                RequireSignedTokens = true,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = signingKey,
+                
+                ValidateAudience = false,
+                ValidateIssuer = false,
+                
+                RequireExpirationTime = true,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
+            };
+            
+            // Never mind the "out _" part. It's just a bad library design from Microsoft
+            var claimsInfo = tokenHandler.ValidateToken(accessToken, validationParameters, out _);
+            claims = claimsInfo.Claims.ToDictionary(claim => claim.Type, claim => claim.Value);
         }
-
-        var userIdAsString = accessToken
-            .Replace("Hello, ", string.Empty)
-            .Replace(". Without further interruption, You can suck some dick!", string.Empty);
-        if (!Guid.TryParse(userIdAsString, out var userId))
+        catch (Exception)
         {
-            return BadRequest();
+            return Unauthorized();
         }
+        var currentUserId = Guid.Parse(claims["sub"]);
 
-        var user = await context.Users.SingleOrDefaultAsync(user => user.Id == userId);
+        var user = await context.Users.SingleOrDefaultAsync(user => user.Id == currentUserId);
         if (user is null)
         {
-            return NotFound();
+            return Unauthorized();
         }
 
         var readDto = mapper.Map<ReadUserDto>(user);
@@ -140,8 +176,18 @@ public class UserController : ControllerBase
             return Conflict();
         }
 
-        // TODO: Implement real JWT authentication
-        var accessToken = $"Hello, {user.Id}. Without further interruption, You can suck some dick!";
-        return Ok(accessToken);
+        var accessTokenDescriptor = new SecurityTokenDescriptor
+        {
+            Claims = new Dictionary<string, object>
+            {
+                {"sub", user.Id} // token owner id
+            },
+            Expires = DateTime.UtcNow.Add(accessTokenLifetime), // token is considered invalid after this point in time
+            SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha512)
+        };
+        var accessToken = tokenHandler.CreateToken(accessTokenDescriptor);
+        var encodedAccessToken = tokenHandler.WriteToken(accessToken);
+
+        return Ok(encodedAccessToken);
     }
 }
