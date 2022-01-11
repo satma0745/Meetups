@@ -1,12 +1,19 @@
 using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Text;
 using Meetups.Context;
+using Meetups.Filters;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 var apiVersion = "v1";
 
@@ -28,6 +35,16 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
     
+    // Swagger JWT auth support
+    options.AddSecurityDefinition("Bearer", new()
+    {
+        Description = "Put Your access token here:",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT"
+    });
+    options.OperationFilter<OpenApiAuthFilter>();
+    
     // Use xml comments from the source code
     var projectName = Assembly.GetExecutingAssembly().GetName().Name;
     var rootDirectory = AppContext.BaseDirectory;
@@ -40,6 +57,34 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
     options.UseNpgsql(connectionString);
 });
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        var rawSigningKey = builder.Configuration["Auth:SecretKey"];
+        var signingKeyBytes = Encoding.ASCII.GetBytes(rawSigningKey);
+
+        options.TokenValidationParameters = new()
+        {
+            RequireSignedTokens = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(signingKeyBytes),
+
+            ValidateAudience = false,
+            ValidateIssuer = false,
+
+            RequireExpirationTime = true,
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero
+        };
+        options.RequireHttpsMetadata = false;
+        
+        var tokenHandler = options.SecurityTokenValidators
+            .OfType<JwtSecurityTokenHandler>()
+            .Single();
+        tokenHandler.InboundClaimTypeMap.Clear();
+        tokenHandler.OutboundClaimTypeMap.Clear();
+    });
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
@@ -56,6 +101,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();

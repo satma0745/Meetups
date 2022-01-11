@@ -12,6 +12,7 @@ using BCrypt.Net;
 using Meetups.Context;
 using Meetups.DataTransferObjects.User;
 using Meetups.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -94,14 +95,12 @@ public class UserController : ControllerBase
         return Ok(readDto);
     }
 
+    [Authorize]
     [HttpGet("who-am-i")]
-    public async Task<IActionResult> GetCurrentUserInfo([FromQuery] string accessToken)
+    public async Task<IActionResult> GetCurrentUserInfo()
     {
-        if (!TryParseToken(accessToken, out var claims))
-        {
-            return Unauthorized();
-        }
-        var currentUserId = Guid.Parse(claims["sub"]);
+        var currentUserIdClaim = User.Claims.Single(claim => claim.Type == "sub");
+        var currentUserId = Guid.Parse(currentUserIdClaim.Value);
 
         var user = await context.Users.SingleOrDefaultAsync(user => user.Id == currentUserId);
         if (user is null)
@@ -140,7 +139,15 @@ public class UserController : ControllerBase
         return Ok();
     }
 
+    /// <summary>Issue token pair for provided user credentials.</summary>
+    /// <param name="authenticateDto">User credentials.</param>
+    /// <response code="200">User authenticated successfully.</response>
+    /// <response code="404">User with specified username does not exist.</response>
+    /// <response code="409">Incorrect password provided.</response>
     [HttpPost("authenticate")]
+    [ProducesResponseType(typeof(TokenPairDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> AuthenticateUser([FromBody] AuthenticateUserDto authenticateDto)
     {
         var user = await context.Users.SingleOrDefaultAsync(user => user.Username == authenticateDto.Username);
@@ -168,7 +175,13 @@ public class UserController : ControllerBase
         return Ok(tokenPair);
     }
 
+    /// <summary>Re-issue token pair using refresh token.</summary>
+    /// <param name="refreshToken">Refresh token.</param>
+    /// <response code="200">Token pair was successfully re-issued.</response>
+    /// <response code="400">Fake, damaged, expired or used refresh token was provided.</response>
     [HttpPost("refresh")]
+    [ProducesResponseType(typeof(TokenPairDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> RefreshTokenPair([FromBody] string refreshToken)
     {
         if (!TryParseToken(refreshToken, out var claims))
