@@ -3,4 +3,4 @@
 /obj
 /bin
 
-/appsettings.*.json
+/Properties/appSettings.*.json
