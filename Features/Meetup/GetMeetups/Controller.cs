@@ -25,7 +25,16 @@ public class Controller : ApiControllerBase
     [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAllMeetups([FromQuery] RequestDto request)
     {
-        var meetups = await Context.Meetups
+        var allMeetups = Context.Meetups.AsNoTracking();
+        var orderedMeetups = request.OrderBy switch
+        {
+            "topic_asc" => allMeetups.OrderBy(meetup => meetup.Topic),
+            "topic_desc" => allMeetups.OrderByDescending(meetup => meetup.Topic),
+            "stime_asc" => allMeetups.OrderBy(meetup => meetup.StartTime),
+            "stime_desc" => allMeetups.OrderByDescending(meetup => meetup.StartTime),
+            _ => allMeetups
+        };
+        var meetups = await orderedMeetups
             .Skip((request.PageNumber - 1) * request.PageSize)
             .Take(request.PageSize)
             .ToListAsync();

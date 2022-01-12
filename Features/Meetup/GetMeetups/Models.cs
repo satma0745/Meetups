@@ -18,6 +18,12 @@ public class RequestDto
     /// <example>20</example>
     [Range(1, MaxAllowedPageSize)]
     public int PageSize { get; set; }
+    
+    /// <summary>Determines meetups order before paging is applied.</summary>
+    /// <remarks>Only "topic_asc", "topic_desc", "stime_acs" and "stime_desc" are considered valid values.</remarks>
+    /// <example>topic_asc</example>
+    [Required]
+    public string OrderBy { get; set; }
 }
 
 public class ResponseDto
