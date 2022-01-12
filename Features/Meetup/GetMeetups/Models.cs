@@ -1,8 +1,24 @@
-﻿namespace Meetups.Features.Meetup.GetAllMeetups;
+﻿namespace Meetups.Features.Meetup.GetMeetups;
 
 using System;
+using System.ComponentModel.DataAnnotations;
 using AutoMapper;
 using Meetups.Persistence.Entities;
+
+public class RequestDto
+{
+    private const int MaxAllowedPageSize = 50;
+
+    /// <summary>Page number starting from 1.</summary>
+    /// <example>1</example>
+    [Range(1, int.MaxValue)]
+    public int PageNumber { get; set; }
+
+    /// <summary>Number of meetups per page.</summary>
+    /// <example>20</example>
+    [Range(1, MaxAllowedPageSize)]
+    public int PageSize { get; set; }
+}
 
 public class ResponseDto
 {

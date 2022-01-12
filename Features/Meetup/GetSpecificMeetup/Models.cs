@@ -30,5 +30,5 @@ public class ResponseDto
 internal class MappingProfile : Profile
 {
     public MappingProfile() =>
-        CreateMap<Meetup, GetAllMeetups.ResponseDto>();
+        CreateMap<Meetup, GetMeetups.ResponseDto>();
 }
