@@ -3,6 +3,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using AutoMapper;
+using Meetups.Features.Shared;
 using Meetups.Persistence.Entities;
 
 public class RequestDto
@@ -20,9 +21,10 @@ public class RequestDto
     public int PageSize { get; set; }
     
     /// <summary>Determines meetups order before paging is applied.</summary>
-    /// <remarks>Only "topic_asc", "topic_desc", "stime_acs" and "stime_desc" are considered valid values.</remarks>
+    /// <remarks>Only "topic_asc", "topic_desc", "stime_asc" and "stime_desc" are considered valid values.</remarks>
     /// <example>topic_asc</example>
     [Required]
+    [OneOf("topic_asc", "topic_desc", "stime_asc", "stime_desc")]
     public string OrderBy { get; set; }
 }
 

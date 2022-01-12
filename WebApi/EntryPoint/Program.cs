@@ -61,6 +61,9 @@ builder.Services.AddSwaggerGen(options =>
     var pathToCommentsFile = Path.Combine(rootDirectory, $"{projectName}.xml");
     options.IncludeXmlComments(pathToCommentsFile);
     
+    // Use [OneOf] attribute as source of schema information
+    options.SchemaFilter<OpenApiOneOfFilter>();
+    
     // Ensure model names are unique
     options.CustomSchemaIds(modelType => modelType.FullName);
 });
