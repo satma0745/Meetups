@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Meetups.Features.Shared;
 using Meetups.Persistence.Context;
 using Meetups.WebApi.Filters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -59,6 +60,9 @@ builder.Services.AddSwaggerGen(options =>
     var rootDirectory = AppContext.BaseDirectory;
     var pathToCommentsFile = Path.Combine(rootDirectory, $"{projectName}.xml");
     options.IncludeXmlComments(pathToCommentsFile);
+    
+    // Ensure model names are unique
+    options.CustomSchemaIds(modelType => modelType.FullName);
 });
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
@@ -94,6 +98,7 @@ builder.Services
         tokenHandler.InboundClaimTypeMap.Clear();
         tokenHandler.OutboundClaimTypeMap.Clear();
     });
+builder.Services.AddScoped<TokenHelper>();
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())

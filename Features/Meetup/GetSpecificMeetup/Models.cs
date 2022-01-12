@@ -1,8 +1,10 @@
-﻿namespace Meetups.Features.DataTransferObjects.Meetup;
+﻿namespace Meetups.Features.Meetup.GetSpecificMeetup;
 
 using System;
+using AutoMapper;
+using Meetups.Persistence.Entities;
 
-public class ReadMeetupDto
+public class ResponseDto
 {
     /// <summary>Permanent unique meetup identifier.</summary>
     /// <example>07450745-0745-0745-0745-074507450745</example>
@@ -23,4 +25,10 @@ public class ReadMeetupDto
     /// <summary>When meetup starts.</summary>
     /// <example>2022-01-09T12:00:00Z</example>
     public DateTime StartTime { get; set; }
+}
+
+internal class MappingProfile : Profile
+{
+    public MappingProfile() =>
+        CreateMap<Meetup, GetAllMeetups.ResponseDto>();
 }

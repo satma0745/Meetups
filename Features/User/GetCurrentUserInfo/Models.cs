@@ -1,8 +1,10 @@
-﻿namespace Meetups.Features.DataTransferObjects.User;
+﻿namespace Meetups.Features.User.GetCurrentUserInfo;
 
 using System;
+using AutoMapper;
+using Meetups.Persistence.Entities;
 
-public class ReadUserDto
+public class ResponseDto
 {
     /// <summary>Permanent unique user identifier.</summary>
     /// <example>07450745-0745-0745-0745-074507450745</example>
@@ -16,4 +18,10 @@ public class ReadUserDto
     /// <summary>Human readable public (official) name.</summary>
     /// <example>Satttttttttttttttter</example>
     public string DisplayName { get; set; }
+}
+
+internal class MappingProfile : Profile
+{
+    public MappingProfile() =>
+        CreateMap<User, ResponseDto>();
 }

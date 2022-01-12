@@ -1,9 +1,11 @@
-﻿namespace Meetups.Features.DataTransferObjects.Meetup;
+﻿namespace Meetups.Features.Meetup.UpdateSpecificMeetup;
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using AutoMapper;
+using Meetups.Persistence.Entities;
 
-public class WriteMeetupDto
+public class RequestDto
 {
     /// <summary>Topic to be discussed on the meetup.</summary>
     /// <example>Microsoft naming issues</example>
@@ -26,4 +28,11 @@ public class WriteMeetupDto
     /// <example>2022-01-09T12:00:00Z</example>
     [Required]
     public DateTime StartTime { get; set; }
+}
+
+internal class MappingProfile : Profile
+{
+    public MappingProfile() =>
+        CreateMap<RequestDto, Meetup>()
+            .ForMember(meetup => meetup.Duration, config => config.MapFrom(dto => TimeSpan.FromMinutes(dto.Duration)));
 }

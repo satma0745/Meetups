@@ -1,8 +1,10 @@
-﻿namespace Meetups.Features.DataTransferObjects.User;
+﻿namespace Meetups.Features.User.RegisterNewUser;
 
 using System.ComponentModel.DataAnnotations;
+using AutoMapper;
+using Meetups.Persistence.Entities;
 
-public class RegisterUserDto
+public class RequestDto
 {
     /// <summary>Public keyword used for authentication.</summary>
     /// <remarks>Also may be used as unique identifier.</remarks>
@@ -24,4 +26,11 @@ public class RegisterUserDto
     [Required]
     [MaxLength(45)]
     public string DisplayName { get; set; }
+}
+
+internal class MappingProfile : Profile
+{
+    public MappingProfile() =>
+        CreateMap<RequestDto, User>()
+            .ForMember(user => user.Password, config => config.Ignore());
 }
