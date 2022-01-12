@@ -28,10 +28,7 @@ public class Controller : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> GetCurrentUserInfo()
     {
-        var currentUserIdClaim = User.Claims.Single(claim => claim.Type == "sub");
-        var currentUserId = Guid.Parse(currentUserIdClaim.Value);
-
-        var user = await Context.Users.SingleOrDefaultAsync(user => user.Id == currentUserId);
+        var user = await Context.Users.SingleOrDefaultAsync(user => user.Id == CurrentUser.Id);
         if (user is null)
         {
             return Unauthorized();
