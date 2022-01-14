@@ -28,6 +28,11 @@ public class RequestDto
     [Required]
     [OneOf("topic_asc", "topic_desc", "stime_asc", "stime_desc")]
     public string OrderBy { get; set; }
+
+    /// <summary>Used to find matching meetups.</summary>
+    /// <example>Microsoft</example>
+    [MaxLength(100)]
+    public string Search { get; set; } = string.Empty;
 }
 
 public class ResponseDto

@@ -25,14 +25,17 @@ public class Controller : ApiControllerBase
     [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAllMeetups([FromQuery] RequestDto request)
     {
-        var allMeetups = Context.Meetups.AsNoTracking();
+        var filteredMeetups = Context.Meetups
+            .AsNoTracking()
+            .Where(meetup => EF.Functions.Like(meetup.Topic, $"%{request.Search}%") ||
+                             EF.Functions.Like(meetup.Place, $"%{request.Search}%"));
         var orderedMeetups = request.OrderBy switch
         {
-            "topic_asc" => allMeetups.OrderBy(meetup => meetup.Topic),
-            "topic_desc" => allMeetups.OrderByDescending(meetup => meetup.Topic),
-            "stime_asc" => allMeetups.OrderBy(meetup => meetup.StartTime),
-            "stime_desc" => allMeetups.OrderByDescending(meetup => meetup.StartTime),
-            _ => allMeetups
+            "topic_asc" => filteredMeetups.OrderBy(meetup => meetup.Topic),
+            "topic_desc" => filteredMeetups.OrderByDescending(meetup => meetup.Topic),
+            "stime_asc" => filteredMeetups.OrderBy(meetup => meetup.StartTime),
+            "stime_desc" => filteredMeetups.OrderByDescending(meetup => meetup.StartTime),
+            _ => filteredMeetups
         };
         var meetups = await orderedMeetups
             .Skip((request.PageNumber - 1) * request.PageSize)
