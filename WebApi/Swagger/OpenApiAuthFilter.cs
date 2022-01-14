@@ -1,4 +1,4 @@
-﻿namespace Meetups.WebApi.Filters;
+﻿namespace Meetups.WebApi.Swagger;
 
 using System;
 using System.Linq;

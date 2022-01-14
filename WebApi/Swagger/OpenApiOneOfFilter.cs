@@ -1,8 +1,8 @@
-﻿namespace Meetups.WebApi.Filters;
+﻿namespace Meetups.WebApi.Swagger;
 
 using System;
 using System.Linq;
-using Meetups.Features.Shared;
+using Meetups.WebApi.Validation;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;

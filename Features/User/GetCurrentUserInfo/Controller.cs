@@ -1,7 +1,5 @@
 ﻿namespace Meetups.Features.User.GetCurrentUserInfo;
 
-using System;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Meetups.Features.Shared;

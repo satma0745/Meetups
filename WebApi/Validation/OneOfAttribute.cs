@@ -1,4 +1,4 @@
-﻿namespace Meetups.Features.Shared;
+﻿namespace Meetups.WebApi.Validation;
 
 using System;
 using System.Collections.Generic;

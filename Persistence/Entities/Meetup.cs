@@ -17,7 +17,16 @@ public class Meetup
     [MaxLength(75)]
     public string Place { get; set; }
     
-    public TimeSpan Duration { get; set; }
+    [Required]
+    public MeetupDuration Duration { get; set; }
     
     public DateTime StartTime { get; set; }
+    
+    [Owned]
+    public class MeetupDuration
+    {
+        public int Hours { get; set; }
+    
+        public int Minutes { get; set; }
+    }
 }

@@ -1,8 +1,11 @@
 ﻿namespace Meetups.Features.Meetup.GetSpecificMeetup;
 
 using System;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using AutoMapper;
 using Meetups.Persistence.Entities;
+using Meetups.WebApi.Json;
 
 public class ResponseDto
 {
@@ -19,8 +22,9 @@ public class ResponseDto
     public string Place { get; set; }
     
     /// <summary>Meetup duration.</summary>
-    /// <example>"03:00:00"</example>
-    public TimeSpan Duration { get; set; }
+    [Required]
+    [JsonConverter(typeof(MeetupDurationJsonConverter))]
+    public Meetup.MeetupDuration Duration { get; set; }
     
     /// <summary>When meetup starts.</summary>
     /// <example>2022-01-09T12:00:00Z</example>

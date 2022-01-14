@@ -2,8 +2,10 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using AutoMapper;
 using Meetups.Persistence.Entities;
+using Meetups.WebApi.Json;
 
 public class RequestDto
 {
@@ -19,10 +21,10 @@ public class RequestDto
     [MaxLength(75)]
     public string Place { get; set; }
     
-    /// <summary>Meetup duration (in minutes).</summary>
-    /// <example>180 </example>
-    [Range(120, 720)]
-    public int Duration { get; set; }
+    /// <summary>Meetup duration.</summary>
+    [Required]
+    [JsonConverter(typeof(MeetupDurationJsonConverter))]
+    public Meetup.MeetupDuration Duration { get; set; }
     
     /// <summary>When meetup starts.</summary>
     /// <example>2022-01-09T12:00:00Z</example>
@@ -33,6 +35,5 @@ public class RequestDto
 internal class MappingProfile : Profile
 {
     public MappingProfile() =>
-        CreateMap<RequestDto, Meetup>()
-            .ForMember(meetup => meetup.Duration, config => config.MapFrom(dto => TimeSpan.FromMinutes(dto.Duration)));
+        CreateMap<RequestDto, Meetup>();
 }

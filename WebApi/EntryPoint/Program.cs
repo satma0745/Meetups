@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using Meetups.Features.Shared;
 using Meetups.Persistence.Context;
-using Meetups.WebApi.Filters;
+using Meetups.WebApi.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
@@ -61,8 +61,9 @@ builder.Services.AddSwaggerGen(options =>
     var pathToCommentsFile = Path.Combine(rootDirectory, $"{projectName}.xml");
     options.IncludeXmlComments(pathToCommentsFile);
     
-    // Use [OneOf] attribute as source of schema information
+    // Swagger support for [OneOf] validation attribute and MeetupDuration type
     options.SchemaFilter<OpenApiOneOfFilter>();
+    options.SchemaFilter<OpenApiMeetupDurationSchemaFilter>();
     
     // Ensure model names are unique
     options.CustomSchemaIds(modelType => modelType.FullName);

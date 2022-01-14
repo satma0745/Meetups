@@ -4,11 +4,13 @@ using System;
 using Meetups.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 [DbContext(typeof(ApplicationContext))]
-internal class ApplicationContextModelSnapshot : ModelSnapshot
+[Migration("20220112191357_UseOwnedEntityForMeetupDuration")]
+partial class UseOwnedEntityForMeetupDuration
 {
-    protected override void BuildModel(ModelBuilder modelBuilder)
+    protected override void BuildTargetModel(ModelBuilder modelBuilder)
     {
         modelBuilder
             .HasAnnotation("ProductVersion", "6.0.1")
