@@ -26,7 +26,10 @@ public class Controller : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetSpecificMeetup([FromRoute] Guid id)
     {
-        var meetup = await Context.Meetups.SingleOrDefaultAsync(meetup => meetup.Id == id);
+        var meetup = await Context.Meetups
+            .AsNoTracking()
+            .Include(meetup => meetup.SignedUpUsers)
+            .SingleOrDefaultAsync(meetup => meetup.Id == id);
         if (meetup is null)
         {
             return NotFound();

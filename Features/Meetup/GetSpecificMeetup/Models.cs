@@ -1,7 +1,9 @@
 ﻿namespace Meetups.Features.Meetup.GetSpecificMeetup;
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Text.Json.Serialization;
 using AutoMapper;
 using Meetups.Persistence.Entities;
@@ -29,10 +31,17 @@ public class ResponseDto
     /// <summary>When meetup starts.</summary>
     /// <example>2022-01-09T12:00:00Z</example>
     public DateTime StartTime { get; set; }
+    
+    /// <summary>A list of IDs of all user signed up for this meetup.</summary>
+    /// <example>["07450745-0745-0745-0745-074507450745"]</example>
+    public ICollection<Guid> SignedUpUsers { get; set; }
 }
 
 internal class MappingProfile : Profile
 {
     public MappingProfile() =>
-        CreateMap<Meetup, GetMeetups.ResponseDto>();
+        CreateMap<Meetup, ResponseDto>()
+            .ForMember(
+                response => response.SignedUpUsers,
+                options => options.MapFrom(meetup => meetup.SignedUpUsers.Select(user => user.Id)));
 }

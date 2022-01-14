@@ -1,6 +1,7 @@
 ﻿namespace Meetups.Persistence.Entities;
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,6 +23,8 @@ public class Meetup
     
     public DateTime StartTime { get; set; }
     
+    public ICollection<User> SignedUpUsers { get; set; }
+
     [Owned]
     public class MeetupDuration
     {

@@ -4,11 +4,13 @@ using System;
 using Meetups.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 [DbContext(typeof(ApplicationContext))]
-internal class ApplicationContextModelSnapshot : ModelSnapshot
+[Migration("20220114134252_AddMeetupSignUps")]
+partial class AddMeetupSignUps
 {
-    protected override void BuildModel(ModelBuilder modelBuilder)
+    protected override void BuildTargetModel(ModelBuilder modelBuilder)
     {
         modelBuilder
             .HasAnnotation("ProductVersion", "6.0.1")
@@ -54,8 +56,7 @@ internal class ApplicationContextModelSnapshot : ModelSnapshot
                 .ValueGeneratedOnAdd()
                 .HasColumnType("uuid");
 
-            refreshTokenEntity
-                .Property<Guid>("UserId")
+            refreshTokenEntity.Property<Guid>("UserId")
                 .HasColumnType("uuid");
 
             refreshTokenEntity.HasKey("TokenId");

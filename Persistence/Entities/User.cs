@@ -1,6 +1,7 @@
 ﻿namespace Meetups.Persistence.Entities;
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,4 +21,6 @@ public class User
     [Required]
     [MaxLength(45)]
     public string DisplayName { get; set; }
+    
+    public ICollection<Meetup> MeetupsSignedUpTo { get; set; }
 }

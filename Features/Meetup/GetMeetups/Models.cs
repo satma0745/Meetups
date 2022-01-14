@@ -57,10 +57,17 @@ public class ResponseDto
     /// <summary>When meetup starts.</summary>
     /// <example>2022-01-09T12:00:00Z</example>
     public DateTime StartTime { get; set; }
+    
+    /// <summary>Number of users that signed up for this meetup.</summary>
+    /// <example>42</example>
+    public int SignedUpUsersCount { get; set; }
 }
 
 internal class MappingProfile : Profile
 {
     public MappingProfile() =>
-        CreateMap<Meetup, ResponseDto>();
+        CreateMap<Meetup, ResponseDto>()
+            .ForMember(
+                response => response.SignedUpUsersCount,
+                options => options.MapFrom(meetup => meetup.SignedUpUsers.Count));
 }
