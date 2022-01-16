@@ -25,11 +25,5 @@ internal class RefreshTokenEntityTypeConfiguration : IEntityTypeConfiguration<Re
         refreshTokenEntity
             .Property(x => x.UserId)
             .HasColumnName("user_id");
-
-        refreshTokenEntity
-            .HasOne<User>()
-            .WithMany()
-            .HasForeignKey(x => x.UserId)
-            .HasConstraintName("fk_users_refresh_tokens_user_id");
     }
 }
