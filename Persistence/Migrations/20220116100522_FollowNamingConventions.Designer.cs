@@ -4,11 +4,13 @@ using System;
 using Meetups.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 [DbContext(typeof(ApplicationContext))]
-internal class ApplicationContextModelSnapshot : ModelSnapshot
+[Migration("20220116100522_FollowNamingConventions")]
+partial class FollowNamingConventions
 {
-    protected override void BuildModel(ModelBuilder modelBuilder)
+    protected override void BuildTargetModel(ModelBuilder modelBuilder)
     {
         modelBuilder
             .HasAnnotation("ProductVersion", "6.0.1")
@@ -51,7 +53,7 @@ internal class ApplicationContextModelSnapshot : ModelSnapshot
                 .IsUnique()
                 .HasDatabaseName("ux_meetups_topic");
 
-            meetupEntity.ToTable("meetups");
+            meetupEntity.ToTable("meetups", (string) null);
         });
 
         modelBuilder.Entity("Meetups.Persistence.Entities.RefreshToken", refreshTokenEntity =>
@@ -75,7 +77,7 @@ internal class ApplicationContextModelSnapshot : ModelSnapshot
                 .HasIndex("UserId")
                 .HasDatabaseName("ix_refresh_tokens_user_id");
 
-            refreshTokenEntity.ToTable("refresh_tokens");
+            refreshTokenEntity.ToTable("refresh_tokens", (string) null);
         });
 
         modelBuilder.Entity("Meetups.Persistence.Entities.User", userEntity =>
@@ -116,7 +118,7 @@ internal class ApplicationContextModelSnapshot : ModelSnapshot
                 .IsUnique()
                 .HasDatabaseName("ux_users_username");
 
-            userEntity.ToTable("users");
+            userEntity.ToTable("users", (string) null);
         });
 
         modelBuilder.Entity("System.Collections.Generic.Dictionary<string, string>", meetupsUsersJoinEntity =>
@@ -137,7 +139,7 @@ internal class ApplicationContextModelSnapshot : ModelSnapshot
                 .HasIndex("signed_up_user_id")
                 .HasDatabaseName("ix_meetups_users_signup_signed_up_user_id");
 
-            meetupsUsersJoinEntity.ToTable("meetups_users_signup");
+            meetupsUsersJoinEntity.ToTable("meetups_users_signup", (string) null);
         });
 
         modelBuilder.Entity("Meetups.Persistence.Entities.Meetup", meetupEntity =>

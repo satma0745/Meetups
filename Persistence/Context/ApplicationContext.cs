@@ -1,5 +1,6 @@
 ﻿namespace Meetups.Persistence.Context;
 
+using System.Reflection;
 using Meetups.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,4 +14,7 @@ public class ApplicationContext : DbContext
         : base(options)
     {
     }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder) =>
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 }
