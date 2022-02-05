@@ -11,6 +11,11 @@ internal class UserEntityTypeConfiguration : IEntityTypeConfiguration<User>
         userEntity.ToTable("users");
 
         userEntity
+            .HasDiscriminator<string>("account_type")
+            .HasValue<Guest>("guest")
+            .HasValue("guest");
+
+        userEntity
             .HasKey(x => x.Id)
             .HasName("pk_users");
 

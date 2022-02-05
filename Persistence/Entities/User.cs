@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-public class User
+public abstract class User
 {
     public Guid Id { get; set; }
     
@@ -12,6 +12,9 @@ public class User
     public string Password { get; set; }
     
     public string DisplayName { get; set; }
-    
+}
+
+public class Guest : User
+{
     public ICollection<Meetup> MeetupsSignedUpTo { get; set; }
 }

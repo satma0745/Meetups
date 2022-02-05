@@ -69,5 +69,5 @@ internal class MappingProfile : Profile
         CreateMap<Meetup, ResponseDto>()
             .ForMember(
                 response => response.SignedUpUsersCount,
-                options => options.MapFrom(meetup => meetup.SignedUpUsers.Count));
+                options => options.MapFrom(meetup => meetup.SignedUpGuests.Count));
 }

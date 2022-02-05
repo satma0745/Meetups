@@ -1,6 +1,7 @@
 ﻿namespace Meetups.Features.User.RegisterNewUser;
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using AutoMapper;
 using BCrypt.Net;
@@ -20,7 +21,7 @@ public class Controller : ApiControllerBase
     }
     
     /// <summary>Register a new user.</summary>
-    /// <param name="dto">DTO to create user from.</param>
+    /// <param name="request">DTO to create user from.</param>
     /// <response code="200">New user was created successfully.</response>
     /// <response code="400">Validation failed for DTO.</response>
     /// <response code="409">User with the same username already exists.</response>
@@ -28,17 +29,21 @@ public class Controller : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> RegisterNewUser([FromBody] RequestDto dto)
+    public async Task<IActionResult> RegisterNewUser([FromBody] RequestDto request)
     {
-        var usernameTaken = await Context.Users.AnyAsync(user => user.Username == dto.Username);
+        var usernameTaken = await Context.Users.AnyAsync(user => user.Username == request.Username);
         if (usernameTaken)
         {
             return Conflict();
         }
         
-        var user = Mapper.Map<User>(dto);
+        User user = request.AccountType switch
+        {
+            "guest" => Mapper.Map<Guest>(request),
+            var unmatched => throw new SwitchExpressionException(unmatched)
+        };
         user.Id = Guid.NewGuid();
-        user.Password = BCrypt.HashPassword(dto.Password);
+        user.Password = BCrypt.HashPassword(request.Password);
 
         Context.Users.Add(user);
         await Context.SaveChangesAsync();

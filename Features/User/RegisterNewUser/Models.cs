@@ -1,8 +1,10 @@
 ﻿namespace Meetups.Features.User.RegisterNewUser;
 
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using AutoMapper;
 using Meetups.Persistence.Entities;
+using Meetups.WebApi.Validation;
 
 public class RequestDto
 {
@@ -26,11 +28,17 @@ public class RequestDto
     [Required]
     [MaxLength(45)]
     public string DisplayName { get; set; }
+    
+    /// <summary>User account type (user role).</summary>
+    /// <example>guest</example>
+    [Required]
+    [OneOf("guest")]
+    public string AccountType { get; set; }
 }
 
 internal class MappingProfile : Profile
 {
     public MappingProfile() =>
-        CreateMap<RequestDto, User>()
+        CreateMap<RequestDto, Guest>()
             .ForMember(user => user.Password, config => config.Ignore());
 }

@@ -26,7 +26,7 @@ public class Controller : ApiControllerBase
     {
         var meetups = await Context.Meetups
             .AsNoTracking()
-            .Include(meetup => meetup.SignedUpUsers)
+            .Include(meetup => meetup.SignedUpGuests)
             .ApplySearch($"%{request.Search}%")
             .OrderBy(request.OrderBy)
             .Paginate(request.PageNumber, request.PageSize)

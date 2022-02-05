@@ -15,7 +15,7 @@ public class Meetup
     
     public DateTime StartTime { get; set; }
     
-    public ICollection<User> SignedUpUsers { get; set; }
+    public ICollection<Guest> SignedUpGuests { get; set; }
 
     public class MeetupDuration
     {

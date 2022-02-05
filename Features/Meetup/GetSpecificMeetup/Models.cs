@@ -43,5 +43,5 @@ internal class MappingProfile : Profile
         CreateMap<Meetup, ResponseDto>()
             .ForMember(
                 response => response.SignedUpUsers,
-                options => options.MapFrom(meetup => meetup.SignedUpUsers.Select(user => user.Id)));
+                options => options.MapFrom(meetup => meetup.SignedUpGuests.Select(user => user.Id)));
 }
