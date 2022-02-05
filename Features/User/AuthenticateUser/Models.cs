@@ -20,12 +20,6 @@ public class RequestDto
     [MinLength(6)]
     [MaxLength(30)]
     public string Password { get; set; }
-    
-    /// <summary>Human readable public (official) name.</summary>
-    /// <example>Satttttttttttttttter</example>
-    [Required]
-    [MaxLength(45)]
-    public string DisplayName { get; set; }
 }
 
 public class ResponseDto
