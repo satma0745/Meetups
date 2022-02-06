@@ -15,6 +15,8 @@ public class Meetup
     
     public DateTime StartTime { get; set; }
     
+    public Organizer Organizer { get; set; }
+    
     public ICollection<Guest> SignedUpGuests { get; set; }
 
     public class MeetupDuration

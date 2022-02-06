@@ -4,11 +4,13 @@ using System;
 using Meetups.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 [DbContext(typeof(ApplicationContext))]
-internal class ApplicationContextModelSnapshot : ModelSnapshot
+[Migration("20220205200800_AddOrganizers")]
+partial class AddOrganizers
 {
-    protected override void BuildModel(ModelBuilder modelBuilder)
+    protected override void BuildTargetModel(ModelBuilder modelBuilder)
     {
         modelBuilder
             .HasAnnotation("ProductVersion", "6.0.1")
@@ -129,7 +131,9 @@ internal class ApplicationContextModelSnapshot : ModelSnapshot
 
             userEntity.ToTable("users", (string) null);
 
-            userEntity.HasDiscriminator<string>("account_type").HasValue("guest");
+            userEntity
+                .HasDiscriminator<string>("account_type")
+                .HasValue("guest");
         });
 
         modelBuilder.Entity("System.Collections.Generic.Dictionary<string, string>", meetupsGuestsJoinEntity =>
@@ -184,27 +188,27 @@ internal class ApplicationContextModelSnapshot : ModelSnapshot
             meetupEntity.OwnsOne(
                 "Meetups.Persistence.Entities.Meetup+MeetupDuration",
                 "Duration",
-                meetupDurationOwnedEntity =>
+                durationOwnedEntity =>
                 {
-                    meetupDurationOwnedEntity
+                    durationOwnedEntity
                         .Property<Guid>("MeetupId")
                         .HasColumnType("uuid");
 
-                    meetupDurationOwnedEntity
+                    durationOwnedEntity
                         .Property<int>("Hours")
                         .HasColumnType("integer")
                         .HasColumnName("duration_hours");
 
-                    meetupDurationOwnedEntity
+                    durationOwnedEntity
                         .Property<int>("Minutes")
                         .HasColumnType("integer")
                         .HasColumnName("duration_minutes");
 
-                    meetupDurationOwnedEntity.HasKey("MeetupId");
+                    durationOwnedEntity.HasKey("MeetupId");
 
-                    meetupDurationOwnedEntity.ToTable("meetups");
+                    durationOwnedEntity.ToTable("meetups");
 
-                    meetupDurationOwnedEntity
+                    durationOwnedEntity
                         .WithOwner()
                         .HasForeignKey("MeetupId");
                 });

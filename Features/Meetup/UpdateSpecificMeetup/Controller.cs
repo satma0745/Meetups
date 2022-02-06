@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Meetups.Features.Shared;
 using Meetups.Persistence.Context;
+using Meetups.Persistence.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,20 +22,33 @@ public class Controller : ApiControllerBase
 
     /// <summary>Updates specific meetup (with the specified id).</summary>
     /// <param name="id">Id of the meetup to be updated.</param>
-    /// <param name="dto">DTO with updated information about the meetup.</param>
+    /// <param name="request">DTO with updated information about the meetup.</param>
     /// <response code="200">Meetup was updated successfully.</response>
     /// <response code="400">Validation failed for DTO.</response>
+    /// <response code="403">Only meetup organizer can update information on it's own meetups.</response>
     /// <response code="404">Meetup with the specified id does not exist.</response>
     /// <response code="409">The exact same topic for the meetup has already been taken up.</response>
+    [Authorize]
     [HttpPut("meetups/{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> UpdateSpecificMeetup([FromRoute] Guid id, [FromBody] RequestDto dto)
+    public async Task<IActionResult> UpdateSpecificMeetup([FromRoute] Guid id, [FromBody] RequestDto request)
     {
+        var currentUser = await Context.Users
+            .AsNoTracking()
+            .Include(user => (user as Organizer).OrganizedMeetups)
+            .SingleAsync(user => user.Id == CurrentUser.Id);
+        if (currentUser is not Organizer organizer ||
+            organizer.OrganizedMeetups.All(meetup => meetup.Id != id))
+        {
+            Forbid();
+        }
+        
         var topicTaken = await Context.Meetups
             .Where(meetup => meetup.Id != id) // exclude the specified meetup (it may preserve it's topic)
-            .AnyAsync(meetup => meetup.Topic == dto.Topic);
+            .AnyAsync(meetup => meetup.Topic == request.Topic);
         if (topicTaken)
         {
             return Conflict();
@@ -45,7 +60,7 @@ public class Controller : ApiControllerBase
             return NotFound();
         }
 
-        Mapper.Map(dto, meetup);
+        Mapper.Map(request, meetup);
         await Context.SaveChangesAsync();
 
         return Ok();

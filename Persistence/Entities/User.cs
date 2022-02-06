@@ -18,3 +18,8 @@ public class Guest : User
 {
     public ICollection<Meetup> MeetupsSignedUpTo { get; set; }
 }
+
+public class Organizer : User
+{
+    public ICollection<Meetup> OrganizedMeetups { get; set; }
+}

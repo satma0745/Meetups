@@ -13,6 +13,7 @@ internal class UserEntityTypeConfiguration : IEntityTypeConfiguration<User>
         userEntity
             .HasDiscriminator<string>("account_type")
             .HasValue<Guest>("guest")
+            .HasValue<Organizer>("organizer")
             .HasValue("guest");
 
         userEntity
