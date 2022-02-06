@@ -21,22 +21,16 @@ public class Controller : ApiControllerBase
 
     /// <summary>Get a list of all meetups organized by the current user.</summary>
     /// <response code="200">Meetups organized by the current user.</response>
-    /// <response code="409">Only users with an "organizer" type account can organize meetups.</response>
-    [Authorize]
+    [Authorize(Roles = UserRoles.Organizer)]
     [HttpGet("studio/organized")]
     [ProducesResponseType(typeof(OrganizedMeetupDto[]), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> GetOrganizedMeetups()
     {
-        var currentUser = await Context.Users
+        var organizer = await Context.Organizers
             .AsNoTracking()
-            .Include(user => (user as Organizer).OrganizedMeetups)
+            .Include(organizer => organizer.OrganizedMeetups)
             .ThenInclude(meetup => meetup.SignedUpGuests)
-            .SingleAsync(user => user.Id == CurrentUser.Id);
-        if (currentUser is not Organizer organizer)
-        {
-            return Conflict();
-        }
+            .SingleAsync(organizer => organizer.Id == CurrentUser.Id);
 
         var organizedMeetups = Mapper.Map<ICollection<OrganizedMeetupDto>>(organizer.OrganizedMeetups);
         return Ok(organizedMeetups);

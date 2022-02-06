@@ -25,23 +25,20 @@ public class Controller : ApiControllerBase
     /// <param name="request">DTO with updated information about the meetup.</param>
     /// <response code="200">Meetup was updated successfully.</response>
     /// <response code="400">Validation failed for DTO.</response>
-    /// <response code="403">Only meetup organizer can update information on it's own meetups.</response>
     /// <response code="404">Meetup with the specified id does not exist.</response>
     /// <response code="409">The exact same topic for the meetup has already been taken up.</response>
-    [Authorize]
+    [Authorize(Roles = UserRoles.Organizer)]
     [HttpPut("studio/{meetupId:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> UpdateSpecificMeetup([FromRoute] Guid meetupId, [FromBody] RequestDto request)
     {
-        var currentUser = await Context.Users
+        var organizer = await Context.Organizers
             .AsNoTracking()
-            .Include(user => (user as Organizer).OrganizedMeetups)
-            .SingleAsync(user => user.Id == CurrentUser.Id);
-        if (currentUser is not Organizer organizer ||
-            organizer.OrganizedMeetups.All(meetup => meetup.Id != meetupId))
+            .Include(organizer => organizer.OrganizedMeetups)
+            .SingleAsync(organizer => organizer.Id == CurrentUser.Id);
+        if (organizer.OrganizedMeetups.All(meetup => meetup.Id != meetupId))
         {
             Forbid();
         }

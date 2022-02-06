@@ -21,7 +21,8 @@ internal class MeetupEntityTypeConfiguration : IEntityTypeConfiguration<Meetup>
         
         meetupEntity
             .Property(x => x.Id)
-            .HasColumnName("id");
+            .HasColumnName("id")
+            .ValueGeneratedNever();
 
         meetupEntity
             .Property(x => x.Topic)

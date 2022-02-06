@@ -23,12 +23,10 @@ public class Controller : ApiControllerBase
     /// <summary>Deletes specific meetup (with the specified id).</summary>
     /// <param name="meetupId">Id of the meetup to be deleted.</param>
     /// <response code="200">Meetup was deleted successfully.</response>
-    /// <response code="403">Only meetup organizer can delete it's own meetups.</response>
     /// <response code="404">Meetup with the specified id does not exist.</response>
-    [Authorize]
+    [Authorize(Roles = UserRoles.Organizer)]
     [HttpDelete("studio/{meetupId:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteSpecificMeetup([FromRoute] Guid meetupId)
     {
@@ -40,12 +38,11 @@ public class Controller : ApiControllerBase
             return NotFound();
         }
         
-        var currentUser = await Context.Users
+        var organizer = await Context.Organizers
             .AsNoTracking()
-            .Include(user => (user as Organizer).OrganizedMeetups)
-            .SingleAsync(user => user.Id == CurrentUser.Id);
-        if (currentUser is not Organizer organizer ||
-            organizer.OrganizedMeetups.All(organizedMeetup => organizedMeetup.Id != meetupId))
+            .Include(organizer => organizer.OrganizedMeetups)
+            .SingleAsync(organizer => organizer.Id == CurrentUser.Id);
+        if (organizer.OrganizedMeetups.All(organizedMeetup => organizedMeetup.Id != meetupId))
         {
             return Forbid();
         }

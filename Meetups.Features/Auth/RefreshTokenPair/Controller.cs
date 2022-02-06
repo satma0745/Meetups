@@ -35,10 +35,10 @@ public class Controller : ApiControllerBase
         var currentUserId = Guid.Parse(claims["sub"]);
         var refreshTokenId = Guid.Parse(claims["jti"]);
 
-        var userExists = await Context.Users.AnyAsync(user => user.Id == currentUserId);
+        var currentUser = await Context.Users.SingleOrDefaultAsync(user => user.Id == currentUserId);
         var oldPersistedRefreshToken = await Context.RefreshTokens
             .SingleOrDefaultAsync(token => token.TokenId == refreshTokenId);
-        if (!userExists || oldPersistedRefreshToken is null)
+        if (currentUser is null || oldPersistedRefreshToken is null)
         {
             // Cannot issue token for user that does not even exist (was deleted)
             // Cannot use refresh token that is not persisted to a db (fake or used)
@@ -56,7 +56,7 @@ public class Controller : ApiControllerBase
         await Context.SaveChangesAsync();
 
         var newRefreshTokenId = newPersistedRefreshToken.TokenId;
-        var (accessToken, newRefreshToken) = tokenHelper.IssueTokenPair(currentUserId, newRefreshTokenId);
+        var (accessToken, newRefreshToken) = tokenHelper.IssueTokenPair(currentUser, newRefreshTokenId);
         return Ok(new ResponseDto(accessToken, newRefreshToken));
     }
 }

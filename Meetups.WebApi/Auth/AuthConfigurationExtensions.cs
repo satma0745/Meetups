@@ -32,6 +32,9 @@ internal static class AuthConfigurationExtensions
         
         options.TokenValidationParameters = new()
         {
+            // Clear claim type map specifically for "role" claim
+            RoleClaimType = "role",
+            
             RequireSignedTokens = true,
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(signingKeyBytes),

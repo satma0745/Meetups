@@ -11,10 +11,13 @@ internal class UserEntityTypeConfiguration : IEntityTypeConfiguration<User>
         userEntity.ToTable("users");
 
         userEntity
-            .HasDiscriminator<string>("account_type")
-            .HasValue<Guest>("guest")
-            .HasValue<Organizer>("organizer")
-            .HasValue("guest");
+            .HasDiscriminator(user => user.Role)
+            .HasValue<Guest>(UserRoles.Guest)
+            .HasValue<Organizer>(UserRoles.Organizer)
+            .HasValue(UserRoles.Guest);
+        userEntity
+            .Property(user => user.Role)
+            .HasColumnName("role");
 
         userEntity
             .HasKey(x => x.Id)

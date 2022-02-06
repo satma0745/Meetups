@@ -4,11 +4,13 @@ using System;
 using Meetups.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 [DbContext(typeof(ApplicationContext))]
-internal class ApplicationContextModelSnapshot : ModelSnapshot
+[Migration("20220206172635_UpdateUserDiscriminator")]
+partial class UpdateUserDiscriminator
 {
-    protected override void BuildModel(ModelBuilder modelBuilder)
+    protected override void BuildTargetModel(ModelBuilder modelBuilder)
     {
         modelBuilder
             .HasAnnotation("ProductVersion", "6.0.1")
@@ -185,7 +187,7 @@ internal class ApplicationContextModelSnapshot : ModelSnapshot
                 .HasConstraintName("fk_meetups_organizers_organizer_id");
 
             meetupEntity.OwnsOne(
-                "Meetups.Persistence.Entities.Meetup.Duration#Meetups.Persistence.Entities.Meetup+MeetupDuration",
+                "Meetups.Persistence.Entities.Meetup+MeetupDuration",
                 "Duration",
                 meetupDurationOwnedEntity =>
                 {
@@ -205,7 +207,7 @@ internal class ApplicationContextModelSnapshot : ModelSnapshot
 
                     meetupDurationOwnedEntity.HasKey("MeetupId");
 
-                    meetupDurationOwnedEntity.ToTable("meetups", (string) null);
+                    meetupDurationOwnedEntity.ToTable("meetups");
 
                     meetupDurationOwnedEntity
                         .WithOwner()

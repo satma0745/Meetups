@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
+using Meetups.Persistence.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -35,9 +36,18 @@ public class TokenHelper
         refreshTokenLifetime = TimeSpan.FromDays(refreshTokenLifetimeInDays);
     }
 
-    public (string AccessToken, string RefreshToken) IssueTokenPair(Guid userId, Guid refreshTokenId)
+    public (string AccessToken, string RefreshToken) IssueTokenPair(User user, Guid refreshTokenId) =>
+        user is null
+            ? throw new ArgumentNullException(nameof(user))
+            : IssueTokenPair(user.Id, user.Role, refreshTokenId);
+
+    public (string AccessToken, string RefreshToken) IssueTokenPair(Guid userId, string userRole, Guid refreshTokenId)
     {
-        var accessToken = IssueToken(new Dictionary<string, object> {{"sub", userId}}, accessTokenLifetime);
+        var accessToken = IssueToken(new Dictionary<string, object>
+        {
+            {"sub", userId},
+            {"role", userRole}
+        }, accessTokenLifetime);
         var refreshToken = IssueToken(new Dictionary<string, object>
         {
             {"sub", userId},

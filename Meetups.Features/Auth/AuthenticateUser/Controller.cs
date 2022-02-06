@@ -52,7 +52,7 @@ public class Controller : ApiControllerBase
         Context.RefreshTokens.Add(persistedRefreshToken);
         await Context.SaveChangesAsync();
 
-        var (accessToken, refreshToken) = tokenHelper.IssueTokenPair(user.Id, persistedRefreshToken.TokenId);
+        var (accessToken, refreshToken) = tokenHelper.IssueTokenPair(user, persistedRefreshToken.TokenId);
         return Ok(new ResponseDto(accessToken, refreshToken));
     }
 }
