@@ -12,8 +12,19 @@ public class OneOfAttribute : ValidationAttribute
 
     private readonly object[] allowedValues;
 
-    public OneOfAttribute(params object[] allowedValues) =>
-        this.allowedValues = allowedValues;
+    public OneOfAttribute(Type enumerationType)
+    {
+        var isStatic = enumerationType.IsAbstract && enumerationType.IsSealed;
+        if (!isStatic && enumerationType.IsClass)
+        {
+            throw new ArgumentException("Only static classes are supported.", nameof(enumerationType));
+        }
+
+        allowedValues = enumerationType
+            .GetFields()
+            .Select(field => field.GetValue(null))
+            .ToArray();
+    }
 
     public override bool IsValid(object value) =>
         allowedValues.Contains(value);

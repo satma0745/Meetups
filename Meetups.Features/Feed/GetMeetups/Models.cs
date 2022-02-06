@@ -22,16 +22,27 @@ public class RequestDto
     public int PageSize { get; set; }
     
     /// <summary>Determines meetups order before paging is applied.</summary>
-    /// <remarks>Only "topic_asc", "topic_desc", "stime_asc" and "stime_desc" are considered valid values.</remarks>
-    /// <example>topic_asc</example>
+    /// <example>topic_alphabetically</example>
     [Required]
-    [OneOf("topic_asc", "topic_desc", "stime_asc", "stime_desc")]
+    [OneOf(typeof(OrderingOptions))]
     public string OrderBy { get; set; }
 
     /// <summary>Used to find matching meetups.</summary>
     /// <example>Microsoft</example>
     [MaxLength(100)]
     public string Search { get; set; } = string.Empty;
+}
+
+public static class OrderingOptions
+{
+    public const string TopicAlphabetically = "topic_alphabetically";
+    public const string TopicReverseAlphabetically = "topic_reverse_alphabetically";
+
+    public const string DurationAscending = "duration_ascending";
+    public const string DurationDescending = "duration_descending";
+
+    public const string SignUpsCountAscending = "signups_ascending";
+    public const string SignUpsCountDescending = "signups_descending";
 }
 
 public class ResponseDto

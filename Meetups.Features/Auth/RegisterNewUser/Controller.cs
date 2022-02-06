@@ -39,8 +39,8 @@ public class Controller : ApiControllerBase
         
         User user = request.AccountType switch
         {
-            "guest" => Mapper.Map<Guest>(request),
-            "organizer" => Mapper.Map<Organizer>(request),
+            UserRoles.Guest => Mapper.Map<Guest>(request),
+            UserRoles.Organizer => Mapper.Map<Organizer>(request),
             var unmatched => throw new SwitchExpressionException(unmatched)
         };
         user.Id = Guid.NewGuid();

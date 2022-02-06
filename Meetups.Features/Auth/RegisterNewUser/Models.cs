@@ -29,9 +29,9 @@ public class RequestDto
     public string DisplayName { get; set; }
     
     /// <summary>User account type (user role).</summary>
-    /// <example>guest</example>
+    /// <example>Guest</example>
     [Required]
-    [OneOf("guest", "organizer")]
+    [OneOf(typeof(UserRoles))]
     public string AccountType { get; set; }
 }
 

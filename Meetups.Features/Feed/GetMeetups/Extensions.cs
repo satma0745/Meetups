@@ -1,6 +1,7 @@
 ﻿namespace Meetups.Features.Feed.GetMeetups;
 
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Meetups.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,11 +14,20 @@ internal static class Extensions
     public static IQueryable<Meetup> OrderBy(this IQueryable<Meetup> meetups, string orderingOption) =>
         orderingOption switch
         {
-            "topic_asc" => meetups.OrderBy(meetup => meetup.Topic),
-            "topic_desc" => meetups.OrderByDescending(meetup => meetup.Topic),
-            "stime_asc" => meetups.OrderBy(meetup => meetup.StartTime),
-            "stime_desc" => meetups.OrderByDescending(meetup => meetup.StartTime),
-            _ => meetups
+            OrderingOptions.TopicAlphabetically =>
+                meetups.OrderBy(meetup => meetup.Topic),
+            OrderingOptions.TopicReverseAlphabetically =>
+                meetups.OrderByDescending(meetup => meetup.Topic),
+            OrderingOptions.DurationAscending =>
+                meetups.OrderBy(meetup => meetup.Duration.Hours * 60 + meetup.Duration.Minutes),
+            OrderingOptions.DurationDescending =>
+                meetups.OrderByDescending(meetup => meetup.Duration.Hours * 60 + meetup.Duration.Minutes),
+            OrderingOptions.SignUpsCountAscending =>
+                meetups.OrderBy(meetup => meetup.SignedUpGuests.Count),
+            OrderingOptions.SignUpsCountDescending =>
+                meetups.OrderByDescending(meetup => meetup.SignedUpGuests.Count),
+            var unmatched =>
+                throw new SwitchExpressionException(unmatched)
         };
 
     public static IQueryable<Meetup> Paginate(this IQueryable<Meetup> meetups, int pageNumber, int pageSize) =>
