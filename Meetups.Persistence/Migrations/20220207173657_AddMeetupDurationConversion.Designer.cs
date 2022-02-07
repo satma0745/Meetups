@@ -4,11 +4,13 @@ using System;
 using Meetups.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 [DbContext(typeof(ApplicationContext))]
-internal class ApplicationContextModelSnapshot : ModelSnapshot
+[Migration("20220207173657_AddMeetupDurationConversion")]
+partial class AddMeetupDurationConversion
 {
-    protected override void BuildModel(ModelBuilder modelBuilder)
+    protected override void BuildTargetModel(ModelBuilder modelBuilder)
     {
         modelBuilder
             .HasAnnotation("ProductVersion", "6.0.1")
@@ -202,9 +204,9 @@ internal class ApplicationContextModelSnapshot : ModelSnapshot
                 .HasConstraintName("fk_users_refresh_tokens_user_id");
         });
 
-        modelBuilder.Entity("System.Collections.Generic.Dictionary<string, string>", bmeetupsGuestsJoinEntity =>
+        modelBuilder.Entity("System.Collections.Generic.Dictionary<string, string>", meetupsGuestsJoinEntity =>
         {
-            bmeetupsGuestsJoinEntity
+            meetupsGuestsJoinEntity
                 .HasOne("Meetups.Persistence.Entities.Meetup", null)
                 .WithMany()
                 .HasForeignKey("meetup_id")
@@ -212,7 +214,7 @@ internal class ApplicationContextModelSnapshot : ModelSnapshot
                 .IsRequired()
                 .HasConstraintName("fk_meetups_guests_signup_meetups_meetup_id");
 
-            bmeetupsGuestsJoinEntity
+            meetupsGuestsJoinEntity
                 .HasOne("Meetups.Persistence.Entities.Guest", null)
                 .WithMany()
                 .HasForeignKey("signed_up_guest_id")
