@@ -1,3 +1,21 @@
 @inherits LayoutComponentBase
 
-<div>@Body</div>
+<MudThemeProvider/>
+
+<MudLayout>
+    <MudAppBar>
+        <MudContainer MaxWidth="MaxWidth.Large">
+            <MudText Typo="Typo.h4">
+                Meetups
+            </MudText>
+        </MudContainer>
+    </MudAppBar>
+    
+    <MudMainContent id="content" Class="d-flex flex-column grey lighten-5">
+        <MudContainer Class="flex-grow-1 d-flex flex-column" MaxWidth="MaxWidth.Large">
+            <MudPaper Class="flex-grow-1 rounded-0 white py-12 px-8" Elevation="2" Square>
+                @Body
+            </MudPaper>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
