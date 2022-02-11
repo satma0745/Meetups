@@ -3,6 +3,8 @@
 using System;
 using System.Threading.Tasks;
 using AutoMapper;
+using Meetup.Contract.Models.Primitives;
+using Meetup.Contract.Models.Tokens;
 using Meetups.Backend.Features.Shared;
 using Meetups.Backend.Persistence.Context;
 using Meetups.Backend.Persistence.Entities;
@@ -24,7 +26,7 @@ public class Controller : ApiControllerBase
     /// <response code="200">Token pair was successfully re-issued.</response>
     /// <response code="400">Fake, damaged, expired or used refresh token was provided.</response>
     [HttpPost("auth/refresh")]
-    [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(TokenPairDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> RefreshTokenPair([FromBody] string oldRefreshToken)
     {
@@ -32,8 +34,8 @@ public class Controller : ApiControllerBase
         {
             return BadRequest();
         }
-        var currentUserId = Guid.Parse(claims["sub"]);
-        var refreshTokenId = Guid.Parse(claims["jti"]);
+        var currentUserId = Guid.Parse(claims[RefreshTokenPayload.UserIdClaim]);
+        var refreshTokenId = Guid.Parse(claims[RefreshTokenPayload.TokenIdClaim]);
 
         var currentUser = await Context.Users.SingleOrDefaultAsync(user => user.Id == currentUserId);
         var oldPersistedRefreshToken = await Context.RefreshTokens
@@ -57,6 +59,12 @@ public class Controller : ApiControllerBase
 
         var newRefreshTokenId = newPersistedRefreshToken.TokenId;
         var (accessToken, newRefreshToken) = tokenHelper.IssueTokenPair(currentUser, newRefreshTokenId);
-        return Ok(new ResponseDto(accessToken, newRefreshToken));
+        
+        var tokenPairDto = new TokenPairDto
+        {
+            AccessToken = accessToken,
+            RefreshToken = newRefreshToken
+        };
+        return Ok(tokenPairDto);
     }
 }

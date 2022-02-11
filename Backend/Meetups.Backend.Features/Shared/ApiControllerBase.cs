@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Net.Mime;
 using AutoMapper;
+using Meetup.Contract.Models.Tokens;
 using Meetups.Backend.Persistence.Context;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +17,7 @@ public abstract class ApiControllerBase : ControllerBase
     protected ApplicationContext Context { get; }
     protected IMapper Mapper { get; }
 
-    protected CurrentUserInfo CurrentUser => GetCurrentUserInfo();
+    protected AccessTokenPayload CurrentUser => GetCurrentUserInfo();
 
     protected ApiControllerBase(ApplicationContext context, IMapper mapper)
     {
@@ -24,20 +25,21 @@ public abstract class ApiControllerBase : ControllerBase
         Mapper = mapper;
     }
 
-    private CurrentUserInfo GetCurrentUserInfo()
+    private AccessTokenPayload GetCurrentUserInfo()
     {
-        var userIdClaim = User.Claims.SingleOrDefault(claim => claim.Type == "sub");
-        if (userIdClaim is null)
+        var authenticated = User.Claims.Any();
+        if (!authenticated)
         {
             return null;
         }
         
-        var userId = Guid.Parse(userIdClaim.Value);
-        return new CurrentUserInfo { Id = userId };
-    }
-    
-    protected class CurrentUserInfo
-    {
-        public Guid Id { get; init; }
+        var userIdClaim = User.Claims.Single(claim => claim.Type == AccessTokenPayload.UserIdClaim);
+        var userRoleClaim = User.Claims.Single(claim => claim.Type == AccessTokenPayload.UserRoleClaim);
+
+        return new AccessTokenPayload
+        {
+            UserId = Guid.Parse(userIdClaim.Value),
+            UserRole = userRoleClaim.Value
+        };
     }
 }

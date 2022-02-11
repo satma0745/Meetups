@@ -3,6 +3,7 @@
 using System;
 using System.Threading.Tasks;
 using AutoMapper;
+using Meetup.Contract.Models.Features.Feed.GetSpecificMeetup;
 using Meetups.Backend.Features.Shared;
 using Meetups.Backend.Persistence.Context;
 using Microsoft.AspNetCore.Http;
@@ -35,7 +36,7 @@ public class Controller : ApiControllerBase
             return NotFound();
         }
 
-        var dto = Mapper.Map<ResponseDto>(meetup);
-        return Ok(dto);
+        var response = Mapper.Map<ResponseDto>(meetup);
+        return Ok(response);
     }
 }

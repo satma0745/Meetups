@@ -1,4 +1,4 @@
-﻿namespace Meetups.Backend.Features.Shared;
+﻿namespace Meetup.Contract.Attributes;
 
 using System;
 using System.Collections.Generic;

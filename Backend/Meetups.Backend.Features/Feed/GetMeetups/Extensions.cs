@@ -2,6 +2,7 @@
 
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Meetup.Contract.Models.Features.Feed.GetMeetups;
 using Meetups.Backend.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 

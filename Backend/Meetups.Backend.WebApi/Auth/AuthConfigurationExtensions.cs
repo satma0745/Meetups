@@ -4,6 +4,7 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
+using Meetup.Contract.Models.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -32,8 +33,8 @@ internal static class AuthConfigurationExtensions
         
         options.TokenValidationParameters = new()
         {
-            // Clear claim type map specifically for "role" claim
-            RoleClaimType = "role",
+            // Clear claim type map specifically for the user role claim
+            RoleClaimType = AccessTokenPayload.UserRoleClaim,
             
             RequireSignedTokens = true,
             ValidateIssuerSigningKey = true,

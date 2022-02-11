@@ -2,6 +2,7 @@
 
 using System.Threading.Tasks;
 using AutoMapper;
+using Meetup.Contract.Models.Features.Auth.GetCurrentUserInfo;
 using Meetups.Backend.Features.Shared;
 using Meetups.Backend.Persistence.Context;
 using Microsoft.AspNetCore.Authorization;
@@ -26,13 +27,13 @@ public class Controller : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> GetCurrentUserInfo()
     {
-        var user = await Context.Users.SingleOrDefaultAsync(user => user.Id == CurrentUser.Id);
+        var user = await Context.Users.SingleOrDefaultAsync(user => user.Id == CurrentUser.UserId);
         if (user is null)
         {
             return Unauthorized();
         }
 
-        var dto = Mapper.Map<ResponseDto>(user);
-        return Ok(dto);
+        var response = Mapper.Map<ResponseDto>(user);
+        return Ok(response);
     }
 }

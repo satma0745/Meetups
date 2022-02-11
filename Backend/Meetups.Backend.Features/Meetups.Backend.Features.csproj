@@ -16,6 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Contracts\Meetup.Contract\Meetup.Contract.csproj" />
       <ProjectReference Include="..\Meetups.Backend.Persistence\Meetups.Backend.Persistence.csproj" />
     </ItemGroup>
 

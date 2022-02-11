@@ -1,8 +1,6 @@
-﻿namespace Meetups.Backend.Features.Auth.GetCurrentUserInfo;
+﻿namespace Meetup.Contract.Models.Features.Auth.GetCurrentUserInfo;
 
 using System;
-using AutoMapper;
-using Meetups.Backend.Persistence.Entities;
 
 public class ResponseDto
 {
@@ -18,10 +16,4 @@ public class ResponseDto
     /// <summary>Human readable public (official) name.</summary>
     /// <example>Satttttttttttttttter</example>
     public string DisplayName { get; set; }
-}
-
-internal class MappingProfile : Profile
-{
-    public MappingProfile() =>
-        CreateMap<User, ResponseDto>();
 }

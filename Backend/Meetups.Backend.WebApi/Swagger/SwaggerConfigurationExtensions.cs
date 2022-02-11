@@ -2,6 +2,8 @@
 
 using System;
 using System.IO;
+using System.Linq;
+using Meetup.Contract;
 using Meetups.Backend.Features.Shared;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -53,11 +55,21 @@ internal static class SwaggerConfigurationExtensions
 
     private static void IncludeXmlComments(this SwaggerGenOptions options)
     {
-        var featuresProject = typeof(IFeaturesMarker).Assembly;
-        var xmlCommentsFile = $"{featuresProject.GetName().Name}.xml";
+        var projectsWithXmlComments = new[]
+        {
+            typeof(IFeaturesMarker).Assembly,
+            typeof(IContractMarker).Assembly
+        };
+        
+        var xmlCommentsFiles = projectsWithXmlComments
+            .Select(project => project.GetName().Name)
+            .Select(projectName => $"{projectName}.xml");
         
         var rootDirectory = AppContext.BaseDirectory;
-        options.IncludeXmlComments(Path.Combine(rootDirectory, xmlCommentsFile));
+        foreach (var xmlCommentsFile in xmlCommentsFiles)
+        {
+            options.IncludeXmlComments(Path.Combine(rootDirectory, xmlCommentsFile));
+        }
     }
 
     public static IApplicationBuilder UseSwaggerDocs(

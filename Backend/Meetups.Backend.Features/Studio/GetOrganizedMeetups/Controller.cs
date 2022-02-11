@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Meetup.Contract.Models.Features.Studio.GetOrganizedMeetups;
 using Meetups.Backend.Features.Shared;
 using Meetups.Backend.Persistence.Context;
 using Meetups.Backend.Persistence.Entities;
@@ -23,16 +24,16 @@ public class Controller : ApiControllerBase
     /// <response code="200">Meetups organized by the current user.</response>
     [Authorize(Roles = UserRoles.Organizer)]
     [HttpGet("studio/organized")]
-    [ProducesResponseType(typeof(OrganizedMeetupDto[]), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResponseDto[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetOrganizedMeetups()
     {
         var organizer = await Context.Organizers
             .AsNoTracking()
             .Include(organizer => organizer.OrganizedMeetups)
             .ThenInclude(meetup => meetup.SignedUpGuests)
-            .SingleAsync(organizer => organizer.Id == CurrentUser.Id);
+            .SingleAsync(organizer => organizer.Id == CurrentUser.UserId);
 
-        var organizedMeetups = Mapper.Map<ICollection<OrganizedMeetupDto>>(organizer.OrganizedMeetups);
-        return Ok(organizedMeetups);
+        var response = Mapper.Map<ICollection<ResponseDto>>(organizer.OrganizedMeetups);
+        return Ok(response);
     }
 }

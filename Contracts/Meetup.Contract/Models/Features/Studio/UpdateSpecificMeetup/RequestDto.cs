@@ -1,11 +1,8 @@
-﻿namespace Meetups.Backend.Features.Studio.UpdateSpecificMeetup;
+﻿namespace Meetup.Contract.Models.Features.Studio.UpdateSpecificMeetup;
 
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-using AutoMapper;
-using Meetups.Backend.Features.Shared;
-using Meetups.Backend.Persistence.Entities;
+using Meetup.Contract.Models.Primitives;
 
 public class RequestDto
 {
@@ -23,17 +20,10 @@ public class RequestDto
     
     /// <summary>Meetup duration.</summary>
     [Required]
-    [JsonConverter(typeof(MeetupDurationJsonConverter))]
-    public Meetup.MeetupDuration Duration { get; set; }
+    public MeetupDurationDto Duration { get; set; }
     
     /// <summary>When meetup starts.</summary>
     /// <example>2022-01-09T12:00:00Z</example>
     [Required]
     public DateTime StartTime { get; set; }
-}
-
-internal class MappingProfile : Profile
-{
-    public MappingProfile() =>
-        CreateMap<RequestDto, Meetup>();
 }

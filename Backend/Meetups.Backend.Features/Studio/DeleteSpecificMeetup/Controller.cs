@@ -41,7 +41,7 @@ public class Controller : ApiControllerBase
         var organizer = await Context.Organizers
             .AsNoTracking()
             .Include(organizer => organizer.OrganizedMeetups)
-            .SingleAsync(organizer => organizer.Id == CurrentUser.Id);
+            .SingleAsync(organizer => organizer.Id == CurrentUser.UserId);
         if (organizer.OrganizedMeetups.All(organizedMeetup => organizedMeetup.Id != meetupId))
         {
             return Forbid();

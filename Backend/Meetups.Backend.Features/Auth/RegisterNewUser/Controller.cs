@@ -5,12 +5,14 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using AutoMapper;
 using BCrypt.Net;
+using Meetup.Contract.Models.Features.Auth.RegisterNewUser;
 using Meetups.Backend.Features.Shared;
 using Meetups.Backend.Persistence.Context;
 using Meetups.Backend.Persistence.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using UserRoles = Meetups.Backend.Persistence.Entities.UserRoles;
 
 [Tags("Auth")]
 public class Controller : ApiControllerBase

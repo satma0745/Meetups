@@ -2,7 +2,7 @@
 
 using System;
 using System.Linq;
-using Meetups.Backend.Features.Shared;
+using Meetup.Contract.Attributes;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;

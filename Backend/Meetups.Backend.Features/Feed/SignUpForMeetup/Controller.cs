@@ -42,7 +42,7 @@ public class Controller : ApiControllerBase
         
         var guest = await Context.Guests
             .AsNoTracking()
-            .SingleAsync(guest => guest.Id == CurrentUser.Id);
+            .SingleAsync(guest => guest.Id == CurrentUser.UserId);
 
         var alreadySignedUp = meetup.SignedUpGuests.Any(signedUpGuest => signedUpGuest.Id == guest.Id);
         if (alreadySignedUp)

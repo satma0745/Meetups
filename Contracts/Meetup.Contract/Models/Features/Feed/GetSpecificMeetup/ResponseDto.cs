@@ -1,13 +1,10 @@
-﻿namespace Meetups.Backend.Features.Studio.GetOrganizedMeetups;
+﻿namespace Meetup.Contract.Models.Features.Feed.GetSpecificMeetup;
 
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-using AutoMapper;
-using Meetups.Backend.Features.Shared;
-using Meetups.Backend.Persistence.Entities;
+using Meetup.Contract.Models.Primitives;
 
-public class OrganizedMeetupDto
+public class ResponseDto
 {
     /// <summary>Permanent unique meetup identifier.</summary>
     /// <example>07450745-0745-0745-0745-074507450745</example>
@@ -23,8 +20,7 @@ public class OrganizedMeetupDto
     
     /// <summary>Meetup duration.</summary>
     [Required]
-    [JsonConverter(typeof(MeetupDurationJsonConverter))]
-    public Meetup.MeetupDuration Duration { get; set; }
+    public MeetupDurationDto Duration { get; set; }
     
     /// <summary>When meetup starts.</summary>
     /// <example>2022-01-09T12:00:00Z</example>
@@ -33,13 +29,4 @@ public class OrganizedMeetupDto
     /// <summary>Number of guests that signed up for this meetup.</summary>
     /// <example>42</example>
     public int SignedUpGuestsCount { get; set; }
-}
-
-internal class MappingProfile : Profile
-{
-    public MappingProfile() =>
-        CreateMap<Meetup, OrganizedMeetupDto>()
-            .ForMember(
-                response => response.SignedUpGuestsCount,
-                options => options.MapFrom(meetup => meetup.SignedUpGuests.Count));
 }

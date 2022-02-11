@@ -4,6 +4,8 @@ using System;
 using System.Threading.Tasks;
 using AutoMapper;
 using BCrypt.Net;
+using Meetup.Contract.Models.Features.Auth.AuthenticateUser;
+using Meetup.Contract.Models.Primitives;
 using Meetups.Backend.Features.Shared;
 using Meetups.Backend.Persistence.Context;
 using Meetups.Backend.Persistence.Entities;
@@ -26,7 +28,7 @@ public class Controller : ApiControllerBase
     /// <response code="404">User with specified username does not exist.</response>
     /// <response code="409">Incorrect password provided.</response>
     [HttpPost("auth/authenticate")]
-    [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(TokenPairDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> AuthenticateUser([FromBody] RequestDto request)
@@ -53,6 +55,11 @@ public class Controller : ApiControllerBase
         await Context.SaveChangesAsync();
 
         var (accessToken, refreshToken) = tokenHelper.IssueTokenPair(user, persistedRefreshToken.TokenId);
-        return Ok(new ResponseDto(accessToken, refreshToken));
+        var tokenPairDto = new TokenPairDto
+        {
+            AccessToken = accessToken,
+            RefreshToken = refreshToken
+        };
+        return Ok(tokenPairDto);
     }
 }

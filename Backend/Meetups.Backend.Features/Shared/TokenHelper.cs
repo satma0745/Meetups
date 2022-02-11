@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
+using Meetup.Contract.Models.Tokens;
 using Meetups.Backend.Persistence.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -36,26 +37,6 @@ public class TokenHelper
         refreshTokenLifetime = TimeSpan.FromDays(refreshTokenLifetimeInDays);
     }
 
-    public (string AccessToken, string RefreshToken) IssueTokenPair(User user, Guid refreshTokenId) =>
-        user is null
-            ? throw new ArgumentNullException(nameof(user))
-            : IssueTokenPair(user.Id, user.Role, refreshTokenId);
-
-    public (string AccessToken, string RefreshToken) IssueTokenPair(Guid userId, string userRole, Guid refreshTokenId)
-    {
-        var accessToken = IssueToken(new Dictionary<string, object>
-        {
-            {"sub", userId},
-            {"role", userRole}
-        }, accessTokenLifetime);
-        var refreshToken = IssueToken(new Dictionary<string, object>
-        {
-            {"sub", userId},
-            {"jti", refreshTokenId}
-        }, refreshTokenLifetime);
-        return (accessToken, refreshToken);
-    }
-
     public bool TryParseToken(string token, out IDictionary<string, string> payload)
     {
         try
@@ -84,6 +65,32 @@ public class TokenHelper
             payload = null;
             return false;
         }
+    }
+
+    public (string AccessToken, string RefreshToken) IssueTokenPair(User user, Guid refreshTokenId) =>
+        user is null
+            ? throw new ArgumentNullException(nameof(user))
+            : IssueTokenPair(user.Id, user.Role, refreshTokenId);
+
+    public (string AccessToken, string RefreshToken) IssueTokenPair(Guid userId, string userRole, Guid refreshTokenId)
+    {
+        var accessToken = IssueToken(
+            new Dictionary<string, object>
+            {
+                {AccessTokenPayload.UserIdClaim, userId},
+                {AccessTokenPayload.UserRoleClaim, userRole}
+            },
+            accessTokenLifetime);
+
+        var refreshToken = IssueToken(
+            new Dictionary<string, object>
+            {
+                {RefreshTokenPayload.UserIdClaim, userId},
+                {RefreshTokenPayload.TokenIdClaim, refreshTokenId}
+            },
+            refreshTokenLifetime);
+        
+        return (accessToken, refreshToken);
     }
     
     private string IssueToken(IDictionary<string, object> payload, TimeSpan lifetime)

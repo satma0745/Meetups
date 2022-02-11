@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Meetup.Contract.Models.Features.Studio.UpdateSpecificMeetup;
 using Meetups.Backend.Features.Shared;
 using Meetups.Backend.Persistence.Context;
 using Meetups.Backend.Persistence.Entities;
@@ -37,7 +38,7 @@ public class Controller : ApiControllerBase
         var organizer = await Context.Organizers
             .AsNoTracking()
             .Include(organizer => organizer.OrganizedMeetups)
-            .SingleAsync(organizer => organizer.Id == CurrentUser.Id);
+            .SingleAsync(organizer => organizer.Id == CurrentUser.UserId);
         if (organizer.OrganizedMeetups.All(meetup => meetup.Id != meetupId))
         {
             Forbid();

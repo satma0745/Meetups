@@ -1,9 +1,8 @@
-﻿namespace Meetups.Backend.Features.Auth.RegisterNewUser;
+﻿namespace Meetup.Contract.Models.Features.Auth.RegisterNewUser;
 
 using System.ComponentModel.DataAnnotations;
-using AutoMapper;
-using Meetups.Backend.Features.Shared;
-using Meetups.Backend.Persistence.Entities;
+using Meetup.Contract.Attributes;
+using Meetup.Contract.Models.Enumerations;
 
 public class RequestDto
 {
@@ -30,16 +29,8 @@ public class RequestDto
     
     /// <summary>User account type (user role).</summary>
     /// <example>Guest</example>
+    /// <seealso cref="UserRoles"/>
     [Required]
     [OneOf(typeof(UserRoles))]
     public string AccountType { get; set; }
-}
-
-internal class MappingProfile : Profile
-{
-    public MappingProfile()
-    {
-        CreateMap<RequestDto, Guest>().ForMember(user => user.Password, config => config.Ignore());
-        CreateMap<RequestDto, Organizer>().ForMember(user => user.Password, config => config.Ignore());
-    }
 }
