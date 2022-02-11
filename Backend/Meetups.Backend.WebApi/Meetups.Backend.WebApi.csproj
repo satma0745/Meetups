@@ -14,7 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Meetups.Backend.Features\Meetups.Backend.Features.csproj" />
+      <ProjectReference Include="..\Meetups.Backend.Core\Meetups.Backend.Core.csproj" />
     </ItemGroup>
 
 </Project>

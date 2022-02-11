@@ -1,8 +1,9 @@
 ﻿namespace Meetups.Backend.WebApi.EntryPoint;
 
-using Meetups.Backend.Features.Shared;
+using Meetups.Backend.Core.Seedwork;
 using Meetups.Backend.Persistence.Context;
 using Meetups.Backend.WebApi.Auth;
+using Meetups.Backend.WebApi.Mapping;
 using Meetups.Backend.WebApi.Swagger;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -20,7 +21,7 @@ internal class Startup
         services
             .AddApplicationContext()
             .AddScoped<TokenHelper>()
-            .AddAutoMapper(typeof(IFeaturesMarker))
+            .AddMappings()
             .AddAuth(configuration)
             .AddSwaggerDocs()
             .AddControllers();

@@ -11,13 +11,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Backend", "Backend", "{CB30
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meetups.Backend.Persistence", "Backend\Meetups.Backend.Persistence\Meetups.Backend.Persistence.csproj", "{8FF18DF0-D16E-4B1A-B091-1CA81027ACB3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meetups.Backend.Features", "Backend\Meetups.Backend.Features\Meetups.Backend.Features.csproj", "{FEB859E6-473D-4B67-B5C1-DEEB4801B723}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meetups.Backend.WebApi", "Backend\Meetups.Backend.WebApi\Meetups.Backend.WebApi.csproj", "{4651F3D4-86E9-4CC9-B04F-967003E58E6C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Contracts", "Contracts", "{DEC937AB-FEDB-429B-B273-D3CAD1307B6F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meetup.Contract", "Contracts\Meetup.Contract\Meetup.Contract.csproj", "{DEB9C4B3-F3E9-4CD3-A6C8-113818F4464D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meetups.Backend.Core", "Backend\Meetups.Backend.Core\Meetups.Backend.Core.csproj", "{CE22FCF2-6B7F-45C4-ACBE-6ADA7330783E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,10 +36,6 @@ Global
 		{8FF18DF0-D16E-4B1A-B091-1CA81027ACB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8FF18DF0-D16E-4B1A-B091-1CA81027ACB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8FF18DF0-D16E-4B1A-B091-1CA81027ACB3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FEB859E6-473D-4B67-B5C1-DEEB4801B723}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FEB859E6-473D-4B67-B5C1-DEEB4801B723}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FEB859E6-473D-4B67-B5C1-DEEB4801B723}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FEB859E6-473D-4B67-B5C1-DEEB4801B723}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4651F3D4-86E9-4CC9-B04F-967003E58E6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4651F3D4-86E9-4CC9-B04F-967003E58E6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4651F3D4-86E9-4CC9-B04F-967003E58E6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -48,12 +44,16 @@ Global
 		{DEB9C4B3-F3E9-4CD3-A6C8-113818F4464D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DEB9C4B3-F3E9-4CD3-A6C8-113818F4464D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DEB9C4B3-F3E9-4CD3-A6C8-113818F4464D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE22FCF2-6B7F-45C4-ACBE-6ADA7330783E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE22FCF2-6B7F-45C4-ACBE-6ADA7330783E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE22FCF2-6B7F-45C4-ACBE-6ADA7330783E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE22FCF2-6B7F-45C4-ACBE-6ADA7330783E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{38DC5345-30B3-422A-92CC-ECFD2D1AC5CB} = {FBFBBE9C-65A6-4B06-8C1C-25BE134A220B}
 		{8FF18DF0-D16E-4B1A-B091-1CA81027ACB3} = {CB30EEED-89B3-43DB-82ED-A483A184E12B}
-		{FEB859E6-473D-4B67-B5C1-DEEB4801B723} = {CB30EEED-89B3-43DB-82ED-A483A184E12B}
 		{4651F3D4-86E9-4CC9-B04F-967003E58E6C} = {CB30EEED-89B3-43DB-82ED-A483A184E12B}
 		{DEB9C4B3-F3E9-4CD3-A6C8-113818F4464D} = {DEC937AB-FEDB-429B-B273-D3CAD1307B6F}
+		{CE22FCF2-6B7F-45C4-ACBE-6ADA7330783E} = {CB30EEED-89B3-43DB-82ED-A483A184E12B}
 	EndGlobalSection
 EndGlobal

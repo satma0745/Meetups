@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>$(NoWarn);1591</NoWarn>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AutoMapper" Version="11.0.1" />
+        <PackageReference Include="BCrypt.Net-Next" Version="4.0.2" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Contracts\Meetup.Contract\Meetup.Contract.csproj" />
+        <ProjectReference Include="..\Meetups.Backend.Persistence\Meetups.Backend.Persistence.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Features" />
+    </ItemGroup>
+
+</Project>
