@@ -4,7 +4,7 @@ using System;
 using System.IO;
 using System.Linq;
 using Meetup.Contract;
-using Meetups.Backend.Core;
+using Meetups.Backend.Application;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -58,7 +58,7 @@ internal static class SwaggerConfigurationExtensions
         var projectsWithXmlComments = new[]
         {
             typeof(IContractMarker).Assembly,
-            typeof(ICoreMarker).Assembly
+            typeof(IApplicationMarker).Assembly
         };
         
         var xmlCommentsFiles = projectsWithXmlComments

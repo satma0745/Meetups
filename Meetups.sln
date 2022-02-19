@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Contracts", "Contracts", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meetup.Contract", "Contracts\Meetup.Contract\Meetup.Contract.csproj", "{DEB9C4B3-F3E9-4CD3-A6C8-113818F4464D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meetups.Backend.Core", "Backend\Meetups.Backend.Core\Meetups.Backend.Core.csproj", "{CE22FCF2-6B7F-45C4-ACBE-6ADA7330783E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meetups.Backend.Application", "Backend\Meetups.Backend.Application\Meetups.Backend.Application.csproj", "{CE22FCF2-6B7F-45C4-ACBE-6ADA7330783E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
