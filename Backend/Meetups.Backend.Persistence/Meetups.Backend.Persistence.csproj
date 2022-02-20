@@ -8,4 +8,8 @@
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.2" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Meetups.Backend.Entities\Meetups.Backend.Entities.csproj" />
+    </ItemGroup>
+
 </Project>

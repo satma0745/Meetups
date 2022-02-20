@@ -1,6 +1,6 @@
 ﻿namespace Meetups.Backend.Persistence.RelationshipConfigurations;
 
-using Meetups.Backend.Persistence.Entities;
+using Meetups.Backend.Entities.User;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -10,6 +10,6 @@ internal class UserRefreshTokensRelationshipConfiguration : IEntityTypeConfigura
         refreshTokenEntity
             .HasOne<User>()
             .WithMany()
-            .HasForeignKey(x => x.UserId)
+            .HasForeignKey(x => x.BearerId)
             .HasConstraintName("fk_users_refresh_tokens_user_id");
 }

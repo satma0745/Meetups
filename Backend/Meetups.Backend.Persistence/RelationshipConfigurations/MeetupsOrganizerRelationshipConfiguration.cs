@@ -1,6 +1,6 @@
 ﻿namespace Meetups.Backend.Persistence.RelationshipConfigurations;
 
-using Meetups.Backend.Persistence.Entities;
+using Meetups.Backend.Entities.Meetup;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

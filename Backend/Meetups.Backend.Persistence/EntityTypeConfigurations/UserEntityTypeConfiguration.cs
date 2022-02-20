@@ -1,6 +1,6 @@
 ﻿namespace Meetups.Backend.Persistence.EntityTypeConfigurations;
 
-using Meetups.Backend.Persistence.Entities;
+using Meetups.Backend.Entities.User;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -11,13 +11,10 @@ internal class UserEntityTypeConfiguration : IEntityTypeConfiguration<User>
         userEntity.ToTable("users");
 
         userEntity
-            .HasDiscriminator(user => user.Role)
-            .HasValue<Guest>(UserRoles.Guest)
-            .HasValue<Organizer>(UserRoles.Organizer)
-            .HasValue(UserRoles.Guest);
-        userEntity
-            .Property(user => user.Role)
-            .HasColumnName("role");
+            .HasDiscriminator<string>("role")
+            .HasValue<Guest>(nameof(Guest))
+            .HasValue<Organizer>(nameof(Organizer))
+            .HasValue(nameof(Guest));
 
         userEntity
             .HasKey(x => x.Id)
@@ -30,7 +27,8 @@ internal class UserEntityTypeConfiguration : IEntityTypeConfiguration<User>
 
         userEntity
             .Property(x => x.Id)
-            .HasColumnName("id");
+            .HasColumnName("id")
+            .ValueGeneratedNever();
 
         userEntity
             .Property(x => x.Username)

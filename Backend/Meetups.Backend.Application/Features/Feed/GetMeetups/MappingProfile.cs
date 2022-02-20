@@ -2,7 +2,7 @@
 
 using AutoMapper;
 using Meetup.Contract.Models.Features.Feed.GetMeetups;
-using Meetups.Backend.Persistence.Entities;
+using Meetups.Backend.Entities.Meetup;
 
 internal class MappingProfile : Profile
 {

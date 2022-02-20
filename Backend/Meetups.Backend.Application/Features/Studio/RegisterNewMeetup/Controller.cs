@@ -1,13 +1,13 @@
 ﻿namespace Meetups.Backend.Application.Features.Studio.RegisterNewMeetup;
 
-using System;
 using System.Threading.Tasks;
 using AutoMapper;
+using Meetup.Contract.Models.Enumerations;
 using Meetup.Contract.Models.Features.Studio.RegisterNewMeetup;
 using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Seedwork;
+using Meetups.Backend.Entities.Meetup;
 using Meetups.Backend.Persistence.Context;
-using Meetups.Backend.Persistence.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -42,13 +42,11 @@ public class Controller : ApiControllerBase
         var organizer = await Context.Organizers
             .Include(organizer => organizer.OrganizedMeetups)
             .SingleAsync(organizer => organizer.Id == CurrentUser.UserId);
+
+        var duration = new MeetupDuration(request.Duration.Hours, request.Duration.Minutes);
+        var meetup = new Meetup(request.Topic, request.Place, duration, request.StartTime);
         
-        var newMeetup = Mapper.Map<Meetup>(request);
-        newMeetup.Id = Guid.NewGuid();
-        newMeetup.Organizer = organizer;
-        
-        organizer.OrganizedMeetups.Add(newMeetup);
-        
+        organizer.OrganizedMeetups.Add(meetup);
         await Context.SaveChangesAsync();
         
         return Ok();

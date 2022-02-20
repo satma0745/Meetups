@@ -19,7 +19,7 @@ partial class AddRefreshTokens
             .HasAnnotation("Relational:MaxIdentifierLength", 63)
             .UseIdentityByDefaultColumns();
 
-        modelBuilder.Entity("Meetups.Backend.Persistence.Entities.Meetup", meetupEntity =>
+        modelBuilder.Entity("Meetups.Backend.Entities.Meetup.Meetup", meetupEntity =>
         {
             meetupEntity
                 .Property<Guid>("Id")
@@ -55,7 +55,7 @@ partial class AddRefreshTokens
             meetupEntity.ToTable("Meetups");
         });
 
-        modelBuilder.Entity("Meetups.Backend.Persistence.Entities.RefreshToken", refreshTokenEntity =>
+        modelBuilder.Entity("Meetups.Backend.Entities.User.RefreshToken", refreshTokenEntity =>
         {
             refreshTokenEntity
                 .Property<Guid>("TokenId")
@@ -71,7 +71,7 @@ partial class AddRefreshTokens
             refreshTokenEntity.ToTable("RefreshTokens");
         });
 
-        modelBuilder.Entity("Meetups.Backend.Persistence.Entities.User", userEntity =>
+        modelBuilder.Entity("Meetups.Backend.Entities.User.User", userEntity =>
         {
             userEntity
                 .Property<Guid>("Id")

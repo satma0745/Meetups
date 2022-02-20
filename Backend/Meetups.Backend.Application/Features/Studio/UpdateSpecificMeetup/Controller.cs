@@ -4,11 +4,12 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Meetup.Contract.Models.Enumerations;
 using Meetup.Contract.Models.Features.Studio.UpdateSpecificMeetup;
 using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Seedwork;
+using Meetups.Backend.Entities.Meetup;
 using Meetups.Backend.Persistence.Context;
-using Meetups.Backend.Persistence.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -59,7 +60,8 @@ public class Controller : ApiControllerBase
             return NotFound();
         }
 
-        Mapper.Map(request, meetup);
+        var duration = new MeetupDuration(request.Duration.Hours, request.Duration.Minutes);
+        meetup.UpdateMeetupInfo(request.Topic, request.Place, duration, request.StartTime);
         await Context.SaveChangesAsync();
 
         return Ok();

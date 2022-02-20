@@ -1,8 +1,7 @@
 ﻿namespace Meetups.Backend.Persistence.EntityTypeConfigurations;
 
-using Meetups.Backend.Persistence.Entities;
+using Meetups.Backend.Entities.Meetup;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 internal class MeetupEntityTypeConfiguration : IEntityTypeConfiguration<Meetup>
@@ -45,36 +44,8 @@ internal class MeetupEntityTypeConfiguration : IEntityTypeConfiguration<Meetup>
             .Property(x => x.Duration)
             .HasConversion(
                 duration => duration.Hours * 60 + duration.Minutes,
-                durationInMinutes => new Meetup.MeetupDuration
-                {
-                    Hours = durationInMinutes / 60,
-                    Minutes = durationInMinutes % 60
-                },
-                new ValueComparer<Meetup.MeetupDuration>(
-                    (duration1, duration2) => duration1.Hours == duration2.Hours &&
-                                              duration1.Minutes == duration2.Minutes,
-                    duration => duration.Hours * 60 + duration.Minutes,
-                    duration => new Meetup.MeetupDuration
-                    {
-                        Hours = duration.Hours,
-                        Minutes = duration.Minutes
-                    }))
+                durationInMinutes => new MeetupDuration(durationInMinutes / 60, durationInMinutes % 60))
             .HasColumnName("duration")
             .IsRequired();
-
-        // .OwnsOne(
-        //     x => x.Duration,
-        //     durationOwnedEntity =>
-        //     {
-        //         durationOwnedEntity
-        //             .Property(x => x.Hours)
-        //             .HasColumnName("duration_hours");
-        //
-        //         durationOwnedEntity
-        //             .Property(x => x.Minutes)
-        //             .HasColumnName("duration_minutes");
-        //     })
-        // .Navigation(x => x.Duration)
-        // .IsRequired();
     }
 }

@@ -7,8 +7,8 @@ using Meetup.Contract.Models.Primitives;
 using Meetup.Contract.Models.Tokens;
 using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Seedwork;
+using Meetups.Backend.Entities.User;
 using Meetups.Backend.Persistence.Context;
-using Meetups.Backend.Persistence.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -49,11 +49,7 @@ public class Controller : ApiControllerBase
         }
 
         // Replace old refresh token with the new one
-        var newPersistedRefreshToken = new RefreshToken
-        {
-            UserId = currentUserId,
-            TokenId = Guid.NewGuid()
-        };
+        var newPersistedRefreshToken = new RefreshToken(tokenId: Guid.NewGuid(), bearerId: currentUserId);
         Context.RefreshTokens.Remove(oldPersistedRefreshToken);
         Context.RefreshTokens.Add(newPersistedRefreshToken);
         await Context.SaveChangesAsync();

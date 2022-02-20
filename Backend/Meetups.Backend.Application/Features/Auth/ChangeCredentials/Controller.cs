@@ -39,15 +39,13 @@ public class Controller : ApiControllerBase
             return Conflict();
         }
         
-        // Change credentials
         var user = await Context.Users.SingleAsync(user => user.Id == CurrentUser.UserId);
-        user.Username = request.Username;
-        user.Password = BCrypt.HashPassword(request.Password);
+        user.ChangeCredentials(request.Username, BCrypt.HashPassword(request.Password));
 
         // Revoke refresh tokens
         var userRefreshTokens = await Context.RefreshTokens
             .AsNoTracking()
-            .Where(refreshToken => refreshToken.UserId == user.Id)
+            .Where(refreshToken => refreshToken.BearerId == user.Id)
             .ToListAsync();
         Context.RefreshTokens.RemoveRange(userRefreshTokens);
         

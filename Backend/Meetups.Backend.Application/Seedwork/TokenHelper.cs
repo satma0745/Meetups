@@ -4,9 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
+using Meetup.Contract.Models.Enumerations;
 using Meetup.Contract.Models.Tokens;
-using Meetups.Backend.Persistence.Entities;
+using Meetups.Backend.Entities.User;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -70,7 +72,15 @@ public class TokenHelper
     public (string AccessToken, string RefreshToken) IssueTokenPair(User user, Guid refreshTokenId) =>
         user is null
             ? throw new ArgumentNullException(nameof(user))
-            : IssueTokenPair(user.Id, user.Role, refreshTokenId);
+            : IssueTokenPair(user.Id, GetUserRole(user), refreshTokenId);
+
+    private string GetUserRole(User user) =>
+        user switch
+        {
+            Guest => UserRoles.Guest,
+            Organizer => UserRoles.Organizer,
+            var unmatched => throw new SwitchExpressionException(unmatched)
+        };
 
     public (string AccessToken, string RefreshToken) IssueTokenPair(Guid userId, string userRole, Guid refreshTokenId)
     {

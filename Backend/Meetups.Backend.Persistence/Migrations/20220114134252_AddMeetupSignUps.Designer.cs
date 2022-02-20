@@ -17,7 +17,7 @@ partial class AddMeetupSignUps
             .HasAnnotation("Relational:MaxIdentifierLength", 63)
             .UseIdentityByDefaultColumns();
 
-        modelBuilder.Entity("Meetups.Backend.Persistence.Entities.Meetup", meetupEntity =>
+        modelBuilder.Entity("Meetups.Backend.Entities.Meetup.Meetup", meetupEntity =>
         {
             meetupEntity
                 .Property<Guid>("Id")
@@ -49,7 +49,7 @@ partial class AddMeetupSignUps
             meetupEntity.ToTable("Meetups");
         });
 
-        modelBuilder.Entity("Meetups.Backend.Persistence.Entities.RefreshToken", refreshTokenEntity =>
+        modelBuilder.Entity("Meetups.Backend.Entities.User.RefreshToken", refreshTokenEntity =>
         {
             refreshTokenEntity
                 .Property<Guid>("TokenId")
@@ -64,7 +64,7 @@ partial class AddMeetupSignUps
             refreshTokenEntity.ToTable("RefreshTokens");
         });
 
-        modelBuilder.Entity("Meetups.Backend.Persistence.Entities.User", userEntity =>
+        modelBuilder.Entity("Meetups.Backend.Entities.User.User", userEntity =>
         {
             userEntity
                 .Property<Guid>("Id")
@@ -115,10 +115,10 @@ partial class AddMeetupSignUps
             meetupsUsersJoinEntity.ToTable("MeetupUser");
         });
 
-        modelBuilder.Entity("Meetups.Backend.Persistence.Entities.Meetup", meetupEntity =>
+        modelBuilder.Entity("Meetups.Backend.Entities.Meetup.Meetup", meetupEntity =>
         {
             meetupEntity.OwnsOne(
-                "Meetups.Backend.Persistence.Entities.Meetup+MeetupDuration",
+                "Meetups.Backend.Entities.Meetup.MeetupDuration",
                 "Duration",
                 durationOwnedEntity =>
                 {
@@ -151,14 +151,14 @@ partial class AddMeetupSignUps
         modelBuilder.Entity("MeetupUser", meetupsUsersJoinEntity =>
         {
             meetupsUsersJoinEntity
-                .HasOne("Meetups.Backend.Persistence.Entities.Meetup", null)
+                .HasOne("Meetups.Backend.Entities.Meetup.Meetup", null)
                 .WithMany()
                 .HasForeignKey("MeetupsSignedUpToId")
                 .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired();
 
             meetupsUsersJoinEntity
-                .HasOne("Meetups.Backend.Persistence.Entities.User", null)
+                .HasOne("Meetups.Backend.Entities.User.User", null)
                 .WithMany()
                 .HasForeignKey("SignedUpUsersId")
                 .OnDelete(DeleteBehavior.Cascade)

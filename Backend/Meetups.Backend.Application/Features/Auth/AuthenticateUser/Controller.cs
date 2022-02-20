@@ -8,8 +8,8 @@ using Meetup.Contract.Models.Features.Auth.AuthenticateUser;
 using Meetup.Contract.Models.Primitives;
 using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Seedwork;
+using Meetups.Backend.Entities.User;
 using Meetups.Backend.Persistence.Context;
-using Meetups.Backend.Persistence.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -47,11 +47,7 @@ public class Controller : ApiControllerBase
         }
 
         // Persist refresh token so it can be used later
-        var persistedRefreshToken = new RefreshToken
-        {
-            TokenId = Guid.NewGuid(),
-            UserId = user.Id
-        };
+        var persistedRefreshToken = new RefreshToken(tokenId: Guid.NewGuid(), bearerId: user.Id);
         Context.RefreshTokens.Add(persistedRefreshToken);
         await Context.SaveChangesAsync();
 

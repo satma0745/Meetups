@@ -1,19 +1,18 @@
 ﻿namespace Meetups.Backend.Application.Features.Auth.RegisterNewUser;
 
-using System;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using AutoMapper;
 using BCrypt.Net;
+using Meetup.Contract.Models.Enumerations;
 using Meetup.Contract.Models.Features.Auth.RegisterNewUser;
 using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Seedwork;
+using Meetups.Backend.Entities.User;
 using Meetups.Backend.Persistence.Context;
-using Meetups.Backend.Persistence.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using UserRoles = Meetups.Backend.Persistence.Entities.UserRoles;
 
 [Tags(Tags.Auth)]
 public class Controller : ApiControllerBase
@@ -39,15 +38,14 @@ public class Controller : ApiControllerBase
         {
             return Conflict();
         }
-        
+
+        var password = BCrypt.HashPassword(request.Password);
         User user = request.AccountType switch
         {
-            UserRoles.Guest => Mapper.Map<Guest>(request),
-            UserRoles.Organizer => Mapper.Map<Organizer>(request),
+            UserRoles.Guest => new Guest(request.Username, password, request.DisplayName),
+            UserRoles.Organizer => new Organizer(request.Username, password, request.DisplayName),
             var unmatched => throw new SwitchExpressionException(unmatched)
         };
-        user.Id = Guid.NewGuid();
-        user.Password = BCrypt.HashPassword(request.Password);
 
         Context.Users.Add(user);
         await Context.SaveChangesAsync();

@@ -27,7 +27,7 @@ public class Controller : ApiControllerBase
     {
         var userRefreshTokens = await Context.RefreshTokens
             .AsNoTracking()
-            .Where(token => token.UserId == CurrentUser.UserId)
+            .Where(token => token.BearerId == CurrentUser.UserId)
             .ToListAsync();
         
         Context.RefreshTokens.RemoveRange(userRefreshTokens);
