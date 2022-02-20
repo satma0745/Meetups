@@ -4,13 +4,14 @@ using System;
 using System.Threading.Tasks;
 using AutoMapper;
 using Meetup.Contract.Models.Features.Feed.GetSpecificMeetup;
+using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Seedwork;
 using Meetups.Backend.Persistence.Context;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-[Tags("Feed")]
+[Tags(Tags.Feed)]
 public class Controller : ApiControllerBase
 {
     public Controller(ApplicationContext context, IMapper mapper)
@@ -22,7 +23,7 @@ public class Controller : ApiControllerBase
     /// <param name="meetupId">Id of the meetup of interest.</param>
     /// <response code="200">Meetup was retrieved successfully.</response>
     /// <response code="404">Meetup with the specified id does not exist.</response>
-    [HttpGet("feed/{meetupId:guid}")]
+    [HttpGet(Routes.Feed.GetSpecificMeetup)]
     [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetSpecificMeetup([FromRoute] Guid meetupId)

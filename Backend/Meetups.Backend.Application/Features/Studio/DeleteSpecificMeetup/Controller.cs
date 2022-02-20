@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Seedwork;
 using Meetups.Backend.Persistence.Context;
 using Meetups.Backend.Persistence.Entities;
@@ -12,7 +13,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-[Tags("Studio")]
+[Tags(Tags.Studio)]
 public class Controller : ApiControllerBase
 {
     public Controller(ApplicationContext context, IMapper mapper)
@@ -25,7 +26,7 @@ public class Controller : ApiControllerBase
     /// <response code="200">Meetup was deleted successfully.</response>
     /// <response code="404">Meetup with the specified id does not exist.</response>
     [Authorize(Roles = UserRoles.Organizer)]
-    [HttpDelete("studio/{meetupId:guid}")]
+    [HttpDelete(Routes.Studio.DeleteSpecificMeetup)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteSpecificMeetup([FromRoute] Guid meetupId)

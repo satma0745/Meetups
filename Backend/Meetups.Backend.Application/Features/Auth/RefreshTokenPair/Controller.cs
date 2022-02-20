@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Meetup.Contract.Models.Primitives;
 using Meetup.Contract.Models.Tokens;
+using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Seedwork;
 using Meetups.Backend.Persistence.Context;
 using Meetups.Backend.Persistence.Entities;
@@ -12,7 +13,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-[Tags("Auth")]
+[Tags(Tags.Auth)]
 public class Controller : ApiControllerBase
 {
     private readonly TokenHelper tokenHelper;
@@ -25,7 +26,7 @@ public class Controller : ApiControllerBase
     /// <param name="oldRefreshToken">Refresh token.</param>
     /// <response code="200">Token pair was successfully re-issued.</response>
     /// <response code="400">Fake, damaged, expired or used refresh token was provided.</response>
-    [HttpPost("auth/refresh")]
+    [HttpPost(Routes.Auth.RefreshTokenPair)]
     [ProducesResponseType(typeof(TokenPairDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> RefreshTokenPair([FromBody] string oldRefreshToken)

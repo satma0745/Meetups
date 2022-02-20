@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using BCrypt.Net;
 using Meetup.Contract.Models.Features.Auth.RegisterNewUser;
+using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Seedwork;
 using Meetups.Backend.Persistence.Context;
 using Meetups.Backend.Persistence.Entities;
@@ -14,7 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UserRoles = Meetups.Backend.Persistence.Entities.UserRoles;
 
-[Tags("Auth")]
+[Tags(Tags.Auth)]
 public class Controller : ApiControllerBase
 {
     public Controller(ApplicationContext context, IMapper mapper)
@@ -27,7 +28,7 @@ public class Controller : ApiControllerBase
     /// <response code="200">New user was created successfully.</response>
     /// <response code="400">Validation failed for DTO.</response>
     /// <response code="409">User with the same username already exists.</response>
-    [HttpPost("auth/register")]
+    [HttpPost(Routes.Auth.RegisterNewUser)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]

@@ -4,6 +4,7 @@ using System;
 using System.Threading.Tasks;
 using AutoMapper;
 using Meetup.Contract.Models.Features.Studio.RegisterNewMeetup;
+using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Seedwork;
 using Meetups.Backend.Persistence.Context;
 using Meetups.Backend.Persistence.Entities;
@@ -12,7 +13,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-[Tags("Studio")]
+[Tags(Tags.Studio)]
 public class Controller : ApiControllerBase
 {
     public Controller(ApplicationContext context, IMapper mapper)
@@ -26,7 +27,7 @@ public class Controller : ApiControllerBase
     /// <response code="400">Validation failed for DTO.</response>
     /// <response code="409">The exact same topic for the meetup has already been taken up.</response>
     [Authorize(Roles = UserRoles.Organizer)]
-    [HttpPost("studio/new")]
+    [HttpPost(Routes.Studio.RegisterNewMeetup)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]

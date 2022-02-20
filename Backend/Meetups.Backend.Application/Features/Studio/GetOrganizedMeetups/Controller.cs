@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Meetup.Contract.Models.Features.Studio.GetOrganizedMeetups;
+using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Seedwork;
 using Meetups.Backend.Persistence.Context;
 using Meetups.Backend.Persistence.Entities;
@@ -12,7 +13,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-[Tags("Studio")]
+[Tags(Tags.Studio)]
 public class Controller : ApiControllerBase
 {
     public Controller(ApplicationContext context, IMapper mapper)
@@ -23,7 +24,7 @@ public class Controller : ApiControllerBase
     /// <summary>Get a list of all meetups organized by the current user.</summary>
     /// <response code="200">Meetups organized by the current user.</response>
     [Authorize(Roles = UserRoles.Organizer)]
-    [HttpGet("studio/organized")]
+    [HttpGet(Routes.Studio.GetOrganizedMeetups)]
     [ProducesResponseType(typeof(ResponseDto[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetOrganizedMeetups()
     {

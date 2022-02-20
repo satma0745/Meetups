@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using BCrypt.Net;
 using Meetup.Contract.Models.Features.Auth.ChangeCredentials;
+using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Seedwork;
 using Meetups.Backend.Persistence.Context;
 using Microsoft.AspNetCore.Authorization;
@@ -12,7 +13,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-[Tags("Auth")]
+[Tags(Tags.Auth)]
 public class Controller : ApiControllerBase
 {
     public Controller(ApplicationContext context, IMapper mapper)
@@ -25,7 +26,7 @@ public class Controller : ApiControllerBase
     /// <response code="200">Credentials changed successfully.</response>
     /// <response code="409">Username already taken.</response>
     [Authorize]
-    [HttpPut("auth/credentials")]
+    [HttpPut(Routes.Auth.ChangeCredentials)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> ChangeCredentials([FromBody] RequestDto request)

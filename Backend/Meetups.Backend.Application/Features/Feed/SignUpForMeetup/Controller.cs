@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Seedwork;
 using Meetups.Backend.Persistence.Context;
 using Meetups.Backend.Persistence.Entities;
@@ -12,7 +13,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-[Tags("Feed")]
+[Tags(Tags.Feed)]
 public class Controller : ApiControllerBase
 {
     public Controller(ApplicationContext context, IMapper mapper)
@@ -26,7 +27,7 @@ public class Controller : ApiControllerBase
     /// <response code="404">Meetup with the specified ID does not exist.</response>
     /// <response code="409">You have already signed up for that meetup.</response>
     [Authorize(Roles = UserRoles.Guest)]
-    [HttpPost("feed/{meetupId:guid}/sign-up")]
+    [HttpPost(Routes.Feed.SignUpForMeetup)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]

@@ -6,6 +6,7 @@ using AutoMapper;
 using BCrypt.Net;
 using Meetup.Contract.Models.Features.Auth.AuthenticateUser;
 using Meetup.Contract.Models.Primitives;
+using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Seedwork;
 using Meetups.Backend.Persistence.Context;
 using Meetups.Backend.Persistence.Entities;
@@ -13,7 +14,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-[Tags("Auth")]
+[Tags(Tags.Auth)]
 public class Controller : ApiControllerBase
 {
     private readonly TokenHelper tokenHelper;
@@ -27,7 +28,7 @@ public class Controller : ApiControllerBase
     /// <response code="200">User authenticated successfully.</response>
     /// <response code="404">User with specified username does not exist.</response>
     /// <response code="409">Incorrect password provided.</response>
-    [HttpPost("auth/authenticate")]
+    [HttpPost(Routes.Auth.AuthenticateUser)]
     [ProducesResponseType(typeof(TokenPairDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]

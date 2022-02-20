@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Meetup.Contract.Models.Features.Studio.UpdateSpecificMeetup;
+using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Seedwork;
 using Meetups.Backend.Persistence.Context;
 using Meetups.Backend.Persistence.Entities;
@@ -13,7 +14,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-[Tags("Studio")]
+[Tags(Tags.Studio)]
 public class Controller : ApiControllerBase
 {
     public Controller(ApplicationContext context, IMapper mapper)
@@ -29,7 +30,7 @@ public class Controller : ApiControllerBase
     /// <response code="404">Meetup with the specified id does not exist.</response>
     /// <response code="409">The exact same topic for the meetup has already been taken up.</response>
     [Authorize(Roles = UserRoles.Organizer)]
-    [HttpPut("studio/{meetupId:guid}")]
+    [HttpPut(Routes.Studio.UpdateSpecificMeetup)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]

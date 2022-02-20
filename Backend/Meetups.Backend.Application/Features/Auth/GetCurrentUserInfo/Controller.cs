@@ -3,6 +3,7 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Meetup.Contract.Models.Features.Auth.GetCurrentUserInfo;
+using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Seedwork;
 using Meetups.Backend.Persistence.Context;
 using Microsoft.AspNetCore.Authorization;
@@ -10,7 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-[Tags("Auth")]
+[Tags(Tags.Auth)]
 public class Controller : ApiControllerBase
 {
     public Controller(ApplicationContext context, IMapper mapper)
@@ -22,7 +23,7 @@ public class Controller : ApiControllerBase
     /// <response code="200">Information was retrieved successfully.</response>
     /// <response code="401">Unauthorized request.</response>
     [Authorize]
-    [HttpGet("auth/who-am-i")]
+    [HttpGet(Routes.Auth.GetCurrentUserInfo)]
     [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> GetCurrentUserInfo()
