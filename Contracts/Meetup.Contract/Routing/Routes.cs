@@ -14,6 +14,7 @@ public static class Routes
 
     public static class Feed
     {
+        public const string CancelMeetupSignup = "feed/{meetupId:guid}/cancel-sign-up";
         public const string GetMeetups = "feed";
         public const string GetSignedUpGuestsInfo = "feed/{meetupId:guid}/signed-up-guests";
         public const string GetSpecificMeetup = "feed/{meetupId:guid}";
