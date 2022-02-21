@@ -4,6 +4,26 @@ using System;
 
 public class RefreshToken
 {
+    #region Validation
+
+    private static void EnsureValidTokenId(Guid tokenId)
+    {
+        if (tokenId == Guid.Empty)
+        {
+            throw new ArgumentException("Must not be empty.", nameof(tokenId));
+        }
+    }
+
+    private static void EnsureValidBearerId(Guid bearerId)
+    {
+        if (bearerId == Guid.Empty)
+        {
+            throw new ArgumentException("Must not be empty.", nameof(bearerId));
+        }
+    }
+
+    #endregion
+    
     #region State
     
     public Guid TokenId { get; }
@@ -16,6 +36,9 @@ public class RefreshToken
 
     public RefreshToken(Guid tokenId, Guid bearerId)
     {
+        EnsureValidTokenId(tokenId);
+        EnsureValidBearerId(bearerId);
+        
         TokenId = tokenId;
         BearerId = bearerId;
     }

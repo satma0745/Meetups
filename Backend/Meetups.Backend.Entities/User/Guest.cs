@@ -6,6 +6,18 @@ using Meetups.Backend.Entities.Meetup;
 
 public class Guest : User
 {
+    #region Validation
+
+    private static void EnsureValidMeetup(Meetup meetup)
+    {
+        if (meetup is null)
+        {
+            throw new ArgumentException("Must not be null.", nameof(meetup));
+        }
+    }
+    
+    #endregion
+    
     #region State
 
     // Populated by the EF Core automatically when .Include is called
@@ -31,6 +43,8 @@ public class Guest : User
     
     public void SignUpFor(Meetup meetup)
     {
+        EnsureValidMeetup(meetup);
+        
         if (IsSignedUpFor(meetup))
         {
             throw new ArgumentException("Already signed up for the specified meetup.", nameof(meetup));

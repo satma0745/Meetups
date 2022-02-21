@@ -1,10 +1,23 @@
 ﻿namespace Meetups.Backend.Entities.User;
 
+using System;
 using System.Collections.Generic;
 using Meetups.Backend.Entities.Meetup;
 
 public class Organizer : User
 {
+    #region Validation
+
+    private static void EnsureValidMeetup(Meetup meetup)
+    {
+        if (meetup is null)
+        {
+            throw new ArgumentException("Must not be null.", nameof(meetup));
+        }
+    }
+    
+    #endregion
+    
     #region State
 
     // Populated by the EF Core automatically when .Include is called
@@ -25,8 +38,12 @@ public class Organizer : User
     
     #region Behavior
 
-    public void AddOrganizedMeetup(Meetup meetup) =>
+    public void AddOrganizedMeetup(Meetup meetup)
+    {
+        EnsureValidMeetup(meetup);
+        
         organizedMeetups.Add(meetup);
+    }
 
     #endregion
 }
