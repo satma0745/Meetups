@@ -32,6 +32,7 @@ public class Controller : ApiControllerBase
     public async Task<IActionResult> ChangeCredentials([FromBody] RequestDto request)
     {
         var usernameTaken = await Context.Users
+            .Include(user => user.RefreshTokens)
             .Where(user => user.Id != CurrentUser.UserId)
             .AnyAsync(user => user.Username == request.Username);
         if (usernameTaken)
@@ -41,14 +42,7 @@ public class Controller : ApiControllerBase
         
         var user = await Context.Users.SingleAsync(user => user.Id == CurrentUser.UserId);
         user.ChangeCredentials(request.Username, BCrypt.HashPassword(request.Password));
-
-        // Revoke refresh tokens
-        var userRefreshTokens = await Context.RefreshTokens
-            .AsNoTracking()
-            .Where(refreshToken => refreshToken.BearerId == user.Id)
-            .ToListAsync();
-        Context.RefreshTokens.RemoveRange(userRefreshTokens);
-        
+        user.RevokeAllRefreshTokens();
         await Context.SaveChangesAsync();
         
         return Ok();

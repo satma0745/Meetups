@@ -18,10 +18,14 @@ public class Meetup
     
     public DateTime StartTime { get; private set; }
 
-    public Organizer Organizer { get; set; }
+    // Populated by the EF Core automatically when .Include is called
+    // ReSharper disable once UnassignedGetOnlyAutoProperty
+    public Organizer Organizer { get; }
 
-    public ICollection<Guest> SignedUpGuests { get; set; }
-    
+    // Populated by the EF Core automatically when .Include is called
+    // ReSharper disable once UnassignedGetOnlyAutoProperty
+    public IReadOnlyCollection<Guest> SignedUpGuests { get; }
+
     #endregion
 
     #region Constructor

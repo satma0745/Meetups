@@ -7,7 +7,9 @@ public class Organizer : User
 {
     #region State
 
-    public ICollection<Meetup> OrganizedMeetups { get; set; }    
+    // Populated by the EF Core automatically when .Include is called
+    public IReadOnlyCollection<Meetup> OrganizedMeetups => organizedMeetups;
+    private readonly List<Meetup> organizedMeetups;
 
     #endregion
 
@@ -16,7 +18,15 @@ public class Organizer : User
     public Organizer(string username, string password, string displayName)
         : base(username, password, displayName)
     {
+        organizedMeetups = new List<Meetup>();
     }
     
+    #endregion
+    
+    #region Behavior
+
+    public void AddOrganizedMeetup(Meetup meetup) =>
+        organizedMeetups.Add(meetup);
+
     #endregion
 }

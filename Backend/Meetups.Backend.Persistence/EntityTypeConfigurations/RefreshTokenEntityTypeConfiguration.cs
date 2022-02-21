@@ -11,20 +11,20 @@ internal class RefreshTokenEntityTypeConfiguration : IEntityTypeConfiguration<Re
         refreshTokenEntity.ToTable("refresh_tokens");
 
         refreshTokenEntity
-            .HasKey(x => x.TokenId)
+            .HasKey(refreshToken => refreshToken.TokenId)
             .HasName("pk_refresh_tokens");
 
         refreshTokenEntity
-            .HasIndex(x => x.BearerId)
+            .HasIndex(refreshToken => refreshToken.BearerId)
             .HasDatabaseName("ix_refresh_tokens_user_id");
 
         refreshTokenEntity
-            .Property(x => x.TokenId)
+            .Property(refreshToken => refreshToken.TokenId)
             .HasColumnName("token_id")
             .ValueGeneratedNever();
 
         refreshTokenEntity
-            .Property(x => x.BearerId)
+            .Property(refreshToken => refreshToken.BearerId)
             .HasColumnName("user_id");
     }
 }

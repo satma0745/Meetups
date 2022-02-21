@@ -11,37 +11,37 @@ internal class MeetupEntityTypeConfiguration : IEntityTypeConfiguration<Meetup>
         meetupEntity.ToTable("meetups");
 
         meetupEntity
-            .HasKey(x => x.Id)
+            .HasKey(meetup => meetup.Id)
             .HasName("pk_meetups");
         
         meetupEntity
-            .HasIndex(x => x.Topic)
+            .HasIndex(meetup => meetup.Topic)
             .IsUnique()
             .HasDatabaseName("ux_meetups_topic");
         
         meetupEntity
-            .Property(x => x.Id)
+            .Property(meetup => meetup.Id)
             .HasColumnName("id")
             .ValueGeneratedNever();
 
         meetupEntity
-            .Property(x => x.Topic)
+            .Property(meetup => meetup.Topic)
             .HasColumnName("topic")
             .HasMaxLength(100)
             .IsRequired();
 
         meetupEntity
-            .Property(x => x.Place)
+            .Property(meetup => meetup.Place)
             .HasColumnName("place")
             .HasMaxLength(75)
             .IsRequired();
 
         meetupEntity
-            .Property(x => x.StartTime)
+            .Property(meetup => meetup.StartTime)
             .HasColumnName("start_time");
 
         meetupEntity
-            .Property(x => x.Duration)
+            .Property(meetup => meetup.Duration)
             .HasConversion(
                 duration => duration.Hours * 60 + duration.Minutes,
                 durationInMinutes => new MeetupDuration(durationInMinutes / 60, durationInMinutes % 60))

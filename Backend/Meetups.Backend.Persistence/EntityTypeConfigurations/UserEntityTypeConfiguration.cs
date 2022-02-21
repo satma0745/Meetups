@@ -17,35 +17,39 @@ internal class UserEntityTypeConfiguration : IEntityTypeConfiguration<User>
             .HasValue(nameof(Guest));
 
         userEntity
-            .HasKey(x => x.Id)
+            .HasKey(user => user.Id)
             .HasName("pk_users");
 
         userEntity
-            .HasIndex(x => x.Username)
+            .HasIndex(user => user.Username)
             .IsUnique()
             .HasDatabaseName("ux_users_username");
 
         userEntity
-            .Property(x => x.Id)
+            .Property(user => user.Id)
             .HasColumnName("id")
             .ValueGeneratedNever();
 
         userEntity
-            .Property(x => x.Username)
+            .Property(user => user.Username)
             .HasColumnName("username")
             .HasMaxLength(30)
             .IsRequired();
 
         userEntity
-            .Property(x => x.Password)
+            .Property(user => user.Password)
             .HasColumnName("password")
             .HasMaxLength(60)
             .IsRequired();
 
         userEntity
-            .Property(x => x.DisplayName)
+            .Property(user => user.DisplayName)
             .HasColumnName("display_name")
             .HasMaxLength(45)
             .IsRequired();
+
+        userEntity
+            .Navigation(user => user.RefreshTokens)
+            .HasField("refreshTokens");
     }
 }

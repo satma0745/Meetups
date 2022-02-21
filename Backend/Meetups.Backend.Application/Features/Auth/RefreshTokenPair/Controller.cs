@@ -38,7 +38,9 @@ public class Controller : ApiControllerBase
         var currentUserId = Guid.Parse(claims[RefreshTokenPayload.UserIdClaim]);
         var refreshTokenId = Guid.Parse(claims[RefreshTokenPayload.TokenIdClaim]);
 
-        var currentUser = await Context.Users.SingleOrDefaultAsync(user => user.Id == currentUserId);
+        var currentUser = await Context.Users
+            .Include(user => user.RefreshTokens)
+            .SingleOrDefaultAsync(user => user.Id == currentUserId);
         var oldPersistedRefreshToken = await Context.RefreshTokens
             .SingleOrDefaultAsync(token => token.TokenId == refreshTokenId);
         if (currentUser is null || oldPersistedRefreshToken is null)
@@ -48,15 +50,11 @@ public class Controller : ApiControllerBase
             return BadRequest();
         }
 
-        // Replace old refresh token with the new one
         var newPersistedRefreshToken = new RefreshToken(tokenId: Guid.NewGuid(), bearerId: currentUserId);
-        Context.RefreshTokens.Remove(oldPersistedRefreshToken);
-        Context.RefreshTokens.Add(newPersistedRefreshToken);
+        currentUser.ReplaceRefreshToken(oldPersistedRefreshToken, newPersistedRefreshToken);
         await Context.SaveChangesAsync();
 
-        var newRefreshTokenId = newPersistedRefreshToken.TokenId;
-        var (accessToken, newRefreshToken) = tokenHelper.IssueTokenPair(currentUser, newRefreshTokenId);
-        
+        var (accessToken, newRefreshToken) = tokenHelper.IssueTokenPair(currentUser, newPersistedRefreshToken.TokenId);        
         var tokenPairDto = new TokenPairDto
         {
             AccessToken = accessToken,

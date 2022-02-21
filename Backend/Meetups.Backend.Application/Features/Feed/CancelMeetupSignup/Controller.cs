@@ -1,7 +1,6 @@
 ﻿namespace Meetups.Backend.Application.Features.Feed.CancelMeetupSignup;
 
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Meetup.Contract.Models.Enumerations;
@@ -31,22 +30,22 @@ public class Controller : ApiControllerBase
     public async Task<IActionResult> CancelMeetupSignup([FromRoute] Guid meetupId)
     {
         var meetup = await Context.Meetups
-            .Include(meetup => meetup.SignedUpGuests)
+            .AsNoTracking()
             .SingleOrDefaultAsync(meetup => meetup.Id == meetupId);
         if (meetup is null)
         {
             return NotFound();
         }
 
-        var signedUpCurrentUser = meetup.SignedUpGuests
-            .SingleOrDefault(signedUpGuest => signedUpGuest.Id == CurrentUser.UserId);
-        if (signedUpCurrentUser is null)
+        var currentUser = await Context.Guests
+            .Include(guest => guest.MeetupsSignedUpTo)
+            .SingleAsync(guest => guest.Id == CurrentUser.UserId);
+        if (!currentUser.IsSignedUpFor(meetup))
         {
-            // You can not cancel the signup on the meetup if the user hasn't signed up for it
             return Conflict();
         }
-
-        meetup.SignedUpGuests.Remove(signedUpCurrentUser);
+        
+        currentUser.CancelSignUpFor(meetup);
         await Context.SaveChangesAsync();
 
         return Ok();

@@ -1,7 +1,6 @@
 ﻿namespace Meetups.Backend.Application.Features.Feed.SignUpForMeetup;
 
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Meetup.Contract.Models.Enumerations;
@@ -34,24 +33,22 @@ public class Controller : ApiControllerBase
     public async Task<IActionResult> SignUpForMeetup([FromRoute] Guid meetupId)
     {
         var meetup = await Context.Meetups
-            .Include(meetup => meetup.SignedUpGuests)
+            .AsNoTracking()
             .SingleOrDefaultAsync(meetup => meetup.Id == meetupId);
         if (meetup is null)
         {
             return NotFound();
         }
         
-        var guest = await Context.Guests
-            .AsNoTracking()
+        var currentUser = await Context.Guests
+            .Include(guest => guest.MeetupsSignedUpTo)
             .SingleAsync(guest => guest.Id == CurrentUser.UserId);
-
-        var alreadySignedUp = meetup.SignedUpGuests.Any(signedUpGuest => signedUpGuest.Id == guest.Id);
-        if (alreadySignedUp)
+        if (currentUser.IsSignedUpFor(meetup))
         {
             return Conflict();
         }
         
-        meetup.SignedUpGuests.Add(guest);
+        currentUser.SignUpFor(meetup);
         await Context.SaveChangesAsync();
 
         return Ok();

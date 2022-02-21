@@ -1,6 +1,5 @@
 ﻿namespace Meetups.Backend.Application.Features.Auth.SignOutEverywhere;
 
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Meetup.Contract.Routing;
@@ -25,12 +24,11 @@ public class Controller : ApiControllerBase
     [HttpPost(Routes.Auth.SignOutEverywhere)]
     public async Task<IActionResult> SignOutEverywhere()
     {
-        var userRefreshTokens = await Context.RefreshTokens
-            .AsNoTracking()
-            .Where(token => token.BearerId == CurrentUser.UserId)
-            .ToListAsync();
+        var currentUser = await Context.Users
+            .Include(user => user.RefreshTokens)
+            .SingleAsync(user => user.Id == CurrentUser.UserId);
         
-        Context.RefreshTokens.RemoveRange(userRefreshTokens);
+        currentUser.RevokeAllRefreshTokens();
         await Context.SaveChangesAsync();
 
         return Ok();

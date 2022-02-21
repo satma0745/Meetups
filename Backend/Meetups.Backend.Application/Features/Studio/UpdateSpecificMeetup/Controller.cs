@@ -37,15 +37,6 @@ public class Controller : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> UpdateSpecificMeetup([FromRoute] Guid meetupId, [FromBody] RequestDto request)
     {
-        var organizer = await Context.Organizers
-            .AsNoTracking()
-            .Include(organizer => organizer.OrganizedMeetups)
-            .SingleAsync(organizer => organizer.Id == CurrentUser.UserId);
-        if (organizer.OrganizedMeetups.All(meetup => meetup.Id != meetupId))
-        {
-            Forbid();
-        }
-        
         var topicTaken = await Context.Meetups
             .Where(meetup => meetup.Id != meetupId) // exclude the specified meetup (it may preserve it's topic)
             .AnyAsync(meetup => meetup.Topic == request.Topic);
@@ -54,10 +45,16 @@ public class Controller : ApiControllerBase
             return Conflict();
         }
         
-        var meetup = await Context.Meetups.SingleOrDefaultAsync(meetup => meetup.Id == meetupId);
+        var meetup = await Context.Meetups
+            .Include(meetup => meetup.Organizer)
+            .SingleOrDefaultAsync(meetup => meetup.Id == meetupId);
         if (meetup is null)
         {
             return NotFound();
+        }
+        if (meetup.Organizer.Id != CurrentUser.UserId)
+        {
+            return Forbid();
         }
 
         var duration = new MeetupDuration(request.Duration.Hours, request.Duration.Minutes);

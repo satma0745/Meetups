@@ -34,7 +34,9 @@ public class Controller : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> AuthenticateUser([FromBody] RequestDto request)
     {
-        var user = await Context.Users.SingleOrDefaultAsync(user => user.Username == request.Username);
+        var user = await Context.Users
+            .Include(user => user.RefreshTokens)
+            .SingleOrDefaultAsync(user => user.Username == request.Username);
         if (user is null)
         {
             return NotFound();
@@ -48,7 +50,7 @@ public class Controller : ApiControllerBase
 
         // Persist refresh token so it can be used later
         var persistedRefreshToken = new RefreshToken(tokenId: Guid.NewGuid(), bearerId: user.Id);
-        Context.RefreshTokens.Add(persistedRefreshToken);
+        user.AddRefreshToken(persistedRefreshToken);
         await Context.SaveChangesAsync();
 
         var (accessToken, refreshToken) = tokenHelper.IssueTokenPair(user, persistedRefreshToken.TokenId);
