@@ -20,9 +20,9 @@ internal static class Extensions
             OrderingOptions.TopicReverseAlphabetically =>
                 meetups.OrderByDescending(meetup => meetup.Topic),
             OrderingOptions.DurationAscending =>
-                meetups.OrderBy(meetup => meetup.Duration.Hours * 60 + meetup.Duration.Minutes),
+                meetups.OrderBy(meetup => meetup.Duration.TotalMinutes),
             OrderingOptions.DurationDescending =>
-                meetups.OrderByDescending(meetup => meetup.Duration.Hours * 60 + meetup.Duration.Minutes),
+                meetups.OrderByDescending(meetup => meetup.Duration.TotalMinutes),
             OrderingOptions.SignUpsCountAscending =>
                 meetups.OrderBy(meetup => meetup.SignedUpGuests.Count),
             OrderingOptions.SignUpsCountDescending =>

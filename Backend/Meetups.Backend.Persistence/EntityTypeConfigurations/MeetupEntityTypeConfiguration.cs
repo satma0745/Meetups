@@ -43,8 +43,8 @@ internal class MeetupEntityTypeConfiguration : IEntityTypeConfiguration<Meetup>
         meetupEntity
             .Property(meetup => meetup.Duration)
             .HasConversion(
-                duration => duration.Hours * 60 + duration.Minutes,
-                durationInMinutes => new MeetupDuration(durationInMinutes / 60, durationInMinutes % 60))
+                duration => duration.TotalMinutes,
+                totalMinutes => MeetupDuration.FromMinutes(totalMinutes))
             .HasColumnName("duration")
             .IsRequired();
     }

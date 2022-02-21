@@ -25,6 +25,14 @@ public class MeetupDuration
             throw new ArgumentException("Must not be greater than or equal to 60.", nameof(minutes));
         }
     }
+
+    private static void EnsureValidTotalMinutes(int totalMinutes)
+    {
+        if (totalMinutes < 0)
+        {
+            throw new ArgumentException("Must not be a negative number.", nameof(totalMinutes));
+        }
+    }
     
     #endregion
     
@@ -34,10 +42,20 @@ public class MeetupDuration
     
     public int Minutes { get; }
 
+    public int TotalMinutes =>
+        Hours * 60 + Minutes;
+
     #endregion
 
     #region Constructors
 
+    public static MeetupDuration FromMinutes(int totalMinutes)
+    {
+        EnsureValidTotalMinutes(totalMinutes);
+        
+        return new MeetupDuration(totalMinutes / 60, totalMinutes % 60);
+    }
+    
     public MeetupDuration(int hours, int minutes)
     {
         EnsureValidHours(hours);
@@ -52,12 +70,12 @@ public class MeetupDuration
     #region Equality
 
     public override int GetHashCode() =>
-        Hours * 60 + Minutes;
+        TotalMinutes;
 
     public override bool Equals(object obj) =>
         ReferenceEquals(obj, this) ||
         obj is MeetupDuration other &&
-        other.GetHashCode() == GetHashCode();
+        other.TotalMinutes == TotalMinutes;
 
     #endregion
 }
