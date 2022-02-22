@@ -14,8 +14,7 @@ public class ResponseDto
     /// <example>Microsoft naming issues</example>
     public string Topic { get; set; }
     
-    /// <inheritdoc cref="MeetupPlaceDto"/>
-    public MeetupPlaceDto Place { get; set; }
+    public CustomMeetupPlaceDto Place { get; set; }
     
     /// <summary>Meetup duration.</summary>
     [Required]
@@ -28,4 +27,11 @@ public class ResponseDto
     /// <summary>Number of guests that signed up for this meetup.</summary>
     /// <example>42</example>
     public int SignedUpGuestsCount { get; set; }
+}
+
+public class CustomMeetupPlaceDto : MeetupPlaceDto
+{
+    /// <summary>Name of the city where the meetup will take place.</summary>
+    /// <example>Oslo</example>
+    public string CityName { get; set; }
 }

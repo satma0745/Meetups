@@ -11,9 +11,17 @@ internal static class Mappings
         {
             Id = meetup.Id,
             Topic = meetup.Topic,
-            Place = meetup.Place.ToMeetupPlaceDto(),
+            Place = meetup.Place.ToCustomMeetupPlaceDto(),
             Duration = meetup.Duration.ToMeetupDurationDto(),
             StartTime = meetup.StartTime,
             SignedUpGuestsCount = meetup.SignedUpGuests.Count
+        };
+
+    private static CustomMeetupPlaceDto ToCustomMeetupPlaceDto(this MeetupPlace meetupPlace) =>
+        new()
+        {
+            CityId = meetupPlace.City.Id,
+            CityName = meetupPlace.City.Name,
+            Address = meetupPlace.Address
         };
 }
