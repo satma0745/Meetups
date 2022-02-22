@@ -2,9 +2,9 @@
 
 using System;
 using System.Threading.Tasks;
-using AutoMapper;
 using Meetup.Contract.Models.Features.Feed.GetSpecificMeetup;
 using Meetup.Contract.Routing;
+using Meetups.Backend.Application.Features.Feed.GetMeetups;
 using Meetups.Backend.Application.Seedwork;
 using Meetups.Backend.Persistence.Context;
 using Microsoft.AspNetCore.Http;
@@ -14,10 +14,10 @@ using Microsoft.EntityFrameworkCore;
 [Tags(Tags.Feed)]
 public class Controller : ApiControllerBase
 {
-    public Controller(ApplicationContext context, IMapper mapper)
-        : base(context, mapper)
-    {
-    }
+    private readonly ApplicationContext context;
+
+    public Controller(ApplicationContext context) =>
+        this.context = context;
 
     /// <summary>Get specific meetup (with the specified id).</summary>
     /// <param name="meetupId">Id of the meetup of interest.</param>
@@ -28,7 +28,7 @@ public class Controller : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetSpecificMeetup([FromRoute] Guid meetupId)
     {
-        var meetup = await Context.Meetups
+        var meetup = await context.Meetups
             .AsNoTracking()
             .Include(meetup => meetup.SignedUpGuests)
             .SingleOrDefaultAsync(meetup => meetup.Id == meetupId);
@@ -37,7 +37,7 @@ public class Controller : ApiControllerBase
             return NotFound();
         }
 
-        var response = Mapper.Map<ResponseDto>(meetup);
+        var response = meetup.ToResponseDto();
         return Ok(response);
     }
 }

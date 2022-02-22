@@ -1,7 +1,6 @@
 ﻿namespace Meetups.Backend.Application.Features.Studio.RegisterNewMeetup;
 
 using System.Threading.Tasks;
-using AutoMapper;
 using Meetup.Contract.Models.Enumerations;
 using Meetup.Contract.Models.Features.Studio.RegisterNewMeetup;
 using Meetup.Contract.Routing;
@@ -16,10 +15,10 @@ using Microsoft.EntityFrameworkCore;
 [Tags(Tags.Studio)]
 public class Controller : ApiControllerBase
 {
-    public Controller(ApplicationContext context, IMapper mapper)
-        : base(context, mapper)
-    {
-    }
+    private readonly ApplicationContext context;
+
+    public Controller(ApplicationContext context) =>
+        this.context = context;
 
     /// <summary>Register new meetup.</summary>
     /// <param name="request">DTO to create meetup from.</param>
@@ -33,13 +32,13 @@ public class Controller : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> RegisterNewMeetup([FromBody] RequestDto request)
     {
-        var topicTaken = await Context.Meetups.AnyAsync(meetup => meetup.Topic == request.Topic);
+        var topicTaken = await context.Meetups.AnyAsync(meetup => meetup.Topic == request.Topic);
         if (topicTaken)
         {
             return Conflict();
         }
         
-        var organizer = await Context.Organizers
+        var organizer = await context.Organizers
             .Include(organizer => organizer.OrganizedMeetups)
             .SingleAsync(organizer => organizer.Id == CurrentUser.UserId);
 
@@ -47,7 +46,7 @@ public class Controller : ApiControllerBase
         var meetup = new Meetup(request.Topic, request.Place, duration, request.StartTime);
         
         organizer.AddOrganizedMeetup(meetup);
-        await Context.SaveChangesAsync();
+        await context.SaveChangesAsync();
         
         return Ok();
     }

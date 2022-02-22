@@ -1,8 +1,7 @@
 ﻿namespace Meetups.Backend.Application.Features.Studio.GetOrganizedMeetups;
 
-using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using Meetup.Contract.Models.Enumerations;
 using Meetup.Contract.Models.Features.Studio.GetOrganizedMeetups;
 using Meetup.Contract.Routing;
@@ -16,10 +15,10 @@ using Microsoft.EntityFrameworkCore;
 [Tags(Tags.Studio)]
 public class Controller : ApiControllerBase
 {
-    public Controller(ApplicationContext context, IMapper mapper)
-        : base(context, mapper)
-    {
-    }
+    private readonly ApplicationContext context;
+
+    public Controller(ApplicationContext context) =>
+        this.context = context;
 
     /// <summary>Get a list of all meetups organized by the current user.</summary>
     /// <response code="200">Meetups organized by the current user.</response>
@@ -28,13 +27,13 @@ public class Controller : ApiControllerBase
     [ProducesResponseType(typeof(ResponseDto[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetOrganizedMeetups()
     {
-        var organizer = await Context.Organizers
+        var organizer = await context.Organizers
             .AsNoTracking()
             .Include(organizer => organizer.OrganizedMeetups)
             .ThenInclude(meetup => meetup.SignedUpGuests)
             .SingleAsync(organizer => organizer.Id == CurrentUser.UserId);
 
-        var response = Mapper.Map<ICollection<ResponseDto>>(organizer.OrganizedMeetups);
+        var response = organizer.OrganizedMeetups.Select(Mappings.ToResponseDto);
         return Ok(response);
     }
 }

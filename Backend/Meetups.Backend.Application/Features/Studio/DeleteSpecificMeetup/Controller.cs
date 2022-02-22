@@ -3,7 +3,6 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using Meetup.Contract.Models.Enumerations;
 using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Seedwork;
@@ -16,10 +15,10 @@ using Microsoft.EntityFrameworkCore;
 [Tags(Tags.Studio)]
 public class Controller : ApiControllerBase
 {
-    public Controller(ApplicationContext context, IMapper mapper)
-        : base(context, mapper)
-    {
-    }
+    private readonly ApplicationContext context;
+
+    public Controller(ApplicationContext context) =>
+        this.context = context;
 
     /// <summary>Deletes specific meetup (with the specified id).</summary>
     /// <param name="meetupId">Id of the meetup to be deleted.</param>
@@ -31,7 +30,7 @@ public class Controller : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteSpecificMeetup([FromRoute] Guid meetupId)
     {
-        var meetupToDelete = await Context.Meetups
+        var meetupToDelete = await context.Meetups
             .AsNoTracking()
             .SingleOrDefaultAsync(meetup => meetup.Id == meetupId);
         if (meetupToDelete is null)
@@ -39,7 +38,7 @@ public class Controller : ApiControllerBase
             return NotFound();
         }
         
-        var organizer = await Context.Organizers
+        var organizer = await context.Organizers
             .AsNoTracking()
             .Include(organizer => organizer.OrganizedMeetups)
             .SingleAsync(organizer => organizer.Id == CurrentUser.UserId);
@@ -48,8 +47,8 @@ public class Controller : ApiControllerBase
             return Forbid();
         }
 
-        Context.Remove(meetupToDelete);
-        await Context.SaveChangesAsync();
+        context.Remove(meetupToDelete);
+        await context.SaveChangesAsync();
 
         return Ok();
     }

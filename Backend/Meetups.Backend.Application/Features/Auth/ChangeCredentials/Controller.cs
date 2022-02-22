@@ -2,7 +2,6 @@
 
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using BCrypt.Net;
 using Meetup.Contract.Models.Features.Auth.ChangeCredentials;
 using Meetup.Contract.Routing;
@@ -16,10 +15,10 @@ using Microsoft.EntityFrameworkCore;
 [Tags(Tags.Auth)]
 public class Controller : ApiControllerBase
 {
-    public Controller(ApplicationContext context, IMapper mapper)
-        : base(context, mapper)
-    {
-    }
+    private readonly ApplicationContext context;
+
+    public Controller(ApplicationContext context) =>
+        this.context = context;
 
     /// <summary>Change current user signing credentials.</summary>
     /// <param name="request">New credentials.</param>
@@ -31,7 +30,7 @@ public class Controller : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> ChangeCredentials([FromBody] RequestDto request)
     {
-        var usernameTaken = await Context.Users
+        var usernameTaken = await context.Users
             .Include(user => user.RefreshTokens)
             .Where(user => user.Id != CurrentUser.UserId)
             .AnyAsync(user => user.Username == request.Username);
@@ -40,10 +39,10 @@ public class Controller : ApiControllerBase
             return Conflict();
         }
         
-        var user = await Context.Users.SingleAsync(user => user.Id == CurrentUser.UserId);
+        var user = await context.Users.SingleAsync(user => user.Id == CurrentUser.UserId);
         user.ChangeCredentials(request.Username, BCrypt.HashPassword(request.Password));
         user.RevokeAllRefreshTokens();
-        await Context.SaveChangesAsync();
+        await context.SaveChangesAsync();
         
         return Ok();
     }

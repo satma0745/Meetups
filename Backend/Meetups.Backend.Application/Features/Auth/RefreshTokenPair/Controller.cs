@@ -2,7 +2,6 @@
 
 using System;
 using System.Threading.Tasks;
-using AutoMapper;
 using Meetup.Contract.Models.Primitives;
 using Meetup.Contract.Models.Tokens;
 using Meetup.Contract.Routing;
@@ -16,12 +15,15 @@ using Microsoft.EntityFrameworkCore;
 [Tags(Tags.Auth)]
 public class Controller : ApiControllerBase
 {
+    private readonly ApplicationContext context;
     private readonly TokenHelper tokenHelper;
 
-    public Controller(ApplicationContext context, IMapper mapper, TokenHelper tokenHelper)
-        : base(context, mapper) =>
+    public Controller(ApplicationContext context, TokenHelper tokenHelper)
+    {
+        this.context = context;
         this.tokenHelper = tokenHelper;
-    
+    }
+
     /// <summary>Re-issue token pair using refresh token.</summary>
     /// <param name="oldRefreshToken">Refresh token.</param>
     /// <response code="200">Token pair was successfully re-issued.</response>
@@ -38,10 +40,10 @@ public class Controller : ApiControllerBase
         var currentUserId = Guid.Parse(claims[RefreshTokenPayload.UserIdClaim]);
         var refreshTokenId = Guid.Parse(claims[RefreshTokenPayload.TokenIdClaim]);
 
-        var currentUser = await Context.Users
+        var currentUser = await context.Users
             .Include(user => user.RefreshTokens)
             .SingleOrDefaultAsync(user => user.Id == currentUserId);
-        var oldPersistedRefreshToken = await Context.RefreshTokens
+        var oldPersistedRefreshToken = await context.RefreshTokens
             .SingleOrDefaultAsync(token => token.TokenId == refreshTokenId);
         if (currentUser is null || oldPersistedRefreshToken is null)
         {
@@ -52,7 +54,7 @@ public class Controller : ApiControllerBase
 
         var newPersistedRefreshToken = new RefreshToken(tokenId: Guid.NewGuid(), bearerId: currentUserId);
         currentUser.ReplaceRefreshToken(oldPersistedRefreshToken, newPersistedRefreshToken);
-        await Context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
         var (accessToken, newRefreshToken) = tokenHelper.IssueTokenPair(currentUser, newPersistedRefreshToken.TokenId);        
         var tokenPairDto = new TokenPairDto

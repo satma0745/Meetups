@@ -3,9 +3,7 @@
 using System;
 using System.Linq;
 using System.Net.Mime;
-using AutoMapper;
 using Meetup.Contract.Models.Tokens;
-using Meetups.Backend.Persistence.Context;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
@@ -14,16 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 [Produces(MediaTypeNames.Application.Json)]
 public abstract class ApiControllerBase : ControllerBase
 {
-    protected ApplicationContext Context { get; }
-    protected IMapper Mapper { get; }
-
     protected AccessTokenPayload CurrentUser => GetCurrentUserInfo();
-
-    protected ApiControllerBase(ApplicationContext context, IMapper mapper)
-    {
-        Context = context;
-        Mapper = mapper;
-    }
 
     private AccessTokenPayload GetCurrentUserInfo()
     {

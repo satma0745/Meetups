@@ -1,7 +1,6 @@
 ﻿namespace Meetups.Backend.Application.Features.Auth.GetCurrentUserInfo;
 
 using System.Threading.Tasks;
-using AutoMapper;
 using Meetup.Contract.Models.Features.Auth.GetCurrentUserInfo;
 using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Seedwork;
@@ -14,10 +13,10 @@ using Microsoft.EntityFrameworkCore;
 [Tags(Tags.Auth)]
 public class Controller : ApiControllerBase
 {
-    public Controller(ApplicationContext context, IMapper mapper)
-        : base(context, mapper)
-    {
-    }
+    private readonly ApplicationContext context;
+
+    public Controller(ApplicationContext context) =>
+        this.context = context;
     
     /// <summary>Retrieve info about the current user.</summary>
     /// <response code="200">Information was retrieved successfully.</response>
@@ -28,13 +27,13 @@ public class Controller : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> GetCurrentUserInfo()
     {
-        var user = await Context.Users.SingleOrDefaultAsync(user => user.Id == CurrentUser.UserId);
+        var user = await context.Users.SingleOrDefaultAsync(user => user.Id == CurrentUser.UserId);
         if (user is null)
         {
             return Unauthorized();
         }
 
-        var response = Mapper.Map<ResponseDto>(user);
+        var response = user.ToResponseDto();
         return Ok(response);
     }
 }

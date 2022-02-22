@@ -1,8 +1,7 @@
 ﻿namespace Meetups.Backend.Application.Features.Feed.GetMeetups;
 
-using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using Meetup.Contract.Models.Features.Feed.GetMeetups;
 using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Seedwork;
@@ -14,10 +13,10 @@ using Microsoft.EntityFrameworkCore;
 [Tags(Tags.Feed)]
 public class Controller : ApiControllerBase
 {
-    public Controller(ApplicationContext context, IMapper mapper)
-        : base(context, mapper)
-    {
-    }
+    private readonly ApplicationContext context;
+
+    public Controller(ApplicationContext context) =>
+        this.context = context;
 
     /// <summary>Get several meetups.</summary>
     /// <response code="200">Retrieved meetups successfully.</response>
@@ -26,7 +25,7 @@ public class Controller : ApiControllerBase
     [ProducesResponseType(typeof(ResponseDto[]), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAllMeetups([FromQuery] RequestDto request)
     {
-        var meetups = await Context.Meetups
+        var meetups = await context.Meetups
             .AsNoTracking()
             .Include(meetup => meetup.SignedUpGuests)
             .ApplySearch($"%{request.Search}%")
@@ -34,7 +33,7 @@ public class Controller : ApiControllerBase
             .Paginate(request.PageNumber, request.PageSize)
             .ToListAsync();
         
-        var response = Mapper.Map<IEnumerable<ResponseDto>>(meetups);
+        var response = meetups.Select(Mappings.ToResponseDto);
         return Ok(response);
     }
 }

@@ -1,9 +1,8 @@
 ﻿namespace Meetups.Backend.Application.Features.Feed.GetSignedUpGuestsInfo;
 
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using Meetup.Contract.Models.Features.Feed.GetSignedUpGuestsInfo;
 using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Seedwork;
@@ -15,10 +14,10 @@ using Microsoft.EntityFrameworkCore;
 [Tags(Tags.Feed)]
 public class Controller : ApiControllerBase
 {
-    public Controller(ApplicationContext context, IMapper mapper)
-        : base(context, mapper)
-    {
-    }
+    private readonly ApplicationContext context;
+
+    public Controller(ApplicationContext context) =>
+        this.context = context;
 
     /// <summary>Get information about all guest who signed up for the meetup.</summary>
     /// <param name="meetupId">Meetup ID.</param>
@@ -29,7 +28,7 @@ public class Controller : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetSignedUpGuestsInfo([FromRoute] Guid meetupId)
     {
-        var meetup = await Context.Meetups
+        var meetup = await context.Meetups
             .AsNoTracking()
             .Include(meetup => meetup.SignedUpGuests)
             .SingleOrDefaultAsync(meetup => meetup.Id == meetupId);
@@ -38,7 +37,7 @@ public class Controller : ApiControllerBase
             return NotFound();
         }
 
-        var response = Mapper.Map<ICollection<ResponseDto>>(meetup.SignedUpGuests);
+        var response = meetup.SignedUpGuests.Select(Mappings.ToResponseDto);
         return Ok(response);
     }
 }

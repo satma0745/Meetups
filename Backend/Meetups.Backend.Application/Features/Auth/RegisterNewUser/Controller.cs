@@ -2,7 +2,6 @@
 
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using AutoMapper;
 using BCrypt.Net;
 using Meetup.Contract.Models.Enumerations;
 using Meetup.Contract.Models.Features.Auth.RegisterNewUser;
@@ -17,10 +16,10 @@ using Microsoft.EntityFrameworkCore;
 [Tags(Tags.Auth)]
 public class Controller : ApiControllerBase
 {
-    public Controller(ApplicationContext context, IMapper mapper)
-        : base(context, mapper)
-    {
-    }
+    private readonly ApplicationContext context;
+
+    public Controller(ApplicationContext context) =>
+        this.context = context;
     
     /// <summary>Register a new user.</summary>
     /// <param name="request">DTO to create user from.</param>
@@ -33,7 +32,7 @@ public class Controller : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> RegisterNewUser([FromBody] RequestDto request)
     {
-        var usernameTaken = await Context.Users.AnyAsync(user => user.Username == request.Username);
+        var usernameTaken = await context.Users.AnyAsync(user => user.Username == request.Username);
         if (usernameTaken)
         {
             return Conflict();
@@ -47,8 +46,8 @@ public class Controller : ApiControllerBase
             var unmatched => throw new SwitchExpressionException(unmatched)
         };
 
-        Context.Users.Add(user);
-        await Context.SaveChangesAsync();
+        context.Users.Add(user);
+        await context.SaveChangesAsync();
 
         return Ok();
     }

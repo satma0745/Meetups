@@ -3,7 +3,6 @@
 using Meetups.Backend.Application.Seedwork;
 using Meetups.Backend.Persistence.Context;
 using Meetups.Backend.WebApi.Auth;
-using Meetups.Backend.WebApi.Mapping;
 using Meetups.Backend.WebApi.Swagger;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -21,7 +20,6 @@ internal class Startup
         services
             .AddApplicationContext()
             .AddScoped<TokenHelper>()
-            .AddMappings()
             .AddAuth(configuration)
             .AddSwaggerDocs()
             .AddControllers();

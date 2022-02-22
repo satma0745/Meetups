@@ -3,7 +3,6 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using Meetup.Contract.Models.Enumerations;
 using Meetup.Contract.Models.Features.Studio.UpdateSpecificMeetup;
 using Meetup.Contract.Routing;
@@ -18,10 +17,10 @@ using Microsoft.EntityFrameworkCore;
 [Tags(Tags.Studio)]
 public class Controller : ApiControllerBase
 {
-    public Controller(ApplicationContext context, IMapper mapper)
-        : base(context, mapper)
-    {
-    }
+    private readonly ApplicationContext context;
+
+    public Controller(ApplicationContext context) =>
+        this.context = context;
 
     /// <summary>Updates specific meetup (with the specified id).</summary>
     /// <param name="meetupId">Id of the meetup to be updated.</param>
@@ -37,7 +36,7 @@ public class Controller : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> UpdateSpecificMeetup([FromRoute] Guid meetupId, [FromBody] RequestDto request)
     {
-        var topicTaken = await Context.Meetups
+        var topicTaken = await context.Meetups
             .Where(meetup => meetup.Id != meetupId) // exclude the specified meetup (it may preserve it's topic)
             .AnyAsync(meetup => meetup.Topic == request.Topic);
         if (topicTaken)
@@ -45,7 +44,7 @@ public class Controller : ApiControllerBase
             return Conflict();
         }
         
-        var meetup = await Context.Meetups
+        var meetup = await context.Meetups
             .Include(meetup => meetup.Organizer)
             .SingleOrDefaultAsync(meetup => meetup.Id == meetupId);
         if (meetup is null)
@@ -59,7 +58,7 @@ public class Controller : ApiControllerBase
 
         var duration = new MeetupDuration(request.Duration.Hours, request.Duration.Minutes);
         meetup.UpdateMeetupInfo(request.Topic, request.Place, duration, request.StartTime);
-        await Context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
         return Ok();
     }

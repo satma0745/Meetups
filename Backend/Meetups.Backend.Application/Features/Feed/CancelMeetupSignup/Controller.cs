@@ -2,7 +2,6 @@
 
 using System;
 using System.Threading.Tasks;
-using AutoMapper;
 using Meetup.Contract.Models.Enumerations;
 using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Seedwork;
@@ -15,10 +14,10 @@ using Microsoft.EntityFrameworkCore;
 [Tags(Tags.Feed)]
 public class Controller : ApiControllerBase
 {
-    public Controller(ApplicationContext context, IMapper mapper)
-        : base(context, mapper)
-    {
-    }
+    private readonly ApplicationContext context;
+
+    public Controller(ApplicationContext context) =>
+        this.context = context;
 
     /// <summary>Cancel meetup signup.</summary>
     /// <param name="meetupId">Id of the meetup to cancel signup for.</param>
@@ -29,7 +28,7 @@ public class Controller : ApiControllerBase
     [HttpPost(Routes.Feed.CancelMeetupSignup)]
     public async Task<IActionResult> CancelMeetupSignup([FromRoute] Guid meetupId)
     {
-        var meetup = await Context.Meetups
+        var meetup = await context.Meetups
             .AsNoTracking()
             .SingleOrDefaultAsync(meetup => meetup.Id == meetupId);
         if (meetup is null)
@@ -37,7 +36,7 @@ public class Controller : ApiControllerBase
             return NotFound();
         }
 
-        var currentUser = await Context.Guests
+        var currentUser = await context.Guests
             .Include(guest => guest.MeetupsSignedUpTo)
             .SingleAsync(guest => guest.Id == CurrentUser.UserId);
         if (!currentUser.IsSignedUpFor(meetup))
@@ -46,7 +45,7 @@ public class Controller : ApiControllerBase
         }
         
         currentUser.CancelSignUpFor(meetup);
-        await Context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
         return Ok();
     }
