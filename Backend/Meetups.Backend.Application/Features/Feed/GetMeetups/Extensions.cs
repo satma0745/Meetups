@@ -8,9 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 internal static class Extensions
 {
-    public static IQueryable<Meetup> ApplySearch(this IQueryable<Meetup> meetups, string pattern) =>
-        meetups.Where(meetup => EF.Functions.Like(meetup.Topic, pattern) ||
-                                EF.Functions.Like(meetup.Place.City.Name, pattern));
+    public static IQueryable<Meetup> ApplyFilters(this IQueryable<Meetup> meetups, FiltersDto filters) =>
+        meetups
+            .Where(meetup => filters.CityId == null || meetup.Place.City.Id == filters.CityId)
+            .Where(meetup => EF.Functions.Like(meetup.Topic, $"%{filters.Search}%"));
 
     public static IQueryable<Meetup> OrderBy(this IQueryable<Meetup> meetups, string orderingOption) =>
         orderingOption switch
@@ -31,8 +32,8 @@ internal static class Extensions
                 throw new SwitchExpressionException(unmatched)
         };
 
-    public static IQueryable<Meetup> Paginate(this IQueryable<Meetup> meetups, int pageNumber, int pageSize) =>
+    public static IQueryable<Meetup> Paginate(this IQueryable<Meetup> meetups, PaginationDto pagination) =>
         meetups
-            .Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize);
+            .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+            .Take(pagination.PageSize);
 }

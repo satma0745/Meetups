@@ -29,9 +29,9 @@ public class Controller : ApiControllerBase
             .AsNoTracking()
             .Include(meetup => meetup.SignedUpGuests)
             .Include(meetup => meetup.Place.City)
-            .ApplySearch($"%{request.Search}%")
-            .OrderBy(request.OrderBy)
-            .Paginate(request.PageNumber, request.PageSize)
+            .ApplyFilters(request.Filters)
+            .OrderBy(request.Pagination.OrderBy)
+            .Paginate(request.Pagination)
             .ToListAsync();
         
         var response = meetups.Select(Mappings.ToResponseDto);

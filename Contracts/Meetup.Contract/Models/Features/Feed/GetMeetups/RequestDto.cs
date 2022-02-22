@@ -1,9 +1,17 @@
 ﻿namespace Meetup.Contract.Models.Features.Feed.GetMeetups;
 
+using System;
 using System.ComponentModel.DataAnnotations;
 using Meetup.Contract.Attributes;
 
 public class RequestDto
+{
+    public PaginationDto Pagination { get; set; }
+
+    public FiltersDto Filters { get; } = FiltersDto.Empty;
+}
+
+public class PaginationDto
 {
     private const int MaxAllowedPageSize = 50;
 
@@ -23,11 +31,6 @@ public class RequestDto
     [Required]
     [OneOf(typeof(OrderingOptions))]
     public string OrderBy { get; set; }
-
-    /// <summary>Used to find matching meetups.</summary>
-    /// <example>Microsoft</example>
-    [MaxLength(100)]
-    public string Search { get; set; } = string.Empty;
 }
 
 public static class OrderingOptions
@@ -40,4 +43,22 @@ public static class OrderingOptions
 
     public const string SignUpsCountAscending = "signups_ascending";
     public const string SignUpsCountDescending = "signups_descending";
+}
+
+public class FiltersDto
+{
+    public static FiltersDto Empty => new()
+    {
+        CityId = null,
+        Search = string.Empty
+    };
+    
+    /// <summary>Used to filter ot meetups that take place in other cities.</summary>
+    /// <example>07450745-0745-0745-0745-074507450745</example>
+    public Guid? CityId { get; set; }
+    
+    /// <summary>Used to find matching meetups.</summary>
+    /// <example>Microsoft</example>
+    [MaxLength(100)]
+    public string Search { get; set; }
 }
