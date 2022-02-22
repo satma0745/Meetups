@@ -15,6 +15,7 @@ public static class Routes
     public static class Feed
     {
         public const string CancelMeetupSignup = "feed/{meetupId:guid}/cancel-sign-up";
+        public const string GetAllCities = "feed/all-cities";
         public const string GetMeetups = "feed";
         public const string GetSignedUpGuestsInfo = "feed/{meetupId:guid}/signed-up-guests";
         public const string GetSpecificMeetup = "feed/{meetupId:guid}";
@@ -25,6 +26,7 @@ public static class Routes
     {
         public const string DeleteSpecificMeetup = "studio/{meetupId:guid}";
         public const string GetOrganizedMeetups = "studio/organized";
+        public const string RegisterNewCity = "studio/new-city";
         public const string RegisterNewMeetup = "studio/new";
         public const string UpdateSpecificMeetup = "studio/{meetupId:guid}";
     }

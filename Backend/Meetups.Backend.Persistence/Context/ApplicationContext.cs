@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 public class ApplicationContext : DbContext
 {
+    public DbSet<City> Cities { get; set; }
     public DbSet<Meetup> Meetups { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Guest> Guests { get; set; }

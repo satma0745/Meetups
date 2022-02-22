@@ -14,9 +14,8 @@ public class ResponseDto
     /// <example>Microsoft naming issues</example>
     public string Topic { get; set; }
     
-    /// <summary>Where meetup takes place.</summary>
-    /// <example>Oslo</example>
-    public string Place { get; set; }
+    /// <inheritdoc cref="MeetupPlaceDto"/>
+    public MeetupPlaceDto Place { get; set; }
     
     /// <summary>Meetup duration.</summary>
     [Required]

@@ -12,11 +12,9 @@ public class RequestDto
     [MaxLength(100)]
     public string Topic { get; set; }
     
-    /// <summary>Where meetup takes place.</summary>
-    /// <example>Oslo</example>
+    /// <inheritdoc cref="MeetupPlaceDto"/>
     [Required]
-    [MaxLength(75)]
-    public string Place { get; set; }
+    public MeetupPlaceDto Place { get; set; }
     
     /// <summary>Meetup duration.</summary>
     [Required]

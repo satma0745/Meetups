@@ -31,6 +31,8 @@ public class Controller : ApiControllerBase
             .AsNoTracking()
             .Include(organizer => organizer.OrganizedMeetups)
             .ThenInclude(meetup => meetup.SignedUpGuests)
+            .Include(organizer => organizer.OrganizedMeetups)
+            .ThenInclude(meetup => meetup.Place.City)
             .SingleAsync(organizer => organizer.Id == CurrentUser.UserId);
 
         var response = organizer.OrganizedMeetups.Select(Mappings.ToResponseDto);

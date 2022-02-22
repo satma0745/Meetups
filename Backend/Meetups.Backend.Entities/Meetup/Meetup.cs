@@ -30,17 +30,11 @@ public class Meetup
         }
     }
 
-    private static void EnsureValidPlace(string place)
+    private static void EnsureValidPlace(MeetupPlace place)
     {
-        if (string.IsNullOrWhiteSpace(place))
+        if (place is null)
         {
-            throw new ArgumentException("Must not be null or empty.", nameof(place));
-        }
-
-        const int maxLength = 75;
-        if (place.Length > maxLength)
-        {
-            throw new ArgumentException($"Must not exceed {maxLength} characters.", nameof(place));
+            throw new ArgumentException("Must not be null.", nameof(place));
         }
     }
 
@@ -66,7 +60,7 @@ public class Meetup
     
     public string Topic { get; private set; }
     
-    public string Place { get; private set; }
+    public MeetupPlace Place { get; private set; }
     
     public MeetupDuration Duration { get; private set; }
     
@@ -84,22 +78,24 @@ public class Meetup
 
     #region Constructor
 
-    public Meetup(string topic, string place, MeetupDuration duration, DateTime startTime)
-        : this(id: Guid.NewGuid(), topic, place, duration, startTime)
+    public Meetup(string topic, MeetupPlace place, MeetupDuration duration, DateTime startTime)
+        : this(id: Guid.NewGuid(), topic, duration, startTime)
     {
+        EnsureValidPlace(place);
+        
+        Place = place;
     }
-
-    private Meetup(Guid id, string topic, string place, MeetupDuration duration, DateTime startTime)
+    
+    // Only for EF Core
+    private Meetup(Guid id, string topic, MeetupDuration duration, DateTime startTime)
     {
         EnsureValidId(id);
         EnsureValidTopic(topic);
-        EnsureValidPlace(place);
         EnsureValidDuration(duration);
         EnsureValidStartTime(startTime);
         
         Id = id;
         Topic = topic;
-        Place = place;
         Duration = duration;
         StartTime = startTime;
     }
@@ -108,7 +104,7 @@ public class Meetup
 
     #region Behavior
 
-    public void UpdateMeetupInfo(string topic, string place, MeetupDuration duration, DateTime startTime)
+    public void UpdateMeetupInfo(string topic, MeetupPlace place, MeetupDuration duration, DateTime startTime)
     {
         EnsureValidTopic(topic);
         EnsureValidPlace(place);

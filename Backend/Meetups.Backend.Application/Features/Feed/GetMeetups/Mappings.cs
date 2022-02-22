@@ -11,7 +11,7 @@ internal static class Mappings
         {
             Id = meetup.Id,
             Topic = meetup.Topic,
-            Place = meetup.Place,
+            Place = meetup.Place.ToMeetupPlaceDto(),
             Duration = meetup.Duration.ToMeetupDurationDto(),
             StartTime = meetup.StartTime,
             SignedUpGuestsCount = meetup.SignedUpGuests.Count

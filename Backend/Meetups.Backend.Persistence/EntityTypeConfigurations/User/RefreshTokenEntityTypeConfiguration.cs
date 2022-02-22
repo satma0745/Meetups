@@ -1,4 +1,4 @@
-﻿namespace Meetups.Backend.Persistence.EntityTypeConfigurations;
+﻿namespace Meetups.Backend.Persistence.EntityTypeConfigurations.User;
 
 using Meetups.Backend.Entities.User;
 using Microsoft.EntityFrameworkCore;

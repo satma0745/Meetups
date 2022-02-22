@@ -31,6 +31,7 @@ public class Controller : ApiControllerBase
         var meetup = await context.Meetups
             .AsNoTracking()
             .Include(meetup => meetup.SignedUpGuests)
+            .Include(meetup => meetup.Place.City)
             .SingleOrDefaultAsync(meetup => meetup.Id == meetupId);
         if (meetup is null)
         {

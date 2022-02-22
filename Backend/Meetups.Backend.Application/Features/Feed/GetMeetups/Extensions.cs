@@ -10,7 +10,7 @@ internal static class Extensions
 {
     public static IQueryable<Meetup> ApplySearch(this IQueryable<Meetup> meetups, string pattern) =>
         meetups.Where(meetup => EF.Functions.Like(meetup.Topic, pattern) ||
-                                EF.Functions.Like(meetup.Place, pattern));
+                                EF.Functions.Like(meetup.Place.City.Name, pattern));
 
     public static IQueryable<Meetup> OrderBy(this IQueryable<Meetup> meetups, string orderingOption) =>
         orderingOption switch

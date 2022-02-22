@@ -7,7 +7,6 @@ using Meetup.Contract.Models.Enumerations;
 using Meetup.Contract.Models.Features.Studio.UpdateSpecificMeetup;
 using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Seedwork;
-using Meetups.Backend.Entities.Meetup;
 using Meetups.Backend.Persistence.Context;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -27,7 +26,7 @@ public class Controller : ApiControllerBase
     /// <param name="request">DTO with updated information about the meetup.</param>
     /// <response code="200">Meetup was updated successfully.</response>
     /// <response code="400">Validation failed for DTO.</response>
-    /// <response code="404">Meetup with the specified id does not exist.</response>
+    /// <response code="404">Specified meetup or city does not exist.</response>
     /// <response code="409">The exact same topic for the meetup has already been taken up.</response>
     [Authorize(Roles = UserRoles.Organizer)]
     [HttpPut(Routes.Studio.UpdateSpecificMeetup)]
@@ -56,7 +55,17 @@ public class Controller : ApiControllerBase
             return Forbid();
         }
 
-        meetup.UpdateMeetupInfo(request.Topic, request.Place, request.Duration.ToMeetupDuration(), request.StartTime);
+        var city = await context.Cities.SingleOrDefaultAsync(city => city.Id == request.Place.CityId);
+        if (city is null)
+        {
+            return NotFound();
+        }
+
+        meetup.UpdateMeetupInfo(
+            topic: request.Topic,
+            place: request.Place.ToMeetupPlace(city),
+            duration: request.Duration.ToMeetupDuration(),
+            startTime: request.StartTime);
         await context.SaveChangesAsync();
 
         return Ok();
