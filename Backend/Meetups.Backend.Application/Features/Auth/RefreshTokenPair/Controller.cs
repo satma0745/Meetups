@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Meetup.Contract.Models.Primitives;
 using Meetup.Contract.Models.Tokens;
 using Meetup.Contract.Routing;
+using Meetups.Backend.Application.Helpers.Tokens;
 using Meetups.Backend.Application.Seedwork;
 using Meetups.Backend.Entities.User;
 using Meetups.Backend.Persistence.Context;
@@ -56,12 +57,9 @@ public class Controller : ApiControllerBase
         currentUser.ReplaceRefreshToken(oldPersistedRefreshToken, newPersistedRefreshToken);
         await context.SaveChangesAsync();
 
-        var (accessToken, newRefreshToken) = tokenHelper.IssueTokenPair(currentUser, newPersistedRefreshToken.TokenId);        
-        var tokenPairDto = new TokenPairDto
-        {
-            AccessToken = accessToken,
-            RefreshToken = newRefreshToken
-        };
-        return Ok(tokenPairDto);
+        var response = tokenHelper
+            .IssueTokenPair(currentUser, newPersistedRefreshToken.TokenId)
+            .ToTokenPairDto();
+        return Ok(response);
     }
 }

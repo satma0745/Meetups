@@ -1,6 +1,7 @@
 ﻿namespace Meetups.Backend.Application.Seedwork;
 
 using Meetup.Contract.Models.Primitives;
+using Meetups.Backend.Application.Helpers.Tokens;
 using Meetups.Backend.Entities.Meetup;
 
 internal static class GlobalMappings
@@ -29,6 +30,17 @@ internal static class GlobalMappings
         {
             CityId = meetupPlace.City.Id,
             Address = meetupPlace.Address
+        };
+
+    #endregion
+    
+    #region TokenPair
+
+    public static TokenPairDto ToTokenPairDto(this TokenPair tokenPair) =>
+        new()
+        {
+            AccessToken = tokenPair.AccessToken,
+            RefreshToken = tokenPair.RefreshToken
         };
 
     #endregion

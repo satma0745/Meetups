@@ -6,6 +6,7 @@ using BCrypt.Net;
 using Meetup.Contract.Models.Features.Auth.AuthenticateUser;
 using Meetup.Contract.Models.Primitives;
 using Meetup.Contract.Routing;
+using Meetups.Backend.Application.Helpers.Tokens;
 using Meetups.Backend.Application.Seedwork;
 using Meetups.Backend.Entities.User;
 using Meetups.Backend.Persistence.Context;
@@ -55,12 +56,9 @@ public class Controller : ApiControllerBase
         user.AddRefreshToken(persistedRefreshToken);
         await context.SaveChangesAsync();
 
-        var (accessToken, refreshToken) = tokenHelper.IssueTokenPair(user, persistedRefreshToken.TokenId);
-        var tokenPairDto = new TokenPairDto
-        {
-            AccessToken = accessToken,
-            RefreshToken = refreshToken
-        };
-        return Ok(tokenPairDto);
+        var response = tokenHelper
+            .IssueTokenPair(user, persistedRefreshToken.TokenId)
+            .ToTokenPairDto();
+        return Ok(response);
     }
 }

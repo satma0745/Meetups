@@ -1,6 +1,6 @@
 ﻿namespace Meetups.Backend.WebApi.EntryPoint;
 
-using Meetups.Backend.Application.Seedwork;
+using Meetups.Backend.Application.Helpers.Tokens;
 using Meetups.Backend.Persistence.Context;
 using Meetups.Backend.WebApi.Auth;
 using Meetups.Backend.WebApi.Swagger;

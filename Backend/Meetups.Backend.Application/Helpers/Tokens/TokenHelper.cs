@@ -1,4 +1,4 @@
-﻿namespace Meetups.Backend.Application.Seedwork;
+﻿namespace Meetups.Backend.Application.Helpers.Tokens;
 
 using System;
 using System.Collections.Generic;
@@ -69,12 +69,12 @@ public class TokenHelper
         }
     }
 
-    public (string AccessToken, string RefreshToken) IssueTokenPair(User user, Guid refreshTokenId) =>
+    public TokenPair IssueTokenPair(User user, Guid refreshTokenId) =>
         user is null
             ? throw new ArgumentNullException(nameof(user))
             : IssueTokenPair(user.Id, GetUserRole(user), refreshTokenId);
 
-    private string GetUserRole(User user) =>
+    private static string GetUserRole(User user) =>
         user switch
         {
             Guest => UserRoles.Guest,
@@ -82,7 +82,7 @@ public class TokenHelper
             var unmatched => throw new SwitchExpressionException(unmatched)
         };
 
-    public (string AccessToken, string RefreshToken) IssueTokenPair(Guid userId, string userRole, Guid refreshTokenId)
+    public TokenPair IssueTokenPair(Guid userId, string userRole, Guid refreshTokenId)
     {
         var accessToken = IssueToken(
             new Dictionary<string, object>
@@ -99,8 +99,8 @@ public class TokenHelper
                 {RefreshTokenPayload.TokenIdClaim, refreshTokenId}
             },
             refreshTokenLifetime);
-        
-        return (accessToken, refreshToken);
+
+        return new TokenPair(accessToken, refreshToken);
     }
     
     private string IssueToken(IDictionary<string, object> payload, TimeSpan lifetime)
