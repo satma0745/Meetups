@@ -7,12 +7,13 @@ using Microsoft.EntityFrameworkCore;
 
 public class ApplicationContext : DbContext
 {
-    public DbSet<City> Cities { get; set; }
-    public DbSet<Meetup> Meetups { get; set; }
-    public DbSet<User> Users { get; set; }
-    public DbSet<Guest> Guests { get; set; }
-    public DbSet<Organizer> Organizers { get; set; }
-    public DbSet<RefreshToken> RefreshTokens { get; set; }
+    public DbSet<City> Cities => Set<City>();
+    public DbSet<Meetup> Meetups => Set<Meetup>();
+    
+    public DbSet<Guest> Guests => Set<Guest>();
+    public DbSet<Organizer> Organizers => Set<Organizer>();
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+    public DbSet<User> Users => Set<User>();
 
     public ApplicationContext(DbContextOptions<ApplicationContext> options)
         : base(options)
