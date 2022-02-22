@@ -11,6 +11,8 @@ internal class MeetupEntityTypeConfiguration : IEntityTypeConfiguration<Meetup>
     {
         meetupEntity.ToTable("meetups");
 
+        meetupEntity.Property<Guid>("organizer_id");
+
         meetupEntity
             .HasKey(meetup => meetup.Id)
             .HasName("pk_meetups");
@@ -19,6 +21,10 @@ internal class MeetupEntityTypeConfiguration : IEntityTypeConfiguration<Meetup>
             .HasIndex(meetup => meetup.Topic)
             .IsUnique()
             .HasDatabaseName("ux_meetups_topic");
+
+        meetupEntity
+            .HasIndex("organizer_id")
+            .HasDatabaseName("ix_meetups_organizer_id");
         
         meetupEntity
             .Property(meetup => meetup.Id)

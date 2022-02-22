@@ -1,14 +1,16 @@
-﻿namespace Meetups.Backend.Persistence.Migrations;
+﻿namespace Meetups.Persistence.Migrations;
 
 using System;
 using Meetups.Backend.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 [DbContext(typeof(ApplicationContext))]
-internal class ApplicationContextModelSnapshot : ModelSnapshot
+[Migration("20220222200452_FixMeetupOrganizerIdIndexName")]
+partial class FixMeetupOrganizerIdIndexName
 {
-    protected override void BuildModel(ModelBuilder modelBuilder)
+    protected override void BuildTargetModel(ModelBuilder modelBuilder)
     {
         modelBuilder
             .HasAnnotation("ProductVersion", "6.0.1")
