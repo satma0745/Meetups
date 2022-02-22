@@ -56,8 +56,7 @@ public class Controller : ApiControllerBase
             return Forbid();
         }
 
-        var duration = new MeetupDuration(request.Duration.Hours, request.Duration.Minutes);
-        meetup.UpdateMeetupInfo(request.Topic, request.Place, duration, request.StartTime);
+        meetup.UpdateMeetupInfo(request.Topic, request.Place, request.Duration.ToMeetupDuration(), request.StartTime);
         await context.SaveChangesAsync();
 
         return Ok();

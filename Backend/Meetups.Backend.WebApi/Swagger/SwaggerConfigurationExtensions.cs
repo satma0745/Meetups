@@ -24,7 +24,7 @@ internal static class SwaggerConfigurationExtensions
             options.CustomSchemaIds(modelType => modelType.FullName);
             options.AddJwtAuthSupport();
             options.SchemaFilter<OpenApiOneOfFilter>();
-            options.SchemaFilter<OpenApiMeetupDurationSchemaFilter>();
+            options.SchemaFilter<OpenApiMeetupDurationDtoSchemaFilter>();
 
         });
 

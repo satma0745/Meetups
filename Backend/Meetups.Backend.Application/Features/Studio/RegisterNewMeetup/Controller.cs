@@ -42,8 +42,7 @@ public class Controller : ApiControllerBase
             .Include(organizer => organizer.OrganizedMeetups)
             .SingleAsync(organizer => organizer.Id == CurrentUser.UserId);
 
-        var duration = new MeetupDuration(request.Duration.Hours, request.Duration.Minutes);
-        var meetup = new Meetup(request.Topic, request.Place, duration, request.StartTime);
+        var meetup = new Meetup(request.Topic, request.Place, request.Duration.ToMeetupDuration(), request.StartTime);
         
         organizer.AddOrganizedMeetup(meetup);
         await context.SaveChangesAsync();

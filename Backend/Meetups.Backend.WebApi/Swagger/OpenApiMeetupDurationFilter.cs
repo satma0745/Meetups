@@ -1,15 +1,15 @@
 ﻿namespace Meetups.Backend.WebApi.Swagger;
 
-using Meetups.Backend.Entities.Meetup;
+using Meetup.Contract.Models.Primitives;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-internal class OpenApiMeetupDurationSchemaFilter : ISchemaFilter
+internal class OpenApiMeetupDurationDtoSchemaFilter : ISchemaFilter
 {
     public void Apply(OpenApiSchema schema, SchemaFilterContext context)
     {
-        if (context.Type != typeof(MeetupDuration))
+        if (context.Type != typeof(MeetupDurationDto))
         {
             return;
         }
