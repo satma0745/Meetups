@@ -1,6 +1,7 @@
 ﻿namespace Meetups.Backend.Persistence.RelationshipConfigurations;
 
 using Meetups.Backend.Entities.Meetup;
+using Meetups.Backend.Persistence.Naming;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -10,7 +11,7 @@ internal class MeetupsOrganizerRelationshipConfiguration : IEntityTypeConfigurat
         meetupEntity
             .HasOne(meetup => meetup.Organizer)
             .WithMany(organizer => organizer.OrganizedMeetups)
-            .HasForeignKey("organizer_id")
-            .HasConstraintName("fk_meetups_organizers_organizer_id")
+            .HasForeignKey(MeetupNaming.Columns.OrganizerId)
+            .HasConstraintName(MeetupNaming.ForeignKeys.OrganizerId)
             .IsRequired();
 }

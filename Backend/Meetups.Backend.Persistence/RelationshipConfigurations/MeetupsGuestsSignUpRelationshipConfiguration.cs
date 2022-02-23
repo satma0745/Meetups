@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using Meetups.Backend.Entities.Meetup;
 using Meetups.Backend.Entities.User;
+using Meetups.Backend.Persistence.Naming;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -16,23 +17,25 @@ internal class MeetupsGuestsSignUpRelationshipConfiguration : IEntityTypeConfigu
                 guestSide => guestSide
                     .HasOne<Guest>()
                     .WithMany()
-                    .HasForeignKey("signed_up_guest_id")
-                    .HasConstraintName("fk_meetups_guests_signup_guests_signed_up_guest_id"),
+                    .HasForeignKey(MeetupsGuestsSignupSkipNaming.Columns.GuestId)
+                    .HasConstraintName(MeetupsGuestsSignupSkipNaming.ForeignKeys.GuestId),
                 meetupsSide => meetupsSide
                     .HasOne<Meetup>()
                     .WithMany()
-                    .HasForeignKey("meetup_id")
-                    .HasConstraintName("fk_meetups_guests_signup_meetups_meetup_id"),
+                    .HasForeignKey(MeetupsGuestsSignupSkipNaming.Columns.MeetupId)
+                    .HasConstraintName(MeetupsGuestsSignupSkipNaming.ForeignKeys.MeetupId),
                 joinEntity =>
                 {
-                    joinEntity.ToTable("meetups_guests_signup");
+                    joinEntity.ToTable(MeetupsGuestsSignupSkipNaming.Table);
 
                     joinEntity
-                        .HasKey("meetup_id", "signed_up_guest_id")
-                        .HasName("pk_meetups_guests_signup");
+                        .HasKey(
+                            MeetupsGuestsSignupSkipNaming.Columns.MeetupId,
+                            MeetupsGuestsSignupSkipNaming.Columns.GuestId)
+                        .HasName(MeetupsGuestsSignupSkipNaming.Indices.PrimaryKey);
 
                     joinEntity
-                        .HasIndex("signed_up_guest_id")
-                        .HasDatabaseName("ix_meetups_guests_signup_signed_up_guest_id");
+                        .HasIndex(MeetupsGuestsSignupSkipNaming.Columns.GuestId)
+                        .HasDatabaseName(MeetupsGuestsSignupSkipNaming.Indices.GuestId);
                 });
 }

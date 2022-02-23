@@ -1,6 +1,7 @@
 ﻿namespace Meetups.Backend.Persistence.EntityTypeConfigurations.Meetup;
 
 using Meetups.Backend.Entities.Meetup;
+using Meetups.Backend.Persistence.Naming;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,25 +9,25 @@ internal class CityEntityTypeConfiguration : IEntityTypeConfiguration<City>
 {
     public void Configure(EntityTypeBuilder<City> cityEntity)
     {
-        cityEntity.ToTable("cities");
+        cityEntity.ToTable(CityNaming.Table);
 
         cityEntity
             .HasKey(city => city.Id)
-            .HasName("pk_cities");
+            .HasName(CityNaming.Indices.PrimaryKey);
 
         cityEntity
             .HasIndex(city => city.Name)
             .IsUnique()
-            .HasDatabaseName("ux_cities_name");
+            .HasDatabaseName(CityNaming.Indices.UniqueName);
         
         cityEntity
             .Property(city => city.Id)
-            .HasColumnName("id")
+            .HasColumnName(CityNaming.Columns.Id)
             .ValueGeneratedNever();
 
         cityEntity
             .Property(city => city.Name)
-            .HasColumnName("name")
+            .HasColumnName(CityNaming.Columns.Name)
             .HasMaxLength(30)
             .IsRequired();
     }

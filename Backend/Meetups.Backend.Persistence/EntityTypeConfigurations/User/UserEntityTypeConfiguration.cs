@@ -1,6 +1,7 @@
 ﻿namespace Meetups.Backend.Persistence.EntityTypeConfigurations.User;
 
 using Meetups.Backend.Entities.User;
+using Meetups.Backend.Persistence.Naming;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,43 +9,43 @@ internal class UserEntityTypeConfiguration : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> userEntity)
     {
-        userEntity.ToTable("users");
+        userEntity.ToTable(UserNaming.Table);
 
         userEntity
-            .HasDiscriminator<string>("role")
+            .HasDiscriminator<string>(UserNaming.Columns.Discriminator)
             .HasValue<Guest>(nameof(Guest))
             .HasValue<Organizer>(nameof(Organizer))
             .HasValue(nameof(Guest));
 
         userEntity
             .HasKey(user => user.Id)
-            .HasName("pk_users");
+            .HasName(UserNaming.Indices.PrimaryKey);
 
         userEntity
             .HasIndex(user => user.Username)
             .IsUnique()
-            .HasDatabaseName("ux_users_username");
+            .HasDatabaseName(UserNaming.Indices.UniqueUsername);
 
         userEntity
             .Property(user => user.Id)
-            .HasColumnName("id")
+            .HasColumnName(UserNaming.Columns.Id)
             .ValueGeneratedNever();
 
         userEntity
             .Property(user => user.Username)
-            .HasColumnName("username")
+            .HasColumnName(UserNaming.Columns.Username)
             .HasMaxLength(30)
             .IsRequired();
 
         userEntity
             .Property(user => user.Password)
-            .HasColumnName("password")
+            .HasColumnName(UserNaming.Columns.Password)
             .HasMaxLength(60)
             .IsRequired();
 
         userEntity
             .Property(user => user.DisplayName)
-            .HasColumnName("display_name")
+            .HasColumnName(UserNaming.Columns.DisplayName)
             .HasMaxLength(45)
             .IsRequired();
 

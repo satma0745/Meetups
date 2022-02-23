@@ -1,6 +1,7 @@
 ﻿namespace Meetups.Backend.Persistence.EntityTypeConfigurations.User;
 
 using Meetups.Backend.Entities.User;
+using Meetups.Backend.Persistence.Naming;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,23 +9,23 @@ internal class RefreshTokenEntityTypeConfiguration : IEntityTypeConfiguration<Re
 {
     public void Configure(EntityTypeBuilder<RefreshToken> refreshTokenEntity)
     {
-        refreshTokenEntity.ToTable("refresh_tokens");
+        refreshTokenEntity.ToTable(RefreshTokenNaming.Table);
 
         refreshTokenEntity
             .HasKey(refreshToken => refreshToken.TokenId)
-            .HasName("pk_refresh_tokens");
+            .HasName(RefreshTokenNaming.Indices.PrimaryKey);
 
         refreshTokenEntity
             .HasIndex(refreshToken => refreshToken.BearerId)
-            .HasDatabaseName("ix_refresh_tokens_user_id");
+            .HasDatabaseName(RefreshTokenNaming.Indices.BearerId);
 
         refreshTokenEntity
             .Property(refreshToken => refreshToken.TokenId)
-            .HasColumnName("token_id")
+            .HasColumnName(RefreshTokenNaming.Columns.TokenId)
             .ValueGeneratedNever();
 
         refreshTokenEntity
             .Property(refreshToken => refreshToken.BearerId)
-            .HasColumnName("user_id");
+            .HasColumnName(RefreshTokenNaming.Columns.BearerId);
     }
 }
