@@ -1,6 +1,6 @@
 ﻿namespace Meetups.Backend.Persistence.RelationshipConfigurations;
 
-using Meetups.Backend.Entities.User;
+using Meetups.Backend.Domain.Entities.User;
 using Meetups.Backend.Persistence.Naming;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

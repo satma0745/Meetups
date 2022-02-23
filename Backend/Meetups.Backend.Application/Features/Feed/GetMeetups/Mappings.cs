@@ -2,7 +2,7 @@
 
 using Meetup.Contract.Models.Features.Feed.GetMeetups;
 using Meetups.Backend.Application.Seedwork;
-using Meetups.Backend.Entities.Meetup;
+using Meetups.Backend.Domain.Entities.Meetup;
 
 internal static class Mappings
 {

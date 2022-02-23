@@ -1,32 +1,17 @@
-﻿namespace Meetups.Backend.Entities.Meetup;
+﻿namespace Meetups.Backend.Domain.Entities.Meetup;
 
 using System;
+using Meetups.Backend.Domain.Seedwork;
 
 public class City
 {
     #region Validation
 
-    private static void EnsureValidId(Guid id)
-    {
-        if (id == Guid.Empty)
-        {
-            throw new ArgumentException("Must not be empty.", nameof(id));
-        }
-    }
+    private static void EnsureValidId(Guid id) =>
+        Assertions.EnsureValidGuid(nameof(id), id, required: true);
 
-    private static void EnsureValidName(string name)
-    {
-        if (string.IsNullOrWhiteSpace(name))
-        {
-            throw new ArgumentException("Must not be null or empty.", nameof(name));
-        }
-
-        const int maxLength = 30;
-        if (name.Length > maxLength)
-        {
-            throw new ArgumentException($"Must not exceed {maxLength} characters.", nameof(name));
-        }
-    }
+    private static void EnsureValidName(string name) =>
+        Assertions.EnsureValidString(nameof(name), name, required: true, maxLength: 30);
     
     #endregion
     

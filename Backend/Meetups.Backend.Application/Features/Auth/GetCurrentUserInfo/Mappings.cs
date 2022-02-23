@@ -1,7 +1,7 @@
 ﻿namespace Meetups.Backend.Application.Features.Auth.GetCurrentUserInfo;
 
 using Meetup.Contract.Models.Features.Auth.GetCurrentUserInfo;
-using Meetups.Backend.Entities.User;
+using Meetups.Backend.Domain.Entities.User;
 
 internal static class MappingProfile
 {

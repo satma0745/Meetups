@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Meetup.Contract.Models.Enumerations;
 using Meetup.Contract.Models.Tokens;
-using Meetups.Backend.Entities.User;
+using Meetups.Backend.Domain.Entities.User;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 

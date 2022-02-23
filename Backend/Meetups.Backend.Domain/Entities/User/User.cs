@@ -1,74 +1,27 @@
-﻿namespace Meetups.Backend.Entities.User;
+﻿namespace Meetups.Backend.Domain.Entities.User;
 
 using System;
 using System.Collections.Generic;
+using Meetups.Backend.Domain.Seedwork;
 
 public abstract class User
 {
     #region Validation
-    
-    private static void EnsureValidId(Guid id)
-    {
-        if (id == Guid.Empty)
-        {
-            throw new ArgumentException("Must not be empty.", nameof(id));
-        }
-    }
 
-    private static void EnsureValidUsername(string username)
-    {
-        if (string.IsNullOrWhiteSpace(username))
-        {
-            throw new ArgumentException("Must not be null or empty.", nameof(username));
-        }
+    private static void EnsureValidId(Guid id) =>
+        Assertions.EnsureValidGuid(nameof(id), id, required: true);
 
-        const int minLength = 6;
-        const int maxLength = 30;
-        if (username.Length < minLength)
-        {
-            throw new ArgumentException($"Must be at least {minLength} characters long.", nameof(username));
-        }
-        if (username.Length > maxLength)
-        {
-            throw new ArgumentException($"Must not exceed {maxLength} characters.", nameof(username));
-        }
-    }
+    private static void EnsureValidUsername(string username) =>
+        Assertions.EnsureValidString(nameof(username), username, required: true, minLength: 6, maxLength: 30);
 
-    private static void EnsureValidPassword(string password)
-    {
-        if (string.IsNullOrWhiteSpace(password))
-        {
-            throw new ArgumentException("Must not be null or empty.", nameof(password));
-        }
+    private static void EnsureValidPassword(string password) =>
+        Assertions.EnsureValidString(nameof(password), password, required: true, exactLength: 60);
 
-        const int exactLength = 60;
-        if (password.Length != exactLength)
-        {
-            throw new ArgumentException($"Must be exactly {exactLength} characters long.", nameof(password));
-        }
-    }
+    private static void EnsureValidDisplayName(string displayName) =>
+        Assertions.EnsureValidString(nameof(displayName), displayName, required: true, maxLength: 45);
 
-    private static void EnsureValidDisplayName(string displayName)
-    {
-        if (string.IsNullOrWhiteSpace(displayName))
-        {
-            throw new ArgumentException("Must not be null or empty.", nameof(displayName));
-        }
-
-        const int maxLength = 45;
-        if (displayName.Length > maxLength)
-        {
-            throw new ArgumentException($"Must not exceed {maxLength} characters.", nameof(displayName));
-        }
-    }
-
-    private static void EnsureValidRefreshToken(RefreshToken refreshToken)
-    {
-        if (refreshToken is null)
-        {
-            throw new ArgumentException("Must not be null.", nameof(refreshToken));
-        }
-    }
+    private static void EnsureValidRefreshToken(RefreshToken refreshToken) =>
+        Assertions.EnsureValidObject(nameof(refreshToken), refreshToken, required: true);
 
     #endregion
     

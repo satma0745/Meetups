@@ -1,56 +1,28 @@
-﻿namespace Meetups.Backend.Entities.Meetup;
+﻿namespace Meetups.Backend.Domain.Entities.Meetup;
 
 using System;
 using System.Collections.Generic;
-using Meetups.Backend.Entities.User;
+using Meetups.Backend.Domain.Entities.User;
+using Meetups.Backend.Domain.Seedwork;
 
 public class Meetup
 {
     #region Validation
 
-    private static void EnsureValidId(Guid id)
-    {
-        if (id == Guid.Empty)
-        {
-            throw new ArgumentException("Must not be empty.", nameof(id));
-        }
-    }
+    private static void EnsureValidId(Guid id) =>
+        Assertions.EnsureValidGuid(nameof(id), id, required: true);
 
-    private static void EnsureValidTopic(string topic)
-    {
-        if (string.IsNullOrWhiteSpace(topic))
-        {
-            throw new ArgumentException("Must not be null or empty.", nameof(topic));
-        }
+    private static void EnsureValidTopic(string topic) =>
+        Assertions.EnsureValidString(nameof(topic), topic, maxLength: 100);
 
-        const int maxLength = 100;
-        if (topic.Length > maxLength)
-        {
-            throw new ArgumentException($"Must not exceed {maxLength} characters.", nameof(topic));
-        }
-    }
+    private static void EnsureValidPlace(MeetupPlace place) =>
+        Assertions.EnsureValidObject(nameof(place), place, required: true);
 
-    private static void EnsureValidPlace(MeetupPlace place)
-    {
-        if (place is null)
-        {
-            throw new ArgumentException("Must not be null.", nameof(place));
-        }
-    }
+    private static void EnsureValidDuration(MeetupDuration duration) =>
+        Assertions.EnsureValidObject(nameof(duration), duration, required: true);
 
-    private static void EnsureValidDuration(MeetupDuration duration)
-    {
-        if (duration is null)
-        {
-            throw new ArgumentException("Must not be null.", nameof(duration));
-        }
-    }
-
-    // This method does nothing right now, but may come in handy in the future
-    // ReSharper disable once UnusedParameter.Local
-    private static void EnsureValidStartTime(DateTime startTime)
-    {
-    }
+    private static void EnsureValidStartTime(DateTime startTime) =>
+        Assertions.None(nameof(startTime), startTime);
 
     #endregion
     

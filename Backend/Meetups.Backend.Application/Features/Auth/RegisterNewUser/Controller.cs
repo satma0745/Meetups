@@ -7,7 +7,7 @@ using Meetup.Contract.Models.Enumerations;
 using Meetup.Contract.Models.Features.Auth.RegisterNewUser;
 using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Seedwork;
-using Meetups.Backend.Entities.User;
+using Meetups.Backend.Domain.Entities.User;
 using Meetups.Backend.Persistence.Context;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

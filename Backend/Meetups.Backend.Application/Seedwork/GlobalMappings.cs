@@ -2,7 +2,7 @@
 
 using Meetup.Contract.Models.Primitives;
 using Meetups.Backend.Application.Helpers.Tokens;
-using Meetups.Backend.Entities.Meetup;
+using Meetups.Backend.Domain.Entities.Meetup;
 
 internal static class GlobalMappings
 {

@@ -1,26 +1,17 @@
-﻿namespace Meetups.Backend.Entities.User;
+﻿namespace Meetups.Backend.Domain.Entities.User;
 
 using System;
+using Meetups.Backend.Domain.Seedwork;
 
 public class RefreshToken
 {
     #region Validation
 
-    private static void EnsureValidTokenId(Guid tokenId)
-    {
-        if (tokenId == Guid.Empty)
-        {
-            throw new ArgumentException("Must not be empty.", nameof(tokenId));
-        }
-    }
+    private static void EnsureValidTokenId(Guid tokenId) =>
+        Assertions.EnsureValidGuid(nameof(tokenId), tokenId, required: true);
 
-    private static void EnsureValidBearerId(Guid bearerId)
-    {
-        if (bearerId == Guid.Empty)
-        {
-            throw new ArgumentException("Must not be empty.", nameof(bearerId));
-        }
-    }
+    private static void EnsureValidBearerId(Guid bearerId) =>
+        Assertions.EnsureValidGuid(nameof(bearerId), bearerId, required: true);
 
     #endregion
     

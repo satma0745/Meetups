@@ -8,7 +8,7 @@ using Meetup.Contract.Models.Primitives;
 using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Helpers.Tokens;
 using Meetups.Backend.Application.Seedwork;
-using Meetups.Backend.Entities.User;
+using Meetups.Backend.Domain.Entities.User;
 using Meetups.Backend.Persistence.Context;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

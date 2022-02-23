@@ -1,7 +1,7 @@
 ﻿namespace Meetups.Backend.Application.Features.Feed.GetAllCities;
 
 using Meetup.Contract.Models.Features.Feed.GetAllCities;
-using Meetups.Backend.Entities.Meetup;
+using Meetups.Backend.Domain.Entities.Meetup;
 
 internal static class Mappings
 {

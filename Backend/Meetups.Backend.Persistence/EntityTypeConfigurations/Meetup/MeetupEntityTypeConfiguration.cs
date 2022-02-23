@@ -1,7 +1,7 @@
 ﻿namespace Meetups.Backend.Persistence.EntityTypeConfigurations.Meetup;
 
 using System;
-using Meetups.Backend.Entities.Meetup;
+using Meetups.Backend.Domain.Entities.Meetup;
 using Meetups.Backend.Persistence.Naming;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

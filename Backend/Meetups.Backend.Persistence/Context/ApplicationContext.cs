@@ -1,7 +1,7 @@
 ﻿namespace Meetups.Backend.Persistence.Context;
 
-using Meetups.Backend.Entities.Meetup;
-using Meetups.Backend.Entities.User;
+using Meetups.Backend.Domain.Entities.Meetup;
+using Meetups.Backend.Domain.Entities.User;
 using Microsoft.EntityFrameworkCore;
 
 public class ApplicationContext : DbContext

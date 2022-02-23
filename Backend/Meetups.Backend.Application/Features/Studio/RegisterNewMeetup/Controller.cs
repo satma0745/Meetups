@@ -5,7 +5,7 @@ using Meetup.Contract.Models.Enumerations;
 using Meetup.Contract.Models.Features.Studio.RegisterNewMeetup;
 using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Seedwork;
-using Meetups.Backend.Entities.Meetup;
+using Meetups.Backend.Domain.Entities.Meetup;
 using Meetups.Backend.Persistence.Context;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

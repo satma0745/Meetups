@@ -1,38 +1,19 @@
-﻿namespace Meetups.Backend.Entities.Meetup;
+﻿namespace Meetups.Backend.Domain.Entities.Meetup;
 
-using System;
+using Meetups.Backend.Domain.Seedwork;
 
 public class MeetupDuration
 {
     #region Validation
 
-    private static void EnsureValidHours(int hours)
-    {
-        if (hours < 0)
-        {
-            throw new ArgumentException("Must not be a negative number.", nameof(hours));
-        }
-    }
+    private static void EnsureValidHours(int hours) =>
+        Assertions.EnsureValidNumber(nameof(hours), hours, minValue: 0);
 
-    private static void EnsureValidMinutes(int minutes)
-    {
-        if (minutes < 0)
-        {
-            throw new ArgumentException("Must not be a negative number.", nameof(minutes));
-        }
-        if (minutes >= 60)
-        {
-            throw new ArgumentException("Must not be greater than or equal to 60.", nameof(minutes));
-        }
-    }
+    private static void EnsureValidMinutes(int minutes) =>
+        Assertions.EnsureValidNumber(nameof(minutes), minutes, minValue: 0, maxValue: 59);
 
-    private static void EnsureValidTotalMinutes(int totalMinutes)
-    {
-        if (totalMinutes < 0)
-        {
-            throw new ArgumentException("Must not be a negative number.", nameof(totalMinutes));
-        }
-    }
+    private static void EnsureValidTotalMinutes(int totalMinutes) =>
+        Assertions.EnsureValidNumber(nameof(totalMinutes), totalMinutes, minValue: 0);
     
     #endregion
     

@@ -3,7 +3,7 @@
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Meetup.Contract.Models.Features.Feed.GetMeetups;
-using Meetups.Backend.Entities.Meetup;
+using Meetups.Backend.Domain.Entities.Meetup;
 using Microsoft.EntityFrameworkCore;
 
 internal static class Extensions

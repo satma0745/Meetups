@@ -1,20 +1,16 @@
-﻿namespace Meetups.Backend.Entities.User;
+﻿namespace Meetups.Backend.Domain.Entities.User;
 
 using System;
 using System.Collections.Generic;
-using Meetups.Backend.Entities.Meetup;
+using Meetups.Backend.Domain.Entities.Meetup;
+using Meetups.Backend.Domain.Seedwork;
 
 public class Guest : User
 {
     #region Validation
 
-    private static void EnsureValidMeetup(Meetup meetup)
-    {
-        if (meetup is null)
-        {
-            throw new ArgumentException("Must not be null.", nameof(meetup));
-        }
-    }
+    private static void EnsureValidMeetup(Meetup meetup) =>
+        Assertions.EnsureValidObject(nameof(meetup), meetup, required: true);
     
     #endregion
     
