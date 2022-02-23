@@ -7,7 +7,7 @@ using Meetups.Backend.Persistence.Naming;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-internal class MeetupsGuestsSignUpRelationshipConfiguration : IEntityTypeConfiguration<Meetup>
+internal class MeetupsGuestsSignUpRelationshipConfiguration : IRelationshipConfiguration<Meetup>
 {
     public void Configure(EntityTypeBuilder<Meetup> meetupEntity) =>
         meetupEntity

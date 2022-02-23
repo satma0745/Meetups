@@ -1,6 +1,5 @@
 ﻿namespace Meetups.Backend.Persistence.Context;
 
-using System.Reflection;
 using Meetups.Backend.Entities.Meetup;
 using Meetups.Backend.Entities.User;
 using Microsoft.EntityFrameworkCore;
@@ -21,5 +20,7 @@ public class ApplicationContext : DbContext
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) =>
-        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        modelBuilder
+            .ApplyEntityTypeConfigurations()
+            .ApplyRelationshipConfigurations();
 }

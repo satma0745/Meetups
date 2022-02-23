@@ -5,12 +5,18 @@ using Meetups.Backend.Persistence.Naming;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-internal class UserRefreshTokensRelationshipConfiguration : IEntityTypeConfiguration<RefreshToken>
+internal class UserRefreshTokensRelationshipConfiguration : IRelationshipConfiguration<User, RefreshToken>
 {
-    public void Configure(EntityTypeBuilder<RefreshToken> refreshTokenEntity) =>
+    public void Configure(EntityTypeBuilder<User> userEntity, EntityTypeBuilder<RefreshToken> refreshTokenEntity)
+    {
         refreshTokenEntity
-            .HasOne<User>()
-            .WithMany(user => user.RefreshTokens)
+            .HasIndex(refreshToken => refreshToken.BearerId)
+            .HasDatabaseName(RefreshTokenNaming.Indices.BearerId);
+
+        userEntity
+            .HasMany(user => user.RefreshTokens)
+            .WithOne()
             .HasForeignKey(refreshToken => refreshToken.BearerId)
             .HasConstraintName(RefreshTokenNaming.ForeignKeys.BearerId);
+    }
 }

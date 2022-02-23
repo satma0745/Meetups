@@ -16,10 +16,6 @@ internal class RefreshTokenEntityTypeConfiguration : IEntityTypeConfiguration<Re
             .HasName(RefreshTokenNaming.Indices.PrimaryKey);
 
         refreshTokenEntity
-            .HasIndex(refreshToken => refreshToken.BearerId)
-            .HasDatabaseName(RefreshTokenNaming.Indices.BearerId);
-
-        refreshTokenEntity
             .Property(refreshToken => refreshToken.TokenId)
             .HasColumnName(RefreshTokenNaming.Columns.TokenId)
             .ValueGeneratedNever();

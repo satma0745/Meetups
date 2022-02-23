@@ -23,10 +23,6 @@ internal class MeetupEntityTypeConfiguration : IEntityTypeConfiguration<Meetup>
             .HasIndex(meetup => meetup.Topic)
             .IsUnique()
             .HasDatabaseName(MeetupNaming.Indices.UniqueTopic);
-
-        meetupEntity
-            .HasIndex(MeetupNaming.Columns.OrganizerId)
-            .HasDatabaseName(MeetupNaming.Indices.OrganizerId);
         
         meetupEntity
             .Property(meetup => meetup.Id)
