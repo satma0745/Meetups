@@ -12,6 +12,7 @@ internal class MeetupEntityTypeConfiguration : IEntityTypeConfiguration<Meetup>
     {
         meetupEntity.ToTable(MeetupNaming.Table);
 
+        // Shadow property
         meetupEntity.Property<Guid>(MeetupNaming.Columns.OrganizerId);
 
         meetupEntity
@@ -55,16 +56,14 @@ internal class MeetupEntityTypeConfiguration : IEntityTypeConfiguration<Meetup>
                 meetup => meetup.Place,
                 placeOwnedEntity =>
                 {
-                    placeOwnedEntity.Property<Guid>("city_id");
+                    // Shadow property
+                    placeOwnedEntity
+                        .Property<Guid>(MeetupNaming.Columns.CityId)
+                        .HasColumnName(MeetupNaming.Columns.CityId);
                     
                     placeOwnedEntity
-                        .HasIndex("city_id")
+                        .HasIndex(MeetupNaming.Columns.CityId)
                         .HasDatabaseName(MeetupNaming.Indices.CityId);
-                    
-                    placeOwnedEntity
-                        .Property("city_id")
-                        .HasColumnName(MeetupNaming.Columns.CityId)
-                        .IsRequired();
 
                     placeOwnedEntity
                         .Property(place => place.Address)
@@ -75,7 +74,7 @@ internal class MeetupEntityTypeConfiguration : IEntityTypeConfiguration<Meetup>
                     placeOwnedEntity
                         .HasOne(place => place.City)
                         .WithMany()
-                        .HasForeignKey("city_id")
+                        .HasForeignKey(MeetupNaming.Columns.CityId)
                         .HasConstraintName(MeetupNaming.ForeignKeys.CityId)
                         .IsRequired();
                 })
