@@ -1,6 +1,5 @@
 ﻿namespace Meetups.Backend.WebApi.EntryPoint;
 
-using Meetups.Backend.Application.Helpers.Tokens;
 using Meetups.Backend.Persistence.Context;
 using Meetups.Backend.WebApi.Auth;
 using Meetups.Backend.WebApi.Swagger;
@@ -19,7 +18,6 @@ internal class Startup
     public void ConfigureServices(IServiceCollection services) =>
         services
             .AddApplicationContext()
-            .AddScoped<TokenHelper>()
             .AddAuth(configuration)
             .AddSwaggerDocs()
             .AddControllers();

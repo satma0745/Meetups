@@ -1,53 +1,37 @@
 ﻿namespace Meetups.Backend.WebApi.Auth;
 
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Text;
-using Meetup.Contract.Models.Tokens;
+using Meetups.Backend.Application.Modules.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 
 internal static class AuthConfigurationExtensions
 {
     public static IServiceCollection AddAuth(this IServiceCollection services, IConfiguration configuration)
     {
+        var authConfiguration = AuthConfiguration.FromApplicationConfiguration(configuration);
+        
+        services.AddAuthModule(authConfiguration);
+        
         services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
-                options.ConfigureTokenValidationParameters(configuration);
+                options.ConfigureTokenValidationParameters(authConfiguration);
                 options.ClearClaimTypeMaps();
             });
 
         return services;
     }
 
-    private static void ConfigureTokenValidationParameters(this JwtBearerOptions options, IConfiguration configuration)
+    private static void ConfigureTokenValidationParameters(
+        this JwtBearerOptions options,
+        AuthConfiguration configuration)
     {
-        var rawSigningKey = configuration["Auth:SecretKey"];
-        var signingKeyBytes = Encoding.ASCII.GetBytes(rawSigningKey);
-        
-        options.TokenValidationParameters = new()
-        {
-            // Clear claim type map specifically for the user role claim
-            RoleClaimType = AccessTokenPayload.UserRoleClaim,
-            
-            RequireSignedTokens = true,
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(signingKeyBytes),
-
-            ValidateAudience = false,
-            ValidateIssuer = false,
-
-            RequireExpirationTime = true,
-            ValidateLifetime = true,
-            ClockSkew = TimeSpan.Zero
-        };
-        
+        options.TokenValidationParameters = configuration.TokenValidationParameters;
         options.RequireHttpsMetadata = false;
     }
 

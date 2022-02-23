@@ -1,65 +1,36 @@
-﻿namespace Meetups.Backend.Application.Helpers.Tokens;
+﻿namespace Meetups.Backend.Application.Modules.Auth;
 
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using Meetup.Contract.Models.Enumerations;
 using Meetup.Contract.Models.Tokens;
 using Meetups.Backend.Domain.Entities.User;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-public class TokenHelper
+internal class TokenHelper : ITokenHelper
 {
-    private readonly SigningCredentials signingCredentials;
+    private readonly AuthConfiguration configuration;
     private readonly JwtSecurityTokenHandler tokenHandler;
-    private readonly TimeSpan accessTokenLifetime;
-    private readonly TimeSpan refreshTokenLifetime;
-    
-    public TokenHelper(IConfiguration configuration)
+
+    public TokenHelper(AuthConfiguration configuration)
     {
-        // This key is used to sign tokens so that no one can tamper with them.
-        var rawSigningKey = configuration["Auth:SecretKey"];
-        var signingKeyBytes = Encoding.ASCII.GetBytes(rawSigningKey);
-        var signingKey = new SymmetricSecurityKey(signingKeyBytes);
-        signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha512);
+        this.configuration = configuration;
 
         // Fixes JWT Claims names (by default Microsoft replaces them with links leading to nowhere) 
         tokenHandler = new JwtSecurityTokenHandler();
         tokenHandler.InboundClaimTypeMap.Clear();
         tokenHandler.OutboundClaimTypeMap.Clear();
-        
-        var accessTokenLifetimeInMinutes = int.Parse(configuration["Auth:AccessTokenLifetimeInMinutes"]);
-        accessTokenLifetime = TimeSpan.FromMinutes(accessTokenLifetimeInMinutes);
-
-        var refreshTokenLifetimeInDays = int.Parse(configuration["Auth:RefreshTokenLifetimeInDays"]);
-        refreshTokenLifetime = TimeSpan.FromDays(refreshTokenLifetimeInDays);
     }
 
     public bool TryParseToken(string token, out IDictionary<string, string> payload)
     {
         try
         {
-            var validationParameters = new TokenValidationParameters
-            {
-                RequireSignedTokens = true,
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = signingCredentials.Key,
-                
-                ValidateAudience = false,
-                ValidateIssuer = false,
-                
-                RequireExpirationTime = true,
-                ValidateLifetime = true,
-                ClockSkew = TimeSpan.Zero
-            };
-            
-            var claimsInfo = tokenHandler.ValidateToken(token, validationParameters, out _);
+            var claimsInfo = tokenHandler.ValidateToken(token, configuration.TokenValidationParameters, out _);
             payload = claimsInfo.Claims.ToDictionary(claim => claim.Type, claim => claim.Value);
-
             return true;
         }
         catch (Exception)
@@ -82,7 +53,7 @@ public class TokenHelper
             var unmatched => throw new SwitchExpressionException(unmatched)
         };
 
-    public TokenPair IssueTokenPair(Guid userId, string userRole, Guid refreshTokenId)
+    private TokenPair IssueTokenPair(Guid userId, string userRole, Guid refreshTokenId)
     {
         var accessToken = IssueToken(
             new Dictionary<string, object>
@@ -90,7 +61,7 @@ public class TokenHelper
                 {AccessTokenPayload.UserIdClaim, userId},
                 {AccessTokenPayload.UserRoleClaim, userRole}
             },
-            accessTokenLifetime);
+            configuration.AccessTokenLifetime);
 
         var refreshToken = IssueToken(
             new Dictionary<string, object>
@@ -98,7 +69,7 @@ public class TokenHelper
                 {RefreshTokenPayload.UserIdClaim, userId},
                 {RefreshTokenPayload.TokenIdClaim, refreshTokenId}
             },
-            refreshTokenLifetime);
+            configuration.RefreshTokenLifetime);
 
         return new TokenPair(accessToken, refreshToken);
     }
@@ -109,7 +80,7 @@ public class TokenHelper
         {
             Claims = payload,
             Expires = DateTime.UtcNow.Add(lifetime),
-            SigningCredentials = signingCredentials
+            SigningCredentials = configuration.SigningCredentials
         };
         
         var token = tokenHandler.CreateToken(tokenDescriptor);

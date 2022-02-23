@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Meetup.Contract.Models.Primitives;
 using Meetup.Contract.Models.Tokens;
 using Meetup.Contract.Routing;
-using Meetups.Backend.Application.Helpers.Tokens;
+using Meetups.Backend.Application.Modules.Auth;
 using Meetups.Backend.Application.Seedwork;
 using Meetups.Backend.Domain.Entities.User;
 using Meetups.Backend.Persistence.Context;
@@ -17,9 +17,9 @@ using Microsoft.EntityFrameworkCore;
 public class Controller : ApiControllerBase
 {
     private readonly ApplicationContext context;
-    private readonly TokenHelper tokenHelper;
+    private readonly ITokenHelper tokenHelper;
 
-    public Controller(ApplicationContext context, TokenHelper tokenHelper)
+    public Controller(ApplicationContext context, ITokenHelper tokenHelper)
     {
         this.context = context;
         this.tokenHelper = tokenHelper;

@@ -1,4 +1,4 @@
-﻿namespace Meetups.Backend.Application.Helpers.Tokens;
+﻿namespace Meetups.Backend.Application.Modules.Auth;
 
 public class TokenPair
 {
