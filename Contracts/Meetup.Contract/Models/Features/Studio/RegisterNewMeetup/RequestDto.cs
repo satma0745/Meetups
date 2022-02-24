@@ -13,7 +13,7 @@ public class RequestDto
     [MaxLength(100)]
     public string Topic { get; }
     
-    /// <inheritdoc cref="MeetupPlaceDto"/>
+    /// <summary>Where meetup will take place.</summary>
     [Required]
     public MeetupPlaceDto Place { get; }
     
