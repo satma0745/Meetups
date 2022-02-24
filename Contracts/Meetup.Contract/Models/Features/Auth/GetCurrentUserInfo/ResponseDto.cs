@@ -1,19 +1,30 @@
 ﻿namespace Meetup.Contract.Models.Features.Auth.GetCurrentUserInfo;
 
 using System;
+using JetBrains.Annotations;
 
 public class ResponseDto
 {
     /// <summary>Permanent unique user identifier.</summary>
     /// <example>07450745-0745-0745-0745-074507450745</example>
-    public Guid Id { get; set; }
+    [PublicAPI]
+    public Guid Id { get; }
     
     /// <summary>Public keyword used for authentication.</summary>
     /// <remarks>Also may be used as unique identifier.</remarks>
     /// <example>satma0745</example>
-    public string Username { get; set; }
+    [PublicAPI]
+    public string Username { get; }
     
     /// <summary>Human readable public (official) name.</summary>
     /// <example>Satttttttttttttttter</example>
-    public string DisplayName { get; set; }
+    [PublicAPI]
+    public string DisplayName { get; }
+
+    public ResponseDto(Guid id, string username, string displayName)
+    {
+        Id = id;
+        Username = username;
+        DisplayName = displayName;
+    }
 }

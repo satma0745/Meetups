@@ -2,20 +2,29 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using Meetup.Contract.Models.Primitives;
 
 public class RequestDto
 {
     /// <summary>Where meetup will take place.</summary>
     [Required]
-    public MeetupPlaceDto Place { get; set; }
+    public MeetupPlaceDto Place { get; }
     
     /// <summary>Meetup duration.</summary>
     [Required]
-    public MeetupDurationDto Duration { get; set; }
+    public MeetupDurationDto Duration { get; }
     
     /// <summary>When meetup starts.</summary>
     /// <example>2022-01-09T12:00:00Z</example>
     [Required]
-    public DateTime StartTime { get; set; }
+    public DateTime StartTime { get; }
+
+    [JsonConstructor]
+    public RequestDto(MeetupPlaceDto place, MeetupDurationDto duration, DateTime startTime)
+    {
+        Place = place;
+        Duration = duration;
+        StartTime = startTime;
+    }
 }

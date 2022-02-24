@@ -1,14 +1,23 @@
 ﻿namespace Meetup.Contract.Models.Features.Feed.GetSignedUpGuestsInfo;
 
 using System;
+using JetBrains.Annotations;
 
 public class ResponseDto
 {
     /// <summary>Permanent unique user identifier.</summary>
     /// <example>07450745-0745-0745-0745-074507450745</example>
-    public Guid Id { get; set; }
+    [PublicAPI]
+    public Guid Id { get; }
     
     /// <summary>Human readable public (official) name.</summary>
     /// <example>Satttttttttttttttter</example>
-    public string DisplayName { get; set; }
+    [PublicAPI]
+    public string DisplayName { get; }
+
+    public ResponseDto(Guid id, string displayName)
+    {
+        Id = id;
+        DisplayName = displayName;
+    }
 }

@@ -1,6 +1,7 @@
 ﻿namespace Meetup.Contract.Models.Features.Auth.AuthenticateUser;
 
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 public class RequestDto
 {
@@ -10,12 +11,19 @@ public class RequestDto
     [Required]
     [MinLength(6)]
     [MaxLength(30)]
-    public string Username { get; set; }
+    public string Username { get; }
     
     /// <summary>Private keyword used for authentication.</summary>
     /// <example>none_of_your_business</example>
     [Required]
     [MinLength(6)]
     [MaxLength(30)]
-    public string Password { get; set; }
+    public string Password { get; }
+
+    [JsonConstructor]
+    public RequestDto(string username, string password)
+    {
+        Username = username;
+        Password = password;
+    }
 }

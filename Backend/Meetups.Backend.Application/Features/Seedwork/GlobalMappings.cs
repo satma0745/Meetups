@@ -12,11 +12,7 @@ internal static class GlobalMappings
         new(meetupDurationDto.Hours, meetupDurationDto.Minutes);
 
     public static MeetupDurationDto ToMeetupDurationDto(this MeetupDuration meetupDuration) =>
-        new()
-        {
-            Hours = meetupDuration.Hours,
-            Minutes = meetupDuration.Minutes
-        };
+        new(meetupDuration.Hours, meetupDuration.Minutes);
 
     #endregion
     
@@ -26,22 +22,14 @@ internal static class GlobalMappings
         new(city, meetupPlaceDto.Address);
 
     public static MeetupPlaceDto ToMeetupPlaceDto(this MeetupPlace meetupPlace) =>
-        new()
-        {
-            CityId = meetupPlace.City.Id,
-            Address = meetupPlace.Address
-        };
+        new(meetupPlace.City.Id, meetupPlace.Address);
 
     #endregion
     
     #region ITokenPair
 
     public static TokenPairDto ToTokenPairDto(this ITokenPair tokenPair) =>
-        new()
-        {
-            AccessToken = tokenPair.AccessToken,
-            RefreshToken = tokenPair.RefreshToken
-        };
+        new(tokenPair.AccessToken, tokenPair.RefreshToken);
 
     #endregion
 }

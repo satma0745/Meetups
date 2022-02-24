@@ -6,9 +6,5 @@ using Meetups.Backend.Domain.Entities.Meetup;
 internal static class Mappings
 {
     public static ResponseDto ToResponseDto(this City city) =>
-        new()
-        {
-            Id = city.Id,
-            Name = city.Name
-        };
+        new(city.Id, city.Name);
 }

@@ -1,6 +1,7 @@
 ﻿namespace Meetup.Contract.Models.Features.Studio.RegisterNewCity;
 
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 public class RequestDto
 {
@@ -8,5 +9,9 @@ public class RequestDto
     /// <example>Oslo</example>
     [Required]
     [MaxLength(30)]
-    public string Name { get; set; }
+    public string Name { get; }
+
+    [JsonConstructor]
+    public RequestDto(string name) =>
+        Name = name;
 }

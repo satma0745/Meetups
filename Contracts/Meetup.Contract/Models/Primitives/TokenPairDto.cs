@@ -1,10 +1,20 @@
 ﻿namespace Meetup.Contract.Models.Primitives;
 
+using JetBrains.Annotations;
+
 public class TokenPairDto
 {
     /// <summary>Short-living token used for user authorization.</summary>
-    public string AccessToken { get; set; }
+    [PublicAPI]
+    public string AccessToken { get; }
 
     /// <summary>Long-living persisted token used to obtain new access tokens.</summary>
-    public string RefreshToken { get; set; }
+    [PublicAPI]
+    public string RefreshToken { get; }
+
+    public TokenPairDto(string accessToken, string refreshToken)
+    {
+        AccessToken = accessToken;
+        RefreshToken = refreshToken;
+    }
 }

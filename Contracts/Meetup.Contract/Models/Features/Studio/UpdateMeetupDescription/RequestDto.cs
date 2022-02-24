@@ -1,6 +1,7 @@
 ﻿namespace Meetup.Contract.Models.Features.Studio.UpdateMeetupDescription;
 
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 public class RequestDto
 {
@@ -8,5 +9,9 @@ public class RequestDto
     /// <example>Microsoft naming issues</example>
     [Required]
     [MaxLength(100)]
-    public string Topic { get; set; }
+    public string Topic { get; }
+
+    [JsonConstructor]
+    public RequestDto(string topic) =>
+        Topic = topic;
 }

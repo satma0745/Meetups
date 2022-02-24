@@ -13,6 +13,12 @@ public class MeetupDurationDto
     
     public int Minutes { get; set; }
 
+    public MeetupDurationDto(int hours, int minutes)
+    {
+        Hours = hours;
+        Minutes = minutes;
+    }
+
     private class Converter : JsonConverter<MeetupDurationDto>
     {
         private const string HoursGroupName = "Hours";
@@ -50,11 +56,7 @@ public class MeetupDurationDto
                 throw new JsonException(InvalidMinutesCountErrorMessage);
             }
 
-            return new MeetupDurationDto
-            {
-                Hours = hours,
-                Minutes = minutes
-            };
+            return new MeetupDurationDto(hours, minutes);
         }
 
         public override void Write(Utf8JsonWriter writer, MeetupDurationDto duration, JsonSerializerOptions options)

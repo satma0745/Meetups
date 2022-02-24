@@ -6,9 +6,5 @@ using Meetups.Backend.Domain.Entities.User;
 internal static class Mappings
 {
     public static ResponseDto ToResponseDto(this Guest guest) =>
-        new()
-        {
-            Id = guest.Id,
-            DisplayName = guest.DisplayName
-        };
+        new(guest.Id, guest.DisplayName);
 }

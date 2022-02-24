@@ -7,13 +7,12 @@ using Meetups.Backend.Domain.Entities.Meetup;
 internal static class Mappings
 {
     public static ResponseDto ToResponseDto(this Meetup meetup) =>
-        new()
-        {
-            Id = meetup.Id,
-            Topic = meetup.Topic,
-            Place = meetup.Place.ToMeetupPlaceDto(),
-            Duration = meetup.Duration.ToMeetupDurationDto(),
-            StartTime = meetup.StartTime,
-            SignedUpGuestsCount = meetup.SignedUpGuests.Count
-        };
+        new ResponseDto(
+            id: meetup.Id,
+            topic: meetup.Topic,
+            place: meetup.Place.ToMeetupPlaceDto(),
+            duration: meetup.Duration.ToMeetupDurationDto(),
+            startTime: meetup.StartTime,
+            signedUpGuestsCount: meetup.SignedUpGuests.Count
+        );
 }
