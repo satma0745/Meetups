@@ -28,6 +28,7 @@ public static class Routes
         public const string GetOrganizedMeetups = "studio/organized";
         public const string RegisterNewCity = "studio/new-city";
         public const string RegisterNewMeetup = "studio/new";
-        public const string UpdateSpecificMeetup = "studio/{meetupId:guid}";
+        public const string RescheduleMeetup = "studio/{meetupId:guid}/reschedule";
+        public const string UpdateMeetupDescription = "studio/{meetupId:guid}/description";
     }
 }

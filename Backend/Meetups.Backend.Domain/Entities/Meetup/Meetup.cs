@@ -76,17 +76,22 @@ public class Meetup
 
     #region Behavior
 
-    public void UpdateMeetupInfo(string topic, MeetupPlace place, MeetupDuration duration, DateTime startTime)
+    public void Reschedule(MeetupPlace place, MeetupDuration duration, DateTime startTime)
     {
-        EnsureValidTopic(topic);
         EnsureValidPlace(place);
         EnsureValidDuration(duration);
         EnsureValidStartTime(startTime);
-        
-        Topic = topic;
+
         Place = place;
         Duration = duration;
         StartTime = startTime;
+    }
+
+    public void UpdateDescription(string topic)
+    {
+        EnsureValidTopic(topic);
+
+        Topic = topic;
     }
 
     #endregion

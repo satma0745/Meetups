@@ -1,4 +1,4 @@
-﻿namespace Meetup.Contract.Models.Features.Studio.UpdateSpecificMeetup;
+﻿namespace Meetup.Contract.Models.Features.Studio.RescheduleMeetup;
 
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -6,13 +6,7 @@ using Meetup.Contract.Models.Primitives;
 
 public class RequestDto
 {
-    /// <summary>Topic to be discussed on the meetup.</summary>
-    /// <example>Microsoft naming issues</example>
-    [Required]
-    [MaxLength(100)]
-    public string Topic { get; set; }
-    
-    /// <inheritdoc cref="MeetupPlaceDto"/>
+    /// <summary>Where meetup will take place.</summary>
     [Required]
     public MeetupPlaceDto Place { get; set; }
     

@@ -1,10 +1,9 @@
-﻿namespace Meetups.Backend.Application.Features.Studio.UpdateSpecificMeetup;
+﻿namespace Meetups.Backend.Application.Features.Studio.RescheduleMeetup;
 
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Meetup.Contract.Models.Enumerations;
-using Meetup.Contract.Models.Features.Studio.UpdateSpecificMeetup;
+using Meetup.Contract.Models.Features.Studio.RescheduleMeetup;
 using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Seedwork;
 using Meetups.Backend.Persistence.Context;
@@ -21,28 +20,19 @@ public class Controller : ApiControllerBase
     public Controller(ApplicationContext context) =>
         this.context = context;
 
-    /// <summary>Updates specific meetup (with the specified id).</summary>
-    /// <param name="meetupId">Id of the meetup to be updated.</param>
-    /// <param name="request">DTO with updated information about the meetup.</param>
-    /// <response code="200">Meetup was updated successfully.</response>
-    /// <response code="400">Validation failed for DTO.</response>
+    /// <summary>Reschedules specific meetup (with the specified ID).</summary>
+    /// <param name="meetupId">Meetup ID to reschedule.</param>
+    /// <param name="request">DTO with the updated scheduling information.</param>
+    /// <response code="200">Meetup was rescheduled successfully.</response>
+    /// <response code="403">Only the organizer of a meetup can reschedule a specific meetup.</response>
     /// <response code="404">Specified meetup or city does not exist.</response>
-    /// <response code="409">The exact same topic for the meetup has already been taken up.</response>
     [Authorize(Roles = UserRoles.Organizer)]
-    [HttpPut(Routes.Studio.UpdateSpecificMeetup)]
+    [HttpPost(Routes.Studio.RescheduleMeetup)]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> UpdateSpecificMeetup([FromRoute] Guid meetupId, [FromBody] RequestDto request)
+    public async Task<IActionResult> RescheduleMeetup([FromRoute] Guid meetupId, [FromBody] RequestDto request)
     {
-        var topicTaken = await context.Meetups
-            .Where(meetup => meetup.Id != meetupId) // exclude the specified meetup (it may preserve it's topic)
-            .AnyAsync(meetup => meetup.Topic == request.Topic);
-        if (topicTaken)
-        {
-            return Conflict();
-        }
-        
         var meetup = await context.Meetups
             .Include(meetup => meetup.Organizer)
             .SingleOrDefaultAsync(meetup => meetup.Id == meetupId);
@@ -61,8 +51,7 @@ public class Controller : ApiControllerBase
             return NotFound();
         }
 
-        meetup.UpdateMeetupInfo(
-            topic: request.Topic,
+        meetup.Reschedule(
             place: request.Place.ToMeetupPlace(city),
             duration: request.Duration.ToMeetupDuration(),
             startTime: request.StartTime);
