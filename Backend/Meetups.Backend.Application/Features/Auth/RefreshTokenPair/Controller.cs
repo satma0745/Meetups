@@ -44,11 +44,13 @@ public class Controller : ApiControllerBase
         var currentUser = await context.Users
             .Include(user => user.RefreshTokens)
             .SingleOrDefaultAsync(user => user.Id == currentUserId);
-        var oldPersistedRefreshToken = await context.RefreshTokens
-            .SingleOrDefaultAsync(token => token.TokenId == refreshTokenId);
-        if (currentUser is null || oldPersistedRefreshToken is null)
+        if (currentUser is null)
         {
             // Cannot issue token for user that does not even exist (was deleted)
+            return BadRequest();
+        }
+        if (!currentUser.TryGetRefreshToken(refreshTokenId, out var oldPersistedRefreshToken))
+        {
             // Cannot use refresh token that is not persisted to a db (fake or used)
             return BadRequest();
         }

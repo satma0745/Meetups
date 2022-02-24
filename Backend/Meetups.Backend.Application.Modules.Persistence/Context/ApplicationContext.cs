@@ -12,7 +12,6 @@ internal class ApplicationContext : DbContext, IApplicationContext
     
     public DbSet<Guest> Guests => Set<Guest>();
     public DbSet<Organizer> Organizers => Set<Organizer>();
-    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
     public DbSet<User> Users => Set<User>();
 
     public ApplicationContext(DbContextOptions<ApplicationContext> options)

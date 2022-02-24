@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Meetups.Backend.Domain.Seedwork;
 
 public abstract class User
@@ -76,9 +77,23 @@ public abstract class User
         Password = newPassword;
     }
 
+    public bool TryGetRefreshToken(Guid refreshTokenId, out RefreshToken refreshToken)
+    {
+        refreshToken = refreshTokens.SingleOrDefault(token => token.TokenId == refreshTokenId);
+        return refreshToken is not null;
+    }
+
+    private bool HasRefreshToken(Guid refreshTokenId) =>
+        TryGetRefreshToken(refreshTokenId, out var _);
+    
     public void AddRefreshToken(RefreshToken refreshToken)
     {
         EnsureValidRefreshToken(refreshToken);
+        
+        if (HasRefreshToken(refreshToken.TokenId))
+        {
+            throw new ArgumentException("Provided token is already assigned to that user.", nameof(refreshToken));
+        }
         
         refreshTokens.Add(refreshToken);
     }
@@ -88,7 +103,7 @@ public abstract class User
         // We don't actually need to validate `oldRefreshToken` since if it's in the list then it's already valid
         EnsureValidRefreshToken(newRefreshToken);
         
-        if (!refreshTokens.Contains(oldRefreshToken))
+        if (!HasRefreshToken(oldRefreshToken.TokenId))
         {
             throw new ArgumentException("Unable to replace non-existent token.", nameof(oldRefreshToken));
         }

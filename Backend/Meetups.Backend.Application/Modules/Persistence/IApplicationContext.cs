@@ -12,7 +12,6 @@ public interface IApplicationContext
     
     DbSet<Guest> Guests { get; }
     DbSet<Organizer> Organizers { get; }
-    DbSet<RefreshToken> RefreshTokens { get; }
     DbSet<User> Users { get; }
 
     Task SaveChangesAsync();
