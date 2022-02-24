@@ -16,9 +16,9 @@ public class ResponseDto
     [PublicAPI]
     public string Topic { get; }
     
-    /// <inheritdoc cref="MeetupPlaceDto"/>
+    /// <summary>Where meetup will take place.</summary>
     [PublicAPI]
-    public MeetupPlaceDto Place { get; }
+    public CustomMeetupPlaceDto Place { get; }
     
     /// <summary>Meetup duration.</summary>
     [PublicAPI]
@@ -37,7 +37,7 @@ public class ResponseDto
     public ResponseDto(
         Guid id,
         string topic,
-        MeetupPlaceDto place,
+        CustomMeetupPlaceDto place,
         MeetupDurationDto duration,
         DateTime startTime,
         int signedUpGuestsCount)
@@ -49,4 +49,16 @@ public class ResponseDto
         StartTime = startTime;
         SignedUpGuestsCount = signedUpGuestsCount;
     }
+}
+
+public class CustomMeetupPlaceDto : MeetupPlaceDto
+{
+    /// <summary>Name of the city where the meetup will take place.</summary>
+    /// <example>Oslo</example>
+    [PublicAPI]
+    public string CityName { get; }
+
+    public CustomMeetupPlaceDto(Guid cityId, string cityName, string address)
+        : base(cityId, address) =>
+        CityName = cityName;
 }
