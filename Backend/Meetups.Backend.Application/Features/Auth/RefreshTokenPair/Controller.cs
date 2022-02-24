@@ -3,7 +3,6 @@
 using System;
 using System.Threading.Tasks;
 using Meetup.Contract.Models.Primitives;
-using Meetup.Contract.Models.Tokens;
 using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Features.Seedwork;
 using Meetups.Backend.Application.Modules.Auth;
@@ -34,28 +33,26 @@ public class Controller : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> RefreshTokenPair([FromBody] string oldRefreshToken)
     {
-        if (!tokenHelper.TryParseToken(oldRefreshToken, out var claims))
+        if (!tokenHelper.TryParseRefreshToken(oldRefreshToken, out var oldRefreshTokenPayload))
         {
             return BadRequest();
         }
-        var currentUserId = Guid.Parse(claims[RefreshTokenPayload.UserIdClaim]);
-        var refreshTokenId = Guid.Parse(claims[RefreshTokenPayload.TokenIdClaim]);
 
         var currentUser = await context.Users
             .Include(user => user.RefreshTokens)
-            .SingleOrDefaultAsync(user => user.Id == currentUserId);
+            .SingleOrDefaultAsync(user => user.Id == oldRefreshTokenPayload.BearerId);
         if (currentUser is null)
         {
             // Cannot issue token for user that does not even exist (was deleted)
             return BadRequest();
         }
-        if (!currentUser.TryGetRefreshToken(refreshTokenId, out var oldPersistedRefreshToken))
+        if (!currentUser.TryGetRefreshToken(oldRefreshTokenPayload.TokenId, out var oldPersistedRefreshToken))
         {
             // Cannot use refresh token that is not persisted to a db (fake or used)
             return BadRequest();
         }
 
-        var newPersistedRefreshToken = new RefreshToken(tokenId: Guid.NewGuid(), bearerId: currentUserId);
+        var newPersistedRefreshToken = new RefreshToken(tokenId: Guid.NewGuid(), oldRefreshTokenPayload.BearerId);
         currentUser.ReplaceRefreshToken(oldPersistedRefreshToken, newPersistedRefreshToken);
         await context.SaveChangesAsync();
 

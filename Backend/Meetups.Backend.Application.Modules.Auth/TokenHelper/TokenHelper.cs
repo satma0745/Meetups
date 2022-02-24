@@ -12,6 +12,8 @@ using Microsoft.IdentityModel.Tokens;
 
 internal class TokenHelper : ITokenHelper
 {
+    #region Dependencies & initialization
+    
     private readonly IAuthConfiguration configuration;
     private readonly JwtSecurityTokenHandler tokenHandler;
 
@@ -24,8 +26,28 @@ internal class TokenHelper : ITokenHelper
         tokenHandler.InboundClaimTypeMap.Clear();
         tokenHandler.OutboundClaimTypeMap.Clear();
     }
+    
+    #endregion
 
-    public bool TryParseToken(string token, out IDictionary<string, string> payload)
+    #region Parsing
+
+    public bool TryParseRefreshToken(string refreshToken, out RefreshTokenPayload refreshTokenPayload)
+    {
+        var success = TryParseToken(refreshToken, out var claims);
+        if (!success)
+        {
+            refreshTokenPayload = null;
+            return false;
+        }
+
+        var refreshTokenId = Guid.Parse(claims[RefreshTokenPayload.TokenIdClaim]);
+        var currentUserId = Guid.Parse(claims[RefreshTokenPayload.BearerIdClaim]);
+
+        refreshTokenPayload = new RefreshTokenPayload(refreshTokenId, currentUserId);
+        return true;
+    }
+
+    private bool TryParseToken(string token, out IDictionary<string, string> payload)
     {
         try
         {
@@ -39,7 +61,11 @@ internal class TokenHelper : ITokenHelper
             return false;
         }
     }
+    
+    #endregion
 
+    #region Issuing
+    
     public ITokenPair IssueTokenPair(User user, Guid refreshTokenId) =>
         user is null
             ? throw new ArgumentNullException(nameof(user))
@@ -58,7 +84,7 @@ internal class TokenHelper : ITokenHelper
         var accessToken = IssueToken(
             new Dictionary<string, object>
             {
-                {AccessTokenPayload.UserIdClaim, userId},
+                {AccessTokenPayload.BearerIdClaim, userId},
                 {AccessTokenPayload.UserRoleClaim, userRole}
             },
             configuration.AccessTokenLifetime);
@@ -66,7 +92,7 @@ internal class TokenHelper : ITokenHelper
         var refreshToken = IssueToken(
             new Dictionary<string, object>
             {
-                {RefreshTokenPayload.UserIdClaim, userId},
+                {RefreshTokenPayload.BearerIdClaim, userId},
                 {RefreshTokenPayload.TokenIdClaim, refreshTokenId}
             },
             configuration.RefreshTokenLifetime);
@@ -86,4 +112,6 @@ internal class TokenHelper : ITokenHelper
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
+    
+    #endregion
 }

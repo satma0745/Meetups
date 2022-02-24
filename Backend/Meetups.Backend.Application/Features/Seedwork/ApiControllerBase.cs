@@ -12,9 +12,9 @@ using Microsoft.AspNetCore.Mvc;
 [Produces(MediaTypeNames.Application.Json)]
 public abstract class ApiControllerBase : ControllerBase
 {
-    protected AccessTokenPayload CurrentUser => GetCurrentUserInfo();
+    protected CurrentUserInfo CurrentUser => GetCurrentUserInfo();
 
-    private AccessTokenPayload GetCurrentUserInfo()
+    private CurrentUserInfo GetCurrentUserInfo()
     {
         var authenticated = User.Claims.Any();
         if (!authenticated)
@@ -22,13 +22,9 @@ public abstract class ApiControllerBase : ControllerBase
             return null;
         }
         
-        var userIdClaim = User.Claims.Single(claim => claim.Type == AccessTokenPayload.UserIdClaim);
-        var userRoleClaim = User.Claims.Single(claim => claim.Type == AccessTokenPayload.UserRoleClaim);
+        var userIdClaim = User.Claims.Single(claim => claim.Type == AccessTokenPayload.BearerIdClaim);
+        var userId = Guid.Parse(userIdClaim.Value);
 
-        return new AccessTokenPayload
-        {
-            UserId = Guid.Parse(userIdClaim.Value),
-            UserRole = userRoleClaim.Value
-        };
+        return new CurrentUserInfo(userId);
     }
 }
