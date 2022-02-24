@@ -1,7 +1,7 @@
 ﻿namespace Meetups.Backend.Application.Features.Feed.GetMeetups;
 
 using Meetup.Contract.Models.Features.Feed.GetMeetups;
-using Meetups.Backend.Application.Seedwork;
+using Meetups.Backend.Application.Features.Seedwork;
 using Meetups.Backend.Domain.Entities.Meetup;
 
 internal static class Mappings

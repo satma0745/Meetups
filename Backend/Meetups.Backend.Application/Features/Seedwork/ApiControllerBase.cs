@@ -1,4 +1,4 @@
-﻿namespace Meetups.Backend.Application.Seedwork;
+﻿namespace Meetups.Backend.Application.Features.Seedwork;
 
 using System;
 using System.Linq;

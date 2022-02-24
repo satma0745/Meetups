@@ -1,6 +1,6 @@
 ﻿namespace Meetups.Backend.Application.Modules.Persistence.Configuration;
 
-using System;
+using Meetups.Backend.Application.Modules.Seedwork;
 using Microsoft.Extensions.Configuration;
 
 internal class PersistenceConfiguration : IPersistenceConfiguration
@@ -10,45 +10,32 @@ internal class PersistenceConfiguration : IPersistenceConfiguration
     public static PersistenceConfiguration FromApplicationConfiguration(IConfiguration configuration)
     {
         const string hostPath = "Persistence:Host";
-        var host = configuration.GetValue<string>(hostPath);
-        if (string.IsNullOrWhiteSpace(host))
-        {
-            throw ValidationException(hostPath, "parameter is required");
-        }
+        var host = configuration
+            .GetValue<string>(hostPath)
+            .Required(hostPath);
 
         const string portPath = "Persistence:Port";
-        var port = configuration.GetValue<int?>(portPath);
-        if (port is null)
-        {
-            throw ValidationException(portPath, "parameter is required");
-        }
+        var port = configuration
+            .GetValue<int?>(portPath)
+            .Required(portPath);
 
         const string databasePath = "Persistence:Database";
-        var database = configuration.GetValue<string>(databasePath);
-        if (string.IsNullOrWhiteSpace(database))
-        {
-            throw ValidationException(databasePath, "parameter is required");
-        }
+        var database = configuration
+            .GetValue<string>(databasePath)
+            .Required(databasePath);
 
         const string usernamePath = "Persistence:Username";
-        var username = configuration.GetValue<string>(usernamePath);
-        if (string.IsNullOrWhiteSpace(username))
-        {
-            throw ValidationException(usernamePath, "parameter is required");
-        }
+        var username = configuration
+            .GetValue<string>(usernamePath)
+            .Required(usernamePath);
 
         const string passwordPath = "Persistence:Password";
-        var password = configuration.GetValue<string>(passwordPath);
-        if (string.IsNullOrWhiteSpace(password))
-        {
-            throw ValidationException(passwordPath, "parameter is required");
-        }
+        var password = configuration
+            .GetValue<string>(passwordPath)
+            .Required(passwordPath);
 
-        return new PersistenceConfiguration(host, port.Value, database, username, password);
+        return new PersistenceConfiguration(host, port, database, username, password);
     }
-    
-    private static Exception ValidationException(string path, string message) =>
-        throw new($"Invalid value provided for the \"{path}\" configuration parameter: {message}.");
     
     #endregion
     

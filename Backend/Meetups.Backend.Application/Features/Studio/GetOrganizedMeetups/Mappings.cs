@@ -1,7 +1,7 @@
 ﻿namespace Meetups.Backend.Application.Features.Studio.GetOrganizedMeetups;
 
 using Meetup.Contract.Models.Features.Studio.GetOrganizedMeetups;
-using Meetups.Backend.Application.Seedwork;
+using Meetups.Backend.Application.Features.Seedwork;
 using Meetups.Backend.Domain.Entities.Meetup;
 
 internal static class Mappings

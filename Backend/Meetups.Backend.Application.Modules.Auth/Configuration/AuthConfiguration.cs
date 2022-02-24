@@ -4,6 +4,7 @@ using System;
 using System.Text;
 using Meetup.Contract.Models.Tokens;
 using Meetups.Backend.Application.Modules.Auth;
+using Meetups.Backend.Application.Modules.Seedwork;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -13,40 +14,25 @@ internal class AuthConfiguration : IAuthConfiguration
     
     public static AuthConfiguration FromApplicationConfiguration(IConfiguration configuration)
     {
-        const string secretKeyPath = "Auth:SecretKey";
-        var secretKey = configuration.GetValue<string>(secretKeyPath);
-        if (string.IsNullOrWhiteSpace(secretKey))
-        {
-            throw ValidationException(secretKeyPath, "parameter is required");
-        }
+        const string secretKeyPath = "Auth:SecretKey"; 
+        var secretKey = configuration
+            .GetValue<string>(secretKeyPath)
+            .Required(secretKeyPath);
 
         const string accessTokenLifetimeInMinutesPath = "Auth:AccessTokenLifetimeInMinutes";
-        var accessTokenLifetimeInMinutes = configuration.GetValue<int?>(accessTokenLifetimeInMinutesPath);
-        if (accessTokenLifetimeInMinutes is null)
-        {
-            throw ValidationException(accessTokenLifetimeInMinutesPath, "parameter is required");
-        }
-        if (accessTokenLifetimeInMinutes <= 0)
-        {
-            throw ValidationException(accessTokenLifetimeInMinutesPath, "must be a positive number");
-        }
+        var accessTokenLifetimeInMinutes = configuration
+            .GetValue<int?>(accessTokenLifetimeInMinutesPath)
+            .Required(accessTokenLifetimeInMinutesPath)
+            .EnsurePositive(accessTokenLifetimeInMinutesPath);
 
         const string refreshTokenLifetimeInDaysPath = "Auth:RefreshTokenLifetimeInDays";
-        var refreshTokenLifetimeInDays = configuration.GetValue<int?>(refreshTokenLifetimeInDaysPath);
-        if (refreshTokenLifetimeInDays is null)
-        {
-            throw ValidationException(refreshTokenLifetimeInDaysPath, "parameter is required");
-        }
-        if (refreshTokenLifetimeInDays <= 0)
-        {
-            throw ValidationException(refreshTokenLifetimeInDaysPath, "must be a positive number");
-        }
+        var refreshTokenLifetimeInDays = configuration
+            .GetValue<int?>(refreshTokenLifetimeInDaysPath)
+            .Required(refreshTokenLifetimeInDaysPath)
+            .EnsurePositive(refreshTokenLifetimeInDaysPath);
 
-        return new AuthConfiguration(secretKey, accessTokenLifetimeInMinutes.Value, refreshTokenLifetimeInDays.Value);
+        return new AuthConfiguration(secretKey, accessTokenLifetimeInMinutes, refreshTokenLifetimeInDays);
     }
-
-    private static Exception ValidationException(string path, string message) =>
-        throw new($"Invalid value provided for the \"{path}\" configuration parameter: {message}.");
     
     #endregion
     
