@@ -5,8 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Meetup.Contract.Models.Enumerations;
 using Meetup.Contract.Routing;
+using Meetups.Backend.Application.Modules.Persistence;
 using Meetups.Backend.Application.Seedwork;
-using Meetups.Backend.Persistence.Context;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,9 +15,9 @@ using Microsoft.EntityFrameworkCore;
 [Tags(Tags.Studio)]
 public class Controller : ApiControllerBase
 {
-    private readonly ApplicationContext context;
+    private readonly IApplicationContext context;
 
-    public Controller(ApplicationContext context) =>
+    public Controller(IApplicationContext context) =>
         this.context = context;
 
     /// <summary>Deletes specific meetup (with the specified id).</summary>
@@ -47,7 +47,7 @@ public class Controller : ApiControllerBase
             return Forbid();
         }
 
-        context.Remove(meetupToDelete);
+        context.Meetups.Remove(meetupToDelete);
         await context.SaveChangesAsync();
 
         return Ok();

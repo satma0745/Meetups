@@ -13,6 +13,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Meetups.Backend.Application.Modules.Auth\Meetups.Backend.Application.Modules.Auth.csproj" />
+      <ProjectReference Include="..\Meetups.Backend.Application.Modules.Persistence\Meetups.Backend.Application.Modules.Persistence.csproj" />
       <ProjectReference Include="..\Meetups.Backend.Application\Meetups.Backend.Application.csproj" />
     </ItemGroup>
 

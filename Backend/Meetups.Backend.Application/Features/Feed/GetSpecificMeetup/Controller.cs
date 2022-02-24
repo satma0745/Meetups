@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Meetup.Contract.Models.Features.Feed.GetSpecificMeetup;
 using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Features.Feed.GetMeetups;
+using Meetups.Backend.Application.Modules.Persistence;
 using Meetups.Backend.Application.Seedwork;
-using Meetups.Backend.Persistence.Context;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,9 +14,9 @@ using Microsoft.EntityFrameworkCore;
 [Tags(Tags.Feed)]
 public class Controller : ApiControllerBase
 {
-    private readonly ApplicationContext context;
+    private readonly IApplicationContext context;
 
-    public Controller(ApplicationContext context) =>
+    public Controller(IApplicationContext context) =>
         this.context = context;
 
     /// <summary>Get specific meetup (with the specified id).</summary>

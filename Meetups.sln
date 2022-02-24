@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Backend", "Backend", "{CB30EEED-89B3-43DB-82ED-A483A184E12B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meetups.Backend.Persistence", "Backend\Meetups.Backend.Persistence\Meetups.Backend.Persistence.csproj", "{8FF18DF0-D16E-4B1A-B091-1CA81027ACB3}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meetups.Backend.WebApi", "Backend\Meetups.Backend.WebApi\Meetups.Backend.WebApi.csproj", "{4651F3D4-86E9-4CC9-B04F-967003E58E6C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Contracts", "Contracts", "{DEC937AB-FEDB-429B-B273-D3CAD1307B6F}"
@@ -17,6 +15,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meetups.Backend.Application
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meetups.Backend.Domain", "Backend\Meetups.Backend.Domain\Meetups.Backend.Domain.csproj", "{5682A123-8D81-4F2A-B8B0-BBA514391A05}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meetups.Backend.Application.Modules.Auth", "Backend\Meetups.Backend.Application.Modules.Auth\Meetups.Backend.Application.Modules.Auth.csproj", "{1C0B4126-8972-4492-A689-BA081D02485A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meetups.Backend.Application.Modules.Persistence", "Backend\Meetups.Backend.Application.Modules.Persistence\Meetups.Backend.Application.Modules.Persistence.csproj", "{CE5FF538-048E-48F8-BDC6-F51811D1149A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,10 +28,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8FF18DF0-D16E-4B1A-B091-1CA81027ACB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8FF18DF0-D16E-4B1A-B091-1CA81027ACB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8FF18DF0-D16E-4B1A-B091-1CA81027ACB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8FF18DF0-D16E-4B1A-B091-1CA81027ACB3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4651F3D4-86E9-4CC9-B04F-967003E58E6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4651F3D4-86E9-4CC9-B04F-967003E58E6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4651F3D4-86E9-4CC9-B04F-967003E58E6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -46,12 +44,21 @@ Global
 		{5682A123-8D81-4F2A-B8B0-BBA514391A05}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5682A123-8D81-4F2A-B8B0-BBA514391A05}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5682A123-8D81-4F2A-B8B0-BBA514391A05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C0B4126-8972-4492-A689-BA081D02485A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C0B4126-8972-4492-A689-BA081D02485A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C0B4126-8972-4492-A689-BA081D02485A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C0B4126-8972-4492-A689-BA081D02485A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE5FF538-048E-48F8-BDC6-F51811D1149A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE5FF538-048E-48F8-BDC6-F51811D1149A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE5FF538-048E-48F8-BDC6-F51811D1149A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE5FF538-048E-48F8-BDC6-F51811D1149A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{8FF18DF0-D16E-4B1A-B091-1CA81027ACB3} = {CB30EEED-89B3-43DB-82ED-A483A184E12B}
 		{4651F3D4-86E9-4CC9-B04F-967003E58E6C} = {CB30EEED-89B3-43DB-82ED-A483A184E12B}
 		{DEB9C4B3-F3E9-4CD3-A6C8-113818F4464D} = {DEC937AB-FEDB-429B-B273-D3CAD1307B6F}
 		{CE22FCF2-6B7F-45C4-ACBE-6ADA7330783E} = {CB30EEED-89B3-43DB-82ED-A483A184E12B}
 		{5682A123-8D81-4F2A-B8B0-BBA514391A05} = {CB30EEED-89B3-43DB-82ED-A483A184E12B}
+		{1C0B4126-8972-4492-A689-BA081D02485A} = {CB30EEED-89B3-43DB-82ED-A483A184E12B}
+		{CE5FF538-048E-48F8-BDC6-F51811D1149A} = {CB30EEED-89B3-43DB-82ED-A483A184E12B}
 	EndGlobalSection
 EndGlobal

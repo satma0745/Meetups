@@ -6,9 +6,9 @@ using BCrypt.Net;
 using Meetup.Contract.Models.Enumerations;
 using Meetup.Contract.Models.Features.Auth.RegisterNewUser;
 using Meetup.Contract.Routing;
+using Meetups.Backend.Application.Modules.Persistence;
 using Meetups.Backend.Application.Seedwork;
 using Meetups.Backend.Domain.Entities.User;
-using Meetups.Backend.Persistence.Context;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,9 +16,9 @@ using Microsoft.EntityFrameworkCore;
 [Tags(Tags.Auth)]
 public class Controller : ApiControllerBase
 {
-    private readonly ApplicationContext context;
+    private readonly IApplicationContext context;
 
-    public Controller(ApplicationContext context) =>
+    public Controller(IApplicationContext context) =>
         this.context = context;
     
     /// <summary>Register a new user.</summary>

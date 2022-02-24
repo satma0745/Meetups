@@ -34,9 +34,9 @@ internal static class GlobalMappings
 
     #endregion
     
-    #region TokenPair
+    #region ITokenPair
 
-    public static TokenPairDto ToTokenPairDto(this TokenPair tokenPair) =>
+    public static TokenPairDto ToTokenPairDto(this ITokenPair tokenPair) =>
         new()
         {
             AccessToken = tokenPair.AccessToken,

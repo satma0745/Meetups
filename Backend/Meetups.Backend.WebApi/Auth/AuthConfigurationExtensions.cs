@@ -3,6 +3,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using Meetups.Backend.Application.Modules.Auth;
+using Meetups.Backend.Application.Modules.Auth.Injection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -12,11 +13,8 @@ internal static class AuthConfigurationExtensions
 {
     public static IServiceCollection AddAuth(this IServiceCollection services, IConfiguration configuration)
     {
-        var authConfiguration = AuthConfiguration.FromApplicationConfiguration(configuration);
-        
-        services.AddAuthModule(authConfiguration);
-        
         services
+            .AddAuthModule(configuration, out var authConfiguration)
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
@@ -29,7 +27,7 @@ internal static class AuthConfigurationExtensions
 
     private static void ConfigureTokenValidationParameters(
         this JwtBearerOptions options,
-        AuthConfiguration configuration)
+        IAuthConfiguration configuration)
     {
         options.TokenValidationParameters = configuration.TokenValidationParameters;
         options.RequireHttpsMetadata = false;

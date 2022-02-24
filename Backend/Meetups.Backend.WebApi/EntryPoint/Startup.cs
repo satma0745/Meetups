@@ -1,6 +1,6 @@
 ﻿namespace Meetups.Backend.WebApi.EntryPoint;
 
-using Meetups.Backend.Persistence.Context;
+using Meetups.Backend.Application.Modules.Persistence.Injection;
 using Meetups.Backend.WebApi.Auth;
 using Meetups.Backend.WebApi.Swagger;
 using Microsoft.AspNetCore.Builder;
@@ -17,7 +17,7 @@ internal class Startup
 
     public void ConfigureServices(IServiceCollection services) =>
         services
-            .AddApplicationContext()
+            .AddPersistenceModule()
             .AddAuth(configuration)
             .AddSwaggerDocs()
             .AddControllers();

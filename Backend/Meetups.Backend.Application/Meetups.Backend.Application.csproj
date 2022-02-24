@@ -12,11 +12,12 @@
     <ItemGroup>
         <PackageReference Include="BCrypt.Net-Next" Version="4.0.2" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.1" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.3" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\Contracts\Meetup.Contract\Meetup.Contract.csproj" />
-        <ProjectReference Include="..\Meetups.Backend.Persistence\Meetups.Backend.Persistence.csproj" />
+        <ProjectReference Include="..\Meetups.Backend.Domain\Meetups.Backend.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>

@@ -6,9 +6,9 @@ using Meetup.Contract.Models.Primitives;
 using Meetup.Contract.Models.Tokens;
 using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Modules.Auth;
+using Meetups.Backend.Application.Modules.Persistence;
 using Meetups.Backend.Application.Seedwork;
 using Meetups.Backend.Domain.Entities.User;
-using Meetups.Backend.Persistence.Context;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,10 +16,10 @@ using Microsoft.EntityFrameworkCore;
 [Tags(Tags.Auth)]
 public class Controller : ApiControllerBase
 {
-    private readonly ApplicationContext context;
+    private readonly IApplicationContext context;
     private readonly ITokenHelper tokenHelper;
 
-    public Controller(ApplicationContext context, ITokenHelper tokenHelper)
+    public Controller(IApplicationContext context, ITokenHelper tokenHelper)
     {
         this.context = context;
         this.tokenHelper = tokenHelper;
