@@ -15,7 +15,7 @@ internal class ApplicationContextModelSnapshot : ModelSnapshot
             .HasAnnotation("Relational:MaxIdentifierLength", 63)
             .UseIdentityByDefaultColumns();
 
-        modelBuilder.Entity("Meetups.Backend.Entities.Meetup.City", cityEntity =>
+        modelBuilder.Entity("Meetups.Backend.Domain.Entities.Meetup.City", cityEntity =>
         {
             cityEntity
                 .Property<Guid>("Id")
@@ -41,7 +41,7 @@ internal class ApplicationContextModelSnapshot : ModelSnapshot
             cityEntity.ToTable("cities", (string) null);
         });
 
-        modelBuilder.Entity("Meetups.Backend.Entities.Meetup.Meetup", meetupEntity =>
+        modelBuilder.Entity("Meetups.Backend.Domain.Entities.Meetup.Meetup", meetupEntity =>
         {
             meetupEntity
                 .Property<Guid>("Id")
@@ -85,7 +85,7 @@ internal class ApplicationContextModelSnapshot : ModelSnapshot
             meetupEntity.ToTable("meetups", (string) null);
         });
 
-        modelBuilder.Entity("Meetups.Backend.Entities.User.RefreshToken", refreshTokenEntity =>
+        modelBuilder.Entity("Meetups.Backend.Domain.Entities.User.RefreshToken", refreshTokenEntity =>
         {
             refreshTokenEntity
                 .Property<Guid>("TokenId")
@@ -108,7 +108,7 @@ internal class ApplicationContextModelSnapshot : ModelSnapshot
             refreshTokenEntity.ToTable("refresh_tokens", (string) null);
         });
 
-        modelBuilder.Entity("Meetups.Backend.Entities.User.User", userEntity =>
+        modelBuilder.Entity("Meetups.Backend.Domain.Entities.User.User", userEntity =>
         {
             userEntity
                 .Property<Guid>("Id")
@@ -178,35 +178,35 @@ internal class ApplicationContextModelSnapshot : ModelSnapshot
             meetupsGuestsJoinEntity.ToTable("meetups_guests_signup", (string) null);
         });
 
-        modelBuilder.Entity("Meetups.Backend.Entities.User.Guest", guestEntity =>
-            {
-                guestEntity.HasBaseType("Meetups.Backend.Entities.User.User");
-
-                guestEntity
-                    .HasDiscriminator()
-                    .HasValue("Guest");
-            });
-
-        modelBuilder.Entity("Meetups.Backend.Entities.User.Organizer", organizerEntity =>
+        modelBuilder.Entity("Meetups.Backend.Domain.Entities.User.Guest", guestEntity =>
         {
-            organizerEntity.HasBaseType("Meetups.Backend.Entities.User.User");
+            guestEntity.HasBaseType("Meetups.Backend.Domain.Entities.User.User");
+
+            guestEntity
+                .HasDiscriminator()
+                .HasValue("Guest");
+        });
+
+        modelBuilder.Entity("Meetups.Backend.Domain.Entities.User.Organizer", organizerEntity =>
+        {
+            organizerEntity.HasBaseType("Meetups.Backend.Domain.Entities.User.User");
 
             organizerEntity
                 .HasDiscriminator()
                 .HasValue("Organizer");
         });
 
-        modelBuilder.Entity("Meetups.Backend.Entities.Meetup.Meetup", meetupEntity =>
+        modelBuilder.Entity("Meetups.Backend.Domain.Entities.Meetup.Meetup", meetupEntity =>
         {
             meetupEntity
-                .HasOne("Meetups.Backend.Entities.User.Organizer", "Organizer")
+                .HasOne("Meetups.Backend.Domain.Entities.User.Organizer", "Organizer")
                 .WithMany("OrganizedMeetups")
                 .HasForeignKey("organizer_id")
                 .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired()
                 .HasConstraintName("fk_meetups_organizers_organizer_id");
 
-            meetupEntity.OwnsOne("Meetups.Backend.Entities.Meetup.Meetup.Place#Meetups.Backend.Entities.Meetup.MeetupPlace", "Place",
+            meetupEntity.OwnsOne("Meetups.Backend.Domain.Entities.Meetup.MeetupPlace", "Place",
                 meetupPlaceOwnedEntity =>
                 {
                     meetupPlaceOwnedEntity
@@ -221,26 +221,25 @@ internal class ApplicationContextModelSnapshot : ModelSnapshot
                         .HasColumnName("place_address");
 
                     meetupPlaceOwnedEntity
-                        .Property<Guid>("city_id")
+                        .Property<Guid>("place_city_id")
                         .HasColumnType("uuid")
                         .HasColumnName("place_city_id");
 
                     meetupPlaceOwnedEntity.HasKey("MeetupId");
 
                     meetupPlaceOwnedEntity
-                        .HasIndex("city_id")
+                        .HasIndex("place_city_id")
                         .HasDatabaseName("ix_meetups_place_city_id");
 
-                    meetupPlaceOwnedEntity.ToTable("meetups", (string) null);
+                    meetupPlaceOwnedEntity.ToTable("meetups");
 
                     meetupPlaceOwnedEntity
                         .WithOwner()
                         .HasForeignKey("MeetupId");
 
-                    meetupPlaceOwnedEntity
-                        .HasOne("Meetups.Backend.Entities.Meetup.City", "City")
+                    meetupPlaceOwnedEntity.HasOne("Meetups.Backend.Domain.Entities.Meetup.City", "City")
                         .WithMany()
-                        .HasForeignKey("city_id")
+                        .HasForeignKey("place_city_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_meetups_cities_place_city_id");
@@ -255,10 +254,10 @@ internal class ApplicationContextModelSnapshot : ModelSnapshot
                 .IsRequired();
         });
 
-        modelBuilder.Entity("Meetups.Backend.Entities.User.RefreshToken", refreshTokenEntity =>
+        modelBuilder.Entity("Meetups.Backend.Domain.Entities.User.RefreshToken", refreshTokenEntity =>
         {
             refreshTokenEntity
-                .HasOne("Meetups.Backend.Entities.User.User", null)
+                .HasOne("Meetups.Backend.Domain.Entities.User.User", null)
                 .WithMany("RefreshTokens")
                 .HasForeignKey("BearerId")
                 .OnDelete(DeleteBehavior.Cascade)
@@ -269,7 +268,7 @@ internal class ApplicationContextModelSnapshot : ModelSnapshot
         modelBuilder.Entity("System.Collections.Generic.Dictionary<string, string>", meetupsGuestsJoinEntity =>
         {
             meetupsGuestsJoinEntity
-                .HasOne("Meetups.Backend.Entities.Meetup.Meetup", null)
+                .HasOne("Meetups.Backend.Domain.Entities.Meetup.Meetup", null)
                 .WithMany()
                 .HasForeignKey("meetup_id")
                 .OnDelete(DeleteBehavior.Cascade)
@@ -277,7 +276,7 @@ internal class ApplicationContextModelSnapshot : ModelSnapshot
                 .HasConstraintName("fk_meetups_guests_signup_meetups_meetup_id");
 
             meetupsGuestsJoinEntity
-                .HasOne("Meetups.Backend.Entities.User.Guest", null)
+                .HasOne("Meetups.Backend.Domain.Entities.User.Guest", null)
                 .WithMany()
                 .HasForeignKey("signed_up_guest_id")
                 .OnDelete(DeleteBehavior.Cascade)
@@ -285,12 +284,12 @@ internal class ApplicationContextModelSnapshot : ModelSnapshot
                 .HasConstraintName("fk_meetups_guests_signup_guests_signed_up_guest_id");
         });
 
-        modelBuilder.Entity("Meetups.Backend.Entities.User.User", userEntity =>
+        modelBuilder.Entity("Meetups.Backend.Domain.Entities.User.User", userEntity =>
         {
             userEntity.Navigation("RefreshTokens");
         });
 
-        modelBuilder.Entity("Meetups.Backend.Entities.User.Organizer", organizerEntity =>
+        modelBuilder.Entity("Meetups.Backend.Domain.Entities.User.Organizer", organizerEntity =>
         {
             organizerEntity.Navigation("OrganizedMeetups");
         });
