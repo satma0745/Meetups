@@ -1,0 +1,41 @@
+﻿services:
+  app:
+    build: ./
+    environment:
+      ASPNETCORE_ENVIRONMENT: $APP_ENVIRONMENT
+      Auth__SecretKey: $APP_TOKEN_KEY
+      Auth__AccessTokenLifetimeInMinutes: $APP_ACCESS_TOKEN_LIFETIME_IN_MINUTES
+      Auth__RefreshTokenLifetimeInDays: $APP_REFRESH_TOKEN_LIFETIME_IN_DAYS
+      Persistence__Host: pg
+      Persistence__Port: $DB_INTERNAL_PORT
+      Persistence__Database: postgres
+      Persistence__Username: postgres
+      Persistence__Password: $DB_PASSWORD
+    depends_on:
+      - pg
+    ports:
+      - $APP_EXTERNAL_PORT:80
+  pg:
+    image: postgres:14
+    command: -p $DB_INTERNAL_PORT
+    environment:
+      POSTGRES_PASSWORD: $DB_PASSWORD
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    ports:
+      - $DB_EXTERNAL_PORT:$DB_INTERNAL_PORT
+    expose:
+      - $DB_INTERNAL_PORT
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: $PGADMIN_EMAIL
+      PGADMIN_DEFAULT_PASSWORD: $DB_PASSWORD
+    depends_on:
+      - pg
+    ports:
+      - $PGADMIN_EXTERNAL_PORT:80
+
+volumes:
+  pg-data:
+    driver: local

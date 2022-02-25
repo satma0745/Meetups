@@ -1,5 +1,7 @@
 ﻿/.idea
 
+/docker-compose.env
+
 /**/obj
 /**/bin
 

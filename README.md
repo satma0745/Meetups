@@ -4,58 +4,48 @@
 ## How to run
 
 
-### Dependencies
+### Clone
 
-- PostgreSQL 14
-- .Net SDK 6
-
-
-### Clone and restore
-
-Run the following command to clone a repo (by default it will create a new directory called `Meetups`)
+Run the following command to clone a repo (by default it will create a new
+directory called `Meetups`)
 ```
 git clone https://github.com/satma0745/Meetups.git
 ```
 
-Go to the `Meetups` and run
-```
-dotnet restore
-dotnet tool restore
-```
-
-
 ### Application configuration
 
-Go to the `Backend` > `Meetups.Backend.WebApi` > `Properties` folder.
-Here You will see 2 files: the `launchSettings.json` and the `appSettings.json`.
+Before running an application in Docker, you must first specify
+the configuration parameters. At the root of the project is the
+`docker-compose.env.sample` file, **don't modify** it, just make a copy of it
+named `docker-compose.env` instead. In this copy, you can override any
+parameters you want (the main thing is to remember that you did this, and that
+the example commands given may not suit you if you changed the value used in
+the example).
 
-As for `launchSettings.json`, there are only one property that can be interesting for consumers: `applicationUrl`.
-You can change the port number, just remember to follow this pattern: `http://localhost:<port>`.
+### Run application & migrate DB
 
-As for `appSettings.json`, it an application settings template file.
-You **should not modify** it, but instead You can copy it and rename to a `appSettings.Development.json`.
-Now You can modify this copy and it will not interrupt when You try to pull recent changes from an origin.
-You need to specify connection parameters for a PostgreSQl:
-- `Host`: server that hosts PostgreSQL DBMS
-- `Port`: server's port that exposes PostgreSQL connection
-- `Database`: name of a database that will used to persist application state
-- `Username`: name of the users to perform migration action and connect as
-- `Password`: password for the provided username (this is the only parameter that You **forced** to override - for local installation just provide the password You specified in the setup wizard)
-
-Now You can (but not required to) delete all **not overridden** fields.
-
-
-### Update DB & run application
-
-Now You just need to setup/update a DB (do not forget to come back to the project root directory):
+Run the application using the following command:
 ```
-dotnet ef database update --project .\Backend\Meetups.Backend.Application.Modules.Persistence --startup-project .\Backend\Meetups.Backend.WebApi
-```
-**Note**: You will need to repeat this step each time You pull changes from the remote origin, because it can contain DB schema changes.
-
-And run the application:
-```
-dotnet run --project .\Backend\Meetups.Backend.WebApi
+docker-compose --env-file "./docker-compose.env" up
 ```
 
-Now You can go to the `http://localhost:5265/api` url (note, that Your port may be different, if You changed it in the `launchSettings.json`).
+Wait a bit until application starts. You can verify that the application is
+running by navigating to the `http://locahost:5365/api` url (should open the
+Swagger documentation page).
+
+**Attention**: on first launch and each time a new migration has been added to the
+application (if You are not sure how to determine this - do this each time You
+pull the repository), You will need to migrate the database.
+In order to do this:
+1. Follow the link `http://localhost:5366`.
+2. Login using the `PGADMIN_EMAIL` and `DB_PASSWORD` configuration parameters.
+3. Expand the `"Servers" > "Meetups server" > "Databases" > "postrges"` tree.
+4. Right click on `"postgres"` and select `"CREATE script"`.
+5. In the window that opens, paste the contents of the `migrations.sql` file
+(located at the root of the project) and press F5.
+
+**Note**: If at step 3 you notice that the `"Servers"` list is empty, then
+right-click on it, select `"Create" > "Server ..."`. Specify the name of the
+server (`"Name"` field) `"Meetups server"`. On the `"Connection"` tab, write
+`"pg"` in the `"Host"` field and `"postgres"` in the `"Username"` field. Click
+the `"Save"` button.
