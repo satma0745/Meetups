@@ -3,12 +3,12 @@
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using BCrypt.Net;
-using Meetup.Contract.Models.Enumerations;
-using Meetup.Contract.Models.Features.Auth.RegisterNewUser;
-using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Features.Seedwork;
 using Meetups.Backend.Application.Modules.Persistence;
 using Meetups.Backend.Domain.Entities.User;
+using Meetups.Contract.Models.Enumerations;
+using Meetups.Contract.Models.Features.Auth.RegisterNewUser;
+using Meetups.Contract.Routing;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

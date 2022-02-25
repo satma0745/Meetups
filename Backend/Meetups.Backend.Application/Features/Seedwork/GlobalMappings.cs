@@ -1,8 +1,8 @@
 ﻿namespace Meetups.Backend.Application.Features.Seedwork;
 
-using Meetup.Contract.Models.Primitives;
 using Meetups.Backend.Application.Modules.Auth;
 using Meetups.Backend.Domain.Entities.Meetup;
+using Meetups.Contract.Models.Primitives;
 
 internal static class GlobalMappings
 {

@@ -2,12 +2,12 @@
 
 using System;
 using System.Threading.Tasks;
-using Meetup.Contract.Models.Primitives;
-using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Features.Seedwork;
 using Meetups.Backend.Application.Modules.Auth;
 using Meetups.Backend.Application.Modules.Persistence;
 using Meetups.Backend.Domain.Entities.User;
+using Meetups.Contract.Models.Primitives;
+using Meetups.Contract.Routing;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

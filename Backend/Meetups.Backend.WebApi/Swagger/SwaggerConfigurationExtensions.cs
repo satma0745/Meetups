@@ -3,8 +3,8 @@
 using System;
 using System.IO;
 using System.Linq;
-using Meetup.Contract;
 using Meetups.Backend.Application;
+using Meetups.Contract;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;

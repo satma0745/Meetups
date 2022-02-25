@@ -2,10 +2,10 @@
 
 using System;
 using System.Threading.Tasks;
-using Meetup.Contract.Models.Enumerations;
-using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Features.Seedwork;
 using Meetups.Backend.Application.Modules.Persistence;
+using Meetups.Contract.Models.Enumerations;
+using Meetups.Contract.Routing;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

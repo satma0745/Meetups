@@ -3,10 +3,10 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Meetup.Contract.Models.Features.Feed.GetSignedUpGuestsInfo;
-using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Features.Seedwork;
 using Meetups.Backend.Application.Modules.Persistence;
+using Meetups.Contract.Models.Features.Feed.GetSignedUpGuestsInfo;
+using Meetups.Contract.Routing;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

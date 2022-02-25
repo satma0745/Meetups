@@ -1,8 +1,8 @@
 ﻿namespace Meetups.Backend.Application.Modules.Auth;
 
 using System;
-using Meetup.Contract.Models.Tokens;
 using Meetups.Backend.Domain.Entities.User;
+using Meetups.Contract.Models.Tokens;
 
 public interface ITokenHelper
 {

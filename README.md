@@ -26,7 +26,7 @@ the example).
 
 Run the application using the following command:
 ```
-docker-compose --env-file "./docker-compose.env" up
+docker-compose --env-file "./docker-compose.env" up --build
 ```
 
 Wait a bit until application starts. You can verify that the application is

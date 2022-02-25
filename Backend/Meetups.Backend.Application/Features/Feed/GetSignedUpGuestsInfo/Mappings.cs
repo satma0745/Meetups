@@ -1,7 +1,7 @@
 ﻿namespace Meetups.Backend.Application.Features.Feed.GetSignedUpGuestsInfo;
 
-using Meetup.Contract.Models.Features.Feed.GetSignedUpGuestsInfo;
 using Meetups.Backend.Domain.Entities.User;
+using Meetups.Contract.Models.Features.Feed.GetSignedUpGuestsInfo;
 
 internal static class Mappings
 {

@@ -2,9 +2,9 @@
 
 using System;
 using System.Text;
-using Meetup.Contract.Models.Tokens;
 using Meetups.Backend.Application.Modules.Auth;
 using Meetups.Backend.Application.Modules.Seedwork;
+using Meetups.Contract.Models.Tokens;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 

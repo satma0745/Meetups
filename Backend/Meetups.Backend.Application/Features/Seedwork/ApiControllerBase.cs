@@ -3,7 +3,7 @@
 using System;
 using System.Linq;
 using System.Net.Mime;
-using Meetup.Contract.Models.Tokens;
+using Meetups.Contract.Models.Tokens;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]

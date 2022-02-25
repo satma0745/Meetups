@@ -3,10 +3,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using BCrypt.Net;
-using Meetup.Contract.Models.Features.Auth.ChangeCredentials;
-using Meetup.Contract.Routing;
 using Meetups.Backend.Application.Features.Seedwork;
 using Meetups.Backend.Application.Modules.Persistence;
+using Meetups.Contract.Models.Features.Auth.ChangeCredentials;
+using Meetups.Contract.Routing;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

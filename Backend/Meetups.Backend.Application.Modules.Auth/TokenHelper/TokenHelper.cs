@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Meetup.Contract.Models.Enumerations;
-using Meetup.Contract.Models.Tokens;
 using Meetups.Backend.Domain.Entities.User;
+using Meetups.Contract.Models.Enumerations;
+using Meetups.Contract.Models.Tokens;
 using Microsoft.IdentityModel.Tokens;
 
 internal class TokenHelper : ITokenHelper

@@ -2,8 +2,8 @@
 
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Meetup.Contract.Models.Features.Feed.GetMeetups;
 using Meetups.Backend.Domain.Entities.Meetup;
+using Meetups.Contract.Models.Features.Feed.GetMeetups;
 using Microsoft.EntityFrameworkCore;
 
 internal static class Extensions
