@@ -1,5 +1,6 @@
 ﻿namespace Meetups.WebApi.EntryPoint;
 
+using Meetups.Application.Features.Shared.Infrastructure.Internal;
 using Meetups.Application.Modules.Persistence.Injection;
 using Meetups.WebApi.Auth;
 using Meetups.WebApi.Swagger;
@@ -17,6 +18,7 @@ internal class Startup
 
     public void ConfigureServices(IServiceCollection services) =>
         services
+            .AddInternalRequestHandlers()
             .AddPersistenceModule()
             .AddAuth(configuration)
             .AddSwaggerDocs()
