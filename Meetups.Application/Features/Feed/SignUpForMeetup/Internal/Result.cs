@@ -1,6 +1,6 @@
 ﻿namespace Meetups.Application.Features.Feed.SignUpForMeetup.Internal;
 
-public class Result
+public record Result
 {
     public static readonly Result NoPayload = new();
     

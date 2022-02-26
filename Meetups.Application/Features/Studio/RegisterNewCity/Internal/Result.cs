@@ -2,15 +2,6 @@
 
 using System;
 
-public class Result
-{
-    public Guid Id { get; }
-    
-    public string Name { get; }
-
-    public Result(Guid id, string name)
-    {
-        Id = id;
-        Name = name;
-    }
-}
+public record Result(
+    Guid Id,
+    string Name);

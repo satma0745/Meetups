@@ -18,7 +18,7 @@ public class Controller : ApiControllerBase
     /// <response code="200">Retrieved meetups successfully.</response>
     /// <response code="400">Validation failed for pagination options.</response>
     [HttpGet("feed")]
-    [ProducesResponseType(typeof(ResponseDto[]), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAllMeetups([FromQuery] RequestDto requestDto)
     {
         var internalRequest = requestDto.ToInternalRequest();

@@ -2,18 +2,7 @@
 
 using System;
 
-public class Result
-{
-    public Guid Id { get; }
-    
-    public string Username { get; }
-    
-    public string DisplayName { get; }
-
-    public Result(Guid id, string username, string displayName)
-    {
-        Id = id;
-        Username = username;
-        DisplayName = displayName;
-    }
-}
+public record Result(
+    Guid Id,
+    string Username,
+    string DisplayName);

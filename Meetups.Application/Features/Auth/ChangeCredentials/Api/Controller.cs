@@ -30,7 +30,7 @@ public class Controller : ApiControllerBase
         return (internalResponse.Success, internalResponse.ErrorType) switch
         {
             (true, _) => Ok(),
-            (false, ErrorType.UsernameAlreadyTaken) => Conflict(),
+            (false, ErrorTypes.UsernameAlreadyTaken) => Conflict(),
             _ => InternalServerError()
         };
     }

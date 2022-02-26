@@ -1,24 +1,24 @@
 ﻿namespace Meetups.Application.Features.Studio.GetOrganizedMeetups.Api;
 
-using System.Collections.Generic;
 using System.Linq;
-using Meetups.Application.Features.Shared.Contracts;
+using Meetups.Application.Features.Shared.Contracts.PrimitiveDtos;
 using Meetups.Application.Features.Studio.GetOrganizedMeetups.Internal;
 
 internal static class Mappings
 {
-    public static IEnumerable<ResponseDto> ToApiResponse(this Result internalResult) =>
-        internalResult.Select(meetup =>
-            new ResponseDto(
-                id: meetup.Id,
-                topic: meetup.Topic,
-                place: meetup.Place.ToCustomMeetupPlaceDto(),
-                duration: meetup.Duration.ToMeetupDurationDto(),
-                startTime: meetup.StartTime,
-                signedUpGuestsCount: meetup.SignedUpGuestsCount
-            )
-        );
+    public static ResponseDto ToApiResponse(this Result internalResult)
+    {
+        var meetupDtos = internalResult.Select(ToMeetupDto);
+        return new ResponseDto(meetupDtos);
+    }
 
-    private static CustomMeetupPlaceDto ToCustomMeetupPlaceDto(this MeetupPlaceModel meetupPlace) =>
-        new(meetupPlace.CityId, meetupPlace.CityName, meetupPlace.Address);
+    private static MeetupDto ToMeetupDto(MeetupModel meetup) =>
+        new MeetupDto(
+            id: meetup.Id,
+            topic: meetup.Topic,
+            place: new MeetupPlaceDto(meetup.Place.CityId, meetup.Place.CityName, meetup.Place.Address),
+            startTime: meetup.StartTime,
+            duration: new MeetupDurationDto(meetup.Duration.Hours, meetup.Duration.Minutes),
+            signedUpGuestsCount: meetup.SignedUpGuestsCount
+        );
 }

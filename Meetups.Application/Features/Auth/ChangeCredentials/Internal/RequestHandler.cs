@@ -7,14 +7,14 @@ using Meetups.Application.Features.Shared.Infrastructure.Internal;
 using Meetups.Application.Modules.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-public class RequestHandler : RequestHandlerBase<Request, Result, ErrorType>
+public class RequestHandler : RequestHandlerBase<Request, Result, ErrorTypes>
 {
     private readonly IApplicationContext context;
 
     public RequestHandler(IApplicationContext context) =>
         this.context = context;
     
-    public override async Task<Response<Result, ErrorType>> HandleRequest(Request request)
+    public override async Task<Response<Result, ErrorTypes>> HandleRequest(Request request)
     {
         var usernameTaken = await context.Users
             .Include(user => user.RefreshTokens)
@@ -22,7 +22,7 @@ public class RequestHandler : RequestHandlerBase<Request, Result, ErrorType>
             .AnyAsync(user => user.Username == request.Username);
         if (usernameTaken)
         {
-            return Failure(ErrorType.UsernameAlreadyTaken);
+            return Failure(ErrorTypes.UsernameAlreadyTaken);
         }
         
         var user = await context.Users.SingleAsync(user => user.Id == request.CurrentUserId);

@@ -18,17 +18,17 @@ public class ResponseDto
     public string Topic { get; }
     
     [PublicAPI]
-    public CustomMeetupPlaceDto Place { get; }
-    
-    /// <summary>Meetup duration.</summary>
-    [PublicAPI]
-    [Required]
-    public MeetupDurationDto Duration { get; }
+    public MeetupPlaceDto Place { get; }
     
     /// <summary>When meetup starts.</summary>
     /// <example>2022-01-09T12:00:00Z</example>
     [PublicAPI]
     public DateTime StartTime { get; }
+    
+    /// <summary>Meetup duration.</summary>
+    [PublicAPI]
+    [Required]
+    public MeetupDurationDto Duration { get; }
     
     /// <summary>Number of guests that signed up for this meetup.</summary>
     /// <example>42</example>
@@ -38,28 +38,41 @@ public class ResponseDto
     public ResponseDto(
         Guid id,
         string topic,
-        CustomMeetupPlaceDto place,
-        MeetupDurationDto duration,
+        MeetupPlaceDto place,
         DateTime startTime,
+        MeetupDurationDto duration,
         int signedUpGuestsCount)
     {
         Id = id;
         Topic = topic;
         Place = place;
-        Duration = duration;
         StartTime = startTime;
+        Duration = duration;
         SignedUpGuestsCount = signedUpGuestsCount;
     }
 }
 
-public class CustomMeetupPlaceDto : MeetupPlaceDto
+public class MeetupPlaceDto
 {
+    /// <summary>Id of the city where the meetup will take place.</summary>
+    /// <example>07450745-0745-0745-0745-074507450745</example>
+    [PublicAPI]
+    public Guid CityId { get; }
+    
     /// <summary>Name of the city where the meetup will take place.</summary>
     /// <example>Oslo</example>
     [PublicAPI]
     public string CityName { get; }
+    
+    /// <summary>The address where the meetup will take place.</summary>
+    /// <example>Frank street, building 17, floor 7, office 41</example>
+    [PublicAPI]
+    public string Address { get; }
 
-    public CustomMeetupPlaceDto(Guid cityId, string cityName, string address)
-        : base(cityId, address) =>
+    public MeetupPlaceDto(Guid cityId, string cityName, string address)
+    {
+        CityId = cityId;
         CityName = cityName;
+        Address = address;
+    }
 }

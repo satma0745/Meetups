@@ -27,15 +27,15 @@ public class RequestHandler : RequestHandlerBase<Request, Result, ErrorTypes>
             return Failure(ErrorTypes.AccessViolation);
         }
 
-        var city = await context.Cities.SingleOrDefaultAsync(city => city.Id == request.CityId);
+        var city = await context.Cities.SingleOrDefaultAsync(city => city.Id == request.Place.CityId);
         if (city is null)
         {
             return Failure(ErrorTypes.CityDoesNotExist);
         }
 
         meetup.Reschedule(
-            place: new MeetupPlace(city, request.Address),
-            duration: request.Duration,
+            place: new MeetupPlace(city, request.Place.Address),
+            duration: new MeetupDuration(request.Duration.Hours, request.Duration.Minutes),
             startTime: request.StartTime);
         await context.SaveChangesAsync();
 

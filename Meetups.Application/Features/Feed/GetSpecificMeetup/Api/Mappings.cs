@@ -1,7 +1,7 @@
 ﻿namespace Meetups.Application.Features.Feed.GetSpecificMeetup.Api;
 
 using Meetups.Application.Features.Feed.GetSpecificMeetup.Internal;
-using Meetups.Application.Features.Shared.Contracts;
+using Meetups.Application.Features.Shared.Contracts.PrimitiveDtos;
 
 internal static class Mappings
 {
@@ -9,11 +9,13 @@ internal static class Mappings
         new ResponseDto(
             id: internalResult.Id,
             topic: internalResult.Topic,
-            place: internalResult.Place.ToCustomMeetupPlaceDto(),
-            duration: internalResult.Duration.ToMeetupDurationDto(),
+            place: new MeetupPlaceDto(
+                cityId: internalResult.Place.CityId,
+                cityName: internalResult.Place.CityName,
+                address: internalResult.Place.Address),
             startTime: internalResult.StartTime,
+            duration: new MeetupDurationDto(
+                hours: internalResult.Duration.Hours,
+                minutes: internalResult.Duration.Minutes),
             signedUpGuestsCount: internalResult.SignedUpGuestsCount);
-
-    private static CustomMeetupPlaceDto ToCustomMeetupPlaceDto(this MeetupPlaceModel meetupPlace) =>
-        new(meetupPlace.CityId, meetupPlace.CityName, meetupPlace.Address);
 }

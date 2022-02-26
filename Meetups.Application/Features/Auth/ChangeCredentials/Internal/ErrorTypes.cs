@@ -1,6 +1,6 @@
 ﻿namespace Meetups.Application.Features.Auth.ChangeCredentials.Internal;
 
-public enum ErrorType
+public enum ErrorTypes
 {
     UsernameAlreadyTaken
 }

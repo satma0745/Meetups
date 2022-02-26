@@ -20,7 +20,7 @@ public class Controller : ApiControllerBase
     /// <response code="200">Guest who signed up for the meetup.</response>
     /// <response code="404">Meetup with the specified ID does not exist.</response>
     [HttpGet("feed/{meetupId:guid}/signed-up-guests")]
-    [ProducesResponseType(typeof(ResponseDto[]), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetSignedUpGuestsInfo([FromRoute] Guid meetupId)
     {

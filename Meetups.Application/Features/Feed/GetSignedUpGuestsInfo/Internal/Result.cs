@@ -11,15 +11,6 @@ public class Result : List<GuestModel>
     }
 }
 
-public class GuestModel
-{
-    public Guid Id { get; }
-    
-    public string DisplayName { get; }
-
-    public GuestModel(Guid id, string displayName)
-    {
-        Id = id;
-        DisplayName = displayName;
-    }
-}
+public record GuestModel(
+    Guid Id,
+    string DisplayName);

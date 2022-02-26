@@ -25,12 +25,12 @@ public class RequestHandler : RequestHandlerBase<Request, Result, ErrorTypes>
         }
 
         var result = new Result(
-            id: meetup.Id,
-            topic: meetup.Topic,
-            place: new MeetupPlaceModel(meetup.Place.City.Id, meetup.Place.City.Name, meetup.Place.Address),
-            duration: meetup.Duration,
-            startTime: meetup.StartTime,
-            signedUpGuestsCount: meetup.SignedUpGuests.Count);
+            Id: meetup.Id,
+            Topic: meetup.Topic,
+            Place: new MeetupPlaceModel(meetup.Place.City.Id, meetup.Place.City.Name, meetup.Place.Address),
+            StartTime: meetup.StartTime,
+            Duration: new MeetupDurationModel(meetup.Duration.Hours, meetup.Duration.Minutes),
+            SignedUpGuestsCount: meetup.SignedUpGuests.Count);
         return Success(result);
     }
 }

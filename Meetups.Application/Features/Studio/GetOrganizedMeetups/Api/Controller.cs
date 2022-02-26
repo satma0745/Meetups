@@ -20,7 +20,7 @@ public class Controller : ApiControllerBase
     /// <response code="200">Meetups organized by the current user.</response>
     [Authorize(Roles = UserRoles.Organizer)]
     [HttpGet("studio/organized")]
-    [ProducesResponseType(typeof(ResponseDto[]), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetOrganizedMeetups()
     {
         var internalRequest = new Request(CurrentUser.UserId);

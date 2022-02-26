@@ -1,12 +1,16 @@
 ﻿namespace Meetups.Application.Features.Feed.GetAllCities.Internal;
 
+using System;
 using System.Collections.Generic;
-using Meetups.Domain.Entities.Meetup;
 
-public class Result : List<City>
+public class Result : List<CityModel>
 {
-    public Result(IEnumerable<City> cities)
+    public Result(IEnumerable<CityModel> cities)
         : base(cities)
     {
     }
 }
+
+public record CityModel(
+    Guid Id,
+    string Name);

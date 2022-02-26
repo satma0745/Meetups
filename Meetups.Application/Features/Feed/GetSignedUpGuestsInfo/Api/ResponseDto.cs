@@ -1,9 +1,18 @@
 ﻿namespace Meetups.Application.Features.Feed.GetSignedUpGuestsInfo.Api;
 
 using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 
-public class ResponseDto
+public class ResponseDto : List<GuestDto>
+{
+    public ResponseDto(IEnumerable<GuestDto> guests)
+        : base(guests)
+    {
+    }
+}
+
+public class GuestDto
 {
     /// <summary>Permanent unique user identifier.</summary>
     /// <example>07450745-0745-0745-0745-074507450745</example>
@@ -15,7 +24,7 @@ public class ResponseDto
     [PublicAPI]
     public string DisplayName { get; }
 
-    public ResponseDto(Guid id, string displayName)
+    public GuestDto(Guid id, string displayName)
     {
         Id = id;
         DisplayName = displayName;

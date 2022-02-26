@@ -1,6 +1,6 @@
 ﻿namespace Meetups.Application.Features.Studio.UpdateMeetupDescription.Internal;
 
-public class Result
+public record Result
 {
     public static readonly Result NoPayload = new();
     

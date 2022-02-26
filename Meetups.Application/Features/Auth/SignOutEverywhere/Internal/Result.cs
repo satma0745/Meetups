@@ -1,6 +1,6 @@
 ﻿namespace Meetups.Application.Features.Auth.SignOutEverywhere.Internal;
 
-public class Result
+public record Result
 {
     public static readonly Result NoPayload = new();
     

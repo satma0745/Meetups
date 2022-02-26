@@ -2,10 +2,4 @@
 
 using System;
 
-public class Request
-{
-    public Guid CurrentUserId { get; }
-
-    public Request(Guid currentUserId) =>
-        CurrentUserId = currentUserId;
-}
+public record Request(Guid CurrentUserId);
