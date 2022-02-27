@@ -80,6 +80,7 @@ public class GetSignedUpGuestsInfoFeatureTests
                 (guest, result) => (guest, result))
             .ToList();
         Assert.Equal(guests.Length, pairs.Count);
+        
         foreach (var (guest, result) in pairs)
         {
             Assert.Equal(guest.Id, result.Id);
