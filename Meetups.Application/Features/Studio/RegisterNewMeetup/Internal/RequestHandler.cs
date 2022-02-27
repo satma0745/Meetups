@@ -30,7 +30,7 @@ public class RequestHandler : RequestHandlerBase<Request, Result, ErrorTypes>
         var organizer = await context.Organizers
             .Include(organizer => organizer.OrganizedMeetups)
             .ThenInclude(meetup => meetup.Place.City)
-            .SingleAsync(organizer => organizer.Id == request.CurrentUserId);
+            .SingleAsync(organizer => organizer.Id == request.OrganizerId);
 
         var meetup = new Meetup(
             topic: request.Topic,

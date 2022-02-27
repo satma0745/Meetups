@@ -2,4 +2,4 @@
 
 using System;
 
-public record Request(Guid CurrentUserId);
+public record Request(Guid OrganizerId);

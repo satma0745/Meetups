@@ -25,16 +25,18 @@ public class Controller : ApiControllerBase
     [HttpDelete("studio/{meetupId:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteSpecificMeetup([FromRoute] Guid meetupId)
-    {
-        var internalRequest = new Request(meetupId, CurrentUser.UserId);
-        var internalResponse = await requestHandler.HandleRequest(internalRequest);
-        return (internalResponse.Success, internalResponse.ErrorType) switch
-        {
-            (true, _) => Ok(),
-            (false, ErrorTypes.MeetupDoesNotExist) => NotFound(),
-            (false, ErrorTypes.AccessViolation) => Forbid(),
-            _ => InternalServerError()
-        };
-    }
+    public Task<IActionResult> DeleteSpecificMeetup([FromRoute] Guid meetupId) =>
+        ApiPipeline
+            .CreateRequest(new Request(
+                MeetupId: meetupId,
+                CurrentUserId: CurrentUser.UserId))
+            .HandleRequestAsync(requestHandler)
+            .ToApiResponse(
+                onSuccess: _ => Ok(),
+                onFailure: errorType => errorType switch
+                {
+                    ErrorTypes.MeetupDoesNotExist => NotFound(),
+                    ErrorTypes.AccessViolation => Forbid(),
+                    _ => InternalServerError()
+                });
 }

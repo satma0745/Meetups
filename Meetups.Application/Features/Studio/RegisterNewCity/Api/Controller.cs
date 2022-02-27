@@ -17,22 +17,28 @@ public class Controller : ApiControllerBase
         this.requestHandler = requestHandler;
 
     /// <summary>Register a new city.</summary>
-    /// <param name="requestDto">DTO to create city based on.</param>
+    /// <param name="request">DTO to create city based on.</param>
     /// <response code="200">New city was registered successfully.</response>
     /// <response code="409">City with te same name already exists.</response>
     [Authorize(Roles = UserRoles.Organizer)]
     [HttpPost("studio/new-city")]
     [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> RegisterNewCity([FromBody] RequestDto requestDto)
-    {
-        var internalRequest = requestDto.ToInternalRequest();
-        var internalResponse = await requestHandler.HandleRequest(internalRequest);
-        return (internalResponse.Success, internalResponse.Payload, internalResponse.ErrorType) switch
-        {
-            (true, var internalResult, _) => Ok(internalResult.ToApiResponse()),
-            (false, _, ErrorTypes.NameAlreadyTaken) => Conflict(),
-            _ => InternalServerError()
-        };
-    }
+    public Task<IActionResult> RegisterNewCity([FromBody] RequestDto request) =>
+        ApiPipeline
+            .CreateRequest(new Request(request.Name))
+            .HandleRequestAsync(requestHandler)
+            .ToApiResponse(
+                onSuccess: result =>
+                {
+                    var payload = new ResponseDto(
+                        id: result.Id,
+                        name: result.Name);
+                    return Ok(payload);
+                },
+                onFailure: errorType => errorType switch
+                {
+                    ErrorTypes.NameAlreadyTaken => Conflict(),
+                    _ => InternalServerError()
+                });
 }

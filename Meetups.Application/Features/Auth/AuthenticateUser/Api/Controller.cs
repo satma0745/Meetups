@@ -15,7 +15,7 @@ public class Controller : ApiControllerBase
         this.requestHandler = requestHandler;
 
     /// <summary>Issue token pair for provided user credentials.</summary>
-    /// <param name="requestDto">User credentials.</param>
+    /// <param name="request">User credentials.</param>
     /// <response code="200">User authenticated successfully.</response>
     /// <response code="404">User with specified username does not exist.</response>
     /// <response code="409">Incorrect password provided.</response>
@@ -23,16 +23,22 @@ public class Controller : ApiControllerBase
     [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> AuthenticateUser([FromBody] RequestDto requestDto)
-    {
-        var internalRequest = requestDto.ToInternalRequest();
-        var internalResponse = await requestHandler.HandleRequest(internalRequest);
-        return (internalResponse.Success, internalResponse.Payload, internalResponse.ErrorType) switch
-        {
-            (true, var internalResult, _) => Ok(internalResult.ToApiResponse()),
-            (false, _, ErrorTypes.UserDoesNotExist) => NotFound(),
-            (false, _, ErrorTypes.IncorrectPassword) => Conflict(),
-            _ => InternalServerError()
-        };
-    }
+    public Task<IActionResult> AuthenticateUser([FromBody] RequestDto request) =>
+        ApiPipeline
+            .CreateRequest(new Request(
+                Username: request.Username,
+                Password: request.Password))
+            .HandleRequestAsync(requestHandler)
+            .ToApiResponse(
+                onSuccess: result =>
+                {
+                    var payload = new ResponseDto(result.AccessToken, result.RefreshToken);
+                    return Ok(payload);
+                },
+                onFailure: errorType => errorType switch
+                {
+                    ErrorTypes.UserDoesNotExist => NotFound(),
+                    ErrorTypes.IncorrectPassword => Conflict(),
+                    _ => InternalServerError()
+                });
 }

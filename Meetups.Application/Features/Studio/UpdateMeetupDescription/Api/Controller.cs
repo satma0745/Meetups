@@ -16,10 +16,10 @@ public class Controller : ApiControllerBase
 
     public Controller(RequestHandler requestHandler) =>
         this.requestHandler = requestHandler;
-    
+
     /// <summary>Updates description of a specific meetup (with the specified ID).</summary>
     /// <param name="meetupId">Meetup ID to update description of.</param>
-    /// <param name="requestDto">DTO with the updated meetup description.</param>
+    /// <param name="request">DTO with the updated meetup description.</param>
     /// <response code="200">Meetup description was updated successfully.</response>
     /// <response code="403">Only the organizer of a meetup can update it's description.</response>
     /// <response code="404">Specified meetup does not exist.</response>
@@ -28,16 +28,19 @@ public class Controller : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> RescheduleMeetup([FromRoute] Guid meetupId, [FromBody] RequestDto requestDto)
-    {
-        var internalRequest = requestDto.ToInternalRequest(meetupId, CurrentUser);
-        var internalResponse = await requestHandler.HandleRequest(internalRequest);
-        return (internalResponse.Success, internalResponse.ErrorType) switch
-        {
-            (true, _) => Ok(),
-            (false, ErrorTypes.MeetupDoesNotExist) => NotFound(),
-            (false, ErrorTypes.AccessViolation) => Forbid(),
-            _ => InternalServerError()
-        };
-    }
+    public Task<IActionResult> RescheduleMeetup([FromRoute] Guid meetupId, [FromBody] RequestDto request) =>
+        ApiPipeline
+            .CreateRequest(new Request(
+                MeetupId: meetupId,
+                Topic: request.Topic,
+                CurrentUserId: CurrentUser.UserId))
+            .HandleRequestAsync(requestHandler)
+            .ToApiResponse(
+                onSuccess: _ => Ok(),
+                onFailure: errorType => errorType switch
+                {
+                    ErrorTypes.MeetupDoesNotExist => NotFound(),
+                    ErrorTypes.AccessViolation => Forbid(),
+                    _ => InternalServerError()
+                });
 }

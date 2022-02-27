@@ -1,9 +1,10 @@
 ﻿namespace Meetups.Application.Features.Shared.Infrastructure.Internal;
 
+using System;
 using System.Threading.Tasks;
 
 public abstract class RequestHandlerBase<TRequest, TResult, TErrorType>
-    where TErrorType : System.Enum
+    where TErrorType : Enum
 {
     protected static Response<TResult, TErrorType> Success(TResult internalResult) =>
         new(internalResult);

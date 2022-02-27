@@ -3,6 +3,6 @@
 using System;
 
 public record Request(
-    Guid CurrentUserId,
+    Guid UserId,
     string Username,
     string Password);

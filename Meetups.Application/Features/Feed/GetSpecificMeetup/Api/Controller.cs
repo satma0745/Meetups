@@ -3,6 +3,7 @@
 using System;
 using System.Threading.Tasks;
 using Meetups.Application.Features.Feed.GetSpecificMeetup.Internal;
+using Meetups.Application.Features.Shared.Contracts.PrimitiveDtos;
 using Meetups.Application.Features.Shared.Infrastructure.Api;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,15 +23,30 @@ public class Controller : ApiControllerBase
     [HttpGet("feed/{meetupId:guid}")]
     [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetSpecificMeetup([FromRoute] Guid meetupId)
-    {
-        var internalRequest = new Request(meetupId);
-        var internalResponse = await requestHandler.HandleRequest(internalRequest);
-        return (internalResponse.Success, internalResponse.Payload, internalResponse.ErrorType) switch
-        {
-            (true, var internalResult, _) => Ok(internalResult.ToApiResponse()),
-            (false, _, ErrorTypes.MeetupDoesNotExist) => NotFound(),
-            _ => InternalServerError()
-        };
-    }
+    public Task<IActionResult> GetSpecificMeetup([FromRoute] Guid meetupId) =>
+        ApiPipeline
+            .CreateRequest(new Request(meetupId))
+            .HandleRequestAsync(requestHandler)
+            .ToApiResponse(
+                onSuccess: result =>
+                {
+                    var payload = new ResponseDto(
+                        id: result.Id,
+                        topic: result.Topic,
+                        place: new MeetupPlaceDto(
+                            cityId: result.Place.CityId,
+                            cityName: result.Place.CityName,
+                            address: result.Place.Address),
+                        startTime: result.StartTime,
+                        duration: new MeetupDurationDto(
+                            hours: result.Duration.Hours,
+                            minutes: result.Duration.Minutes),
+                        signedUpGuestsCount: result.SignedUpGuestsCount);
+                    return Ok(payload);
+                },
+                onFailure: errorType => errorType switch
+                {
+                    ErrorTypes.MeetupDoesNotExist => NotFound(),
+                    _ => InternalServerError()
+                });
 }

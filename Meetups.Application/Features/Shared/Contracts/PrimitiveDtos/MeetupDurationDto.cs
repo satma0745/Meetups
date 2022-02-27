@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
-using Meetups.Domain.Entities.Meetup;
 
 [JsonConverter(typeof(Converter))]
 public class MeetupDurationDto
@@ -66,10 +65,4 @@ public class MeetupDurationDto
             writer.WriteStringValue(serialized);
         }
     }
-}
-
-public static class Mappings
-{
-    public static MeetupDurationDto ToMeetupDurationDto(this MeetupDuration meetupDuration) =>
-        new(meetupDuration.Hours, meetupDuration.Minutes);
 }

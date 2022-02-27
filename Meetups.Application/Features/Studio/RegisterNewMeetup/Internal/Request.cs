@@ -7,7 +7,7 @@ public record Request(
     MeetupPlaceModel Place,
     DateTime StartTime,
     MeetupDurationModel Duration,
-    Guid CurrentUserId);
+    Guid OrganizerId);
 
 public record MeetupPlaceModel(
     Guid CityId,

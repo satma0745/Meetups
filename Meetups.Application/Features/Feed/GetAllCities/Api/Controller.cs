@@ -1,5 +1,6 @@
 ﻿namespace Meetups.Application.Features.Feed.GetAllCities.Api;
 
+using System.Linq;
 using System.Threading.Tasks;
 using Meetups.Application.Features.Feed.GetAllCities.Internal;
 using Meetups.Application.Features.Shared.Infrastructure.Api;
@@ -18,13 +19,17 @@ public class Controller : ApiControllerBase
     /// <response code="200">Cities retrieved successfully.</response>
     [HttpGet("feed/all-cities")]
     [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAllCities()
-    {
-        var internalResponse = await requestHandler.HandleRequest(Internal.Request.NoPayload);
-        return (internalResponse.Success, internalResponse.Payload) switch
-        {
-            (true, var internalResult) => Ok(internalResult.ToApiResponse()),
-            (false, _) => InternalServerError()
-        };
-    }
+    public Task<IActionResult> GetAllCities() =>
+        ApiPipeline
+            .CreateRequest(new Request())
+            .HandleRequestAsync(requestHandler)
+            .ToApiResponse(
+                onSuccess: result =>
+                {
+                    var cities = result.Select(city => new CityDto(
+                        id: city.Id,
+                        name: city.Name));
+                    return Ok(new ResponseDto(cities));
+                },
+                onFailure: _ => InternalServerError());
 }

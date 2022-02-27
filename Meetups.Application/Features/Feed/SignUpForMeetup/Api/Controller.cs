@@ -27,16 +27,18 @@ public class Controller : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> SignUpForMeetup([FromRoute] Guid meetupId)
-    {
-        var internalRequest = new Request(meetupId, CurrentUser.UserId);
-        var internalResponse = await requestHandler.HandleRequest(internalRequest);
-        return (internalResponse.Success, internalResponse.ErrorType) switch
-        {
-            (true, _) => Ok(),
-            (false, ErrorTypes.MeetupDoesNotExist) => NotFound(),
-            (false, ErrorTypes.AlreadySignedUp) => Conflict(),
-            _ => InternalServerError()
-        };
-    }
+    public Task<IActionResult> SignUpForMeetup([FromRoute] Guid meetupId) =>
+        ApiPipeline
+            .CreateRequest(new Request(
+                MeetupId: meetupId,
+                CurrentUserId: CurrentUser.UserId))
+            .HandleRequestAsync(requestHandler)
+            .ToApiResponse(
+                onSuccess: _ => Ok(),
+                onFailure: errorType => errorType switch
+                {
+                    ErrorTypes.MeetupDoesNotExist => NotFound(),
+                    ErrorTypes.AlreadySignedUp => Conflict(),
+                    _ => InternalServerError()
+                });
 }

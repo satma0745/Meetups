@@ -22,15 +22,22 @@ public class Controller : ApiControllerBase
     [HttpGet("auth/who-am-i")]
     [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> GetCurrentUserInfo()
-    {
-        var internalRequest = new Request(CurrentUser.UserId);
-        var internalResponse = await requestHandler.HandleRequest(internalRequest);
-        return (internalResponse.Success, internalResponse.Payload, internalResponse.ErrorType) switch
-        {
-            (true, var internalResult, _) => Ok(internalResult.ToApiResponse()),
-            (false, _, ErrorTypes.UserDoesNotExist) => Unauthorized(),
-            _ => InternalServerError()
-        };
-    }
+    public Task<IActionResult> GetCurrentUserInfo() =>
+        ApiPipeline
+            .CreateRequest(new Request(CurrentUser.UserId))
+            .HandleRequestAsync(requestHandler)
+            .ToApiResponse(
+                onSuccess: result =>
+                {
+                    var payload = new ResponseDto(
+                        id: result.Id,
+                        username: result.Username,
+                        displayName: result.DisplayName);
+                    return Ok(payload);
+                },
+                onFailure: errorType => errorType switch
+                {
+                    ErrorTypes.UserDoesNotExist => Unauthorized(),
+                    _ => InternalServerError()
+                });
 }

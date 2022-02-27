@@ -21,17 +21,23 @@ public class Controller : ApiControllerBase
     [HttpPost("auth/refresh")]
     [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> RefreshTokenPair([FromBody] string oldRefreshToken)
-    {
-        var internalRequest = new Request(oldRefreshToken);
-        var internalResponse = await requestHandler.HandleRequest(internalRequest);
-        return (internalResponse.Success, internalResponse.Payload, internalResponse.ErrorType) switch
-        {
-            (true, var internalResult, _) => Ok(internalResult.ToApiResponse()),
-            (false, _, ErrorTypes.InvalidRefreshTokenProvided) => BadRequest(),
-            (false, _, ErrorTypes.TokenBearerDoesNotExist) => BadRequest(),
-            (false, _, ErrorTypes.FakeOrUsedRefreshTokenProvided) => BadRequest(),
-            _ => InternalServerError()
-        };
-    }
+    public Task<IActionResult> RefreshTokenPair([FromBody] string oldRefreshToken) =>
+        ApiPipeline
+            .CreateRequest(new Request(oldRefreshToken))
+            .HandleRequestAsync(requestHandler)
+            .ToApiResponse(
+                onSuccess: result =>
+                {
+                    var payload = new ResponseDto(
+                        accessToken: result.AccessToken,
+                        refreshToken: result.RefreshToken);
+                    return Ok(payload);
+                },
+                onFailure: errorType => errorType switch
+                {
+                    ErrorTypes.InvalidRefreshTokenProvided => BadRequest(),
+                    ErrorTypes.TokenBearerDoesNotExist => BadRequest(),
+                    ErrorTypes.FakeOrUsedRefreshTokenProvided => BadRequest(),
+                    _ => InternalServerError()
+                });
 }

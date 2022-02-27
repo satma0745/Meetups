@@ -18,14 +18,14 @@ public class RequestHandler : RequestHandlerBase<Request, Result, ErrorTypes>
     {
         var usernameTaken = await context.Users
             .Include(user => user.RefreshTokens)
-            .Where(user => user.Id != request.CurrentUserId)
+            .Where(user => user.Id != request.UserId)
             .AnyAsync(user => user.Username == request.Username);
         if (usernameTaken)
         {
             return Failure(ErrorTypes.UsernameAlreadyTaken);
         }
         
-        var user = await context.Users.SingleAsync(user => user.Id == request.CurrentUserId);
+        var user = await context.Users.SingleAsync(user => user.Id == request.UserId);
         user.ChangeCredentials(request.Username, BCrypt.HashPassword(request.Password));
         user.RevokeAllRefreshTokens();
         await context.SaveChangesAsync();

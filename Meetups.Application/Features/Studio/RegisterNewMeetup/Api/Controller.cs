@@ -17,7 +17,7 @@ public class Controller : ApiControllerBase
         this.requestHandler = requestHandler;
 
     /// <summary>Register new meetup.</summary>
-    /// <param name="requestDto">DTO to create meetup from.</param>
+    /// <param name="request">DTO to create meetup from.</param>
     /// <response code="200">New meetup was created successfully.</response>
     /// <response code="400">Validation failed for DTO.</response>
     /// <response code="404">Specified city does not exist.</response>
@@ -28,16 +28,25 @@ public class Controller : ApiControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> RegisterNewMeetup([FromBody] RequestDto requestDto)
-    {
-        var internalRequest = requestDto.ToInternalRequest(CurrentUser);
-        var internalResponse = await requestHandler.HandleRequest(internalRequest);
-        return (internalResponse.Success, internalResponse.ErrorType) switch
-        {
-            (true, _) => Ok(),
-            (false, ErrorTypes.TopicAlreadyTaken) => Conflict(),
-            (false, ErrorTypes.CityDoesNotExist) => NotFound(),
-            _ => InternalServerError()
-        };
-    }
+    public Task<IActionResult> RegisterNewMeetup([FromBody] RequestDto request) =>
+        ApiPipeline
+            .CreateRequest(new Request(
+                Topic: request.Topic,
+                Place: new MeetupPlaceModel(
+                    CityId: request.Place.CityId,
+                    Address: request.Place.Address),
+                StartTime: request.StartTime,
+                Duration: new MeetupDurationModel(
+                    Hours: request.Duration.Hours,
+                    Minutes: request.Duration.Minutes),
+                OrganizerId: CurrentUser.UserId))
+            .HandleRequestAsync(requestHandler)
+            .ToApiResponse(
+                onSuccess: _ => Ok(),
+                onFailure: errorType => errorType switch
+                {
+                    ErrorTypes.TopicAlreadyTaken => Conflict(),
+                    ErrorTypes.CityDoesNotExist => NotFound(),
+                    _ => InternalServerError()
+                });
 }

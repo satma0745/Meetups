@@ -20,14 +20,11 @@ public class Controller : ApiControllerBase
     [Authorize]
     [HttpPost("auth/sign-out-everywhere")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> SignOutEverywhere()
-    {
-        var internalRequest = new Request(CurrentUser.UserId);
-        var internalResponse = await requestHandler.HandleRequest(internalRequest);
-        return internalResponse.Success switch
-        {
-            true => Ok(),
-            false => InternalServerError()
-        };
-    }
+    public Task<IActionResult> SignOutEverywhere() =>
+        ApiPipeline
+            .CreateRequest(new Request(CurrentUser.UserId))
+            .HandleRequestAsync(requestHandler)
+            .ToApiResponse(
+                onSuccess: _ => Ok(),
+                onFailure: _ => InternalServerError());
 }

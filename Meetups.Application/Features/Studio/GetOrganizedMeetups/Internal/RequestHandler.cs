@@ -21,7 +21,7 @@ public class RequestHandler : RequestHandlerBase<Request, Result, ErrorTypes>
             .ThenInclude(meetup => meetup.SignedUpGuests)
             .Include(organizer => organizer.OrganizedMeetups)
             .ThenInclude(meetup => meetup.Place.City)
-            .SingleAsync(organizer => organizer.Id == request.CurrentUserId);
+            .SingleAsync(organizer => organizer.Id == request.OrganizerId);
 
         var meetups = organizer.OrganizedMeetups.Select(meetup => new MeetupModel(
             Id: meetup.Id,

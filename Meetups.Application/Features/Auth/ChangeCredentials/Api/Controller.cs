@@ -16,22 +16,25 @@ public class Controller : ApiControllerBase
         this.requestHandler = requestHandler;
 
     /// <summary>Change current user signing credentials.</summary>
-    /// <param name="requestDto">New credentials.</param>
+    /// <param name="request">New credentials.</param>
     /// <response code="200">Credentials changed successfully.</response>
     /// <response code="409">Username already taken.</response>
     [Authorize]
     [HttpPut("auth/credentials")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> ChangeCredentials([FromBody] RequestDto requestDto)
-    {
-        var internalRequest = requestDto.ToInternalRequest(CurrentUser);
-        var internalResponse = await requestHandler.HandleRequest(internalRequest);
-        return (internalResponse.Success, internalResponse.ErrorType) switch
-        {
-            (true, _) => Ok(),
-            (false, ErrorTypes.UsernameAlreadyTaken) => Conflict(),
-            _ => InternalServerError()
-        };
-    }
+    public Task<IActionResult> ChangeCredentials([FromBody] RequestDto request) =>
+        ApiPipeline
+            .CreateRequest(new Request(
+                UserId: CurrentUser.UserId,
+                Username: request.Username,
+                Password: request.Password))
+            .HandleRequestAsync(requestHandler)
+            .ToApiResponse(
+                onSuccess: _ => Ok(),
+                onFailure: errorType => errorType switch
+                {
+                    ErrorTypes.UsernameAlreadyTaken => Conflict(),
+                    _ => InternalServerError()
+                });
 }

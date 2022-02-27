@@ -1,6 +1,7 @@
 ﻿namespace Meetups.Application.Features.Feed.GetSignedUpGuestsInfo.Api;
 
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Meetups.Application.Features.Feed.GetSignedUpGuestsInfo.Internal;
 using Meetups.Application.Features.Shared.Infrastructure.Api;
@@ -22,15 +23,21 @@ public class Controller : ApiControllerBase
     [HttpGet("feed/{meetupId:guid}/signed-up-guests")]
     [ProducesResponseType(typeof(ResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetSignedUpGuestsInfo([FromRoute] Guid meetupId)
-    {
-        var internalRequest = new Request(meetupId);
-        var internalResponse = await requestHandler.HandleRequest(internalRequest);
-        return (internalResponse.Success, internalResponse.Payload, internalResponse.ErrorType) switch
-        {
-            (true, var internalResult, _) => Ok(internalResult.ToApiResponse()),
-            (false, _, ErrorTypes.MeetupDoesNotExist) => NotFound(),
-            _ => InternalServerError()
-        };
-    }
+    public Task<IActionResult> GetSignedUpGuestsInfo([FromRoute] Guid meetupId) =>
+        ApiPipeline
+            .CreateRequest(new Request(meetupId))
+            .HandleRequestAsync(requestHandler)
+            .ToApiResponse(
+                onSuccess: result =>
+                {
+                    var guests = result.Select(guest => new GuestDto(
+                        id: guest.Id,
+                        displayName: guest.DisplayName));
+                    return Ok(new ResponseDto(guests));
+                },
+                onFailure: errorTypes => errorTypes switch
+                {
+                    ErrorTypes.MeetupDoesNotExist => NotFound(),
+                    _ => InternalServerError()
+                });
 }
