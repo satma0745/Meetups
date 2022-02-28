@@ -1,6 +1,9 @@
 # Meetups
 
 
+[![Test](https://github.com/satma0745/Meetups/actions/workflows/test.yml/badge.svg?branch=dev)](https://github.com/satma0745/Meetups/actions/workflows/test.yml)
+
+
 ## How to run
 
 
