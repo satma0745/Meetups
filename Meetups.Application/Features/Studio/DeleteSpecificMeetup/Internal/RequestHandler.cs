@@ -15,16 +15,13 @@ public class RequestHandler : RequestHandlerBase<Request, Result, ErrorTypes>
     
     public override async Task<Response<Result, ErrorTypes>> HandleRequest(Request request)
     {
-        var meetupToDelete = await context.Meetups
-            .AsNoTracking()
-            .SingleOrDefaultAsync(meetup => meetup.Id == request.MeetupId);
+        var meetupToDelete = await context.Meetups.SingleOrDefaultAsync(meetup => meetup.Id == request.MeetupId);
         if (meetupToDelete is null)
         {
             return Failure(ErrorTypes.MeetupDoesNotExist);
         }
         
         var organizer = await context.Organizers
-            .AsNoTracking()
             .Include(organizer => organizer.OrganizedMeetups)
             .SingleAsync(organizer => organizer.Id == request.CurrentUserId);
         if (organizer.OrganizedMeetups.All(organizedMeetup => organizedMeetup.Id != request.MeetupId))

@@ -16,7 +16,6 @@ public class RequestHandler : RequestHandlerBase<Request, Result, ErrorTypes>
     public override async Task<Response<Result, ErrorTypes>> HandleRequest(Request request)
     {
         var organizer = await context.Organizers
-            .AsNoTracking()
             .Include(organizer => organizer.OrganizedMeetups)
             .ThenInclude(meetup => meetup.SignedUpGuests)
             .Include(organizer => organizer.OrganizedMeetups)

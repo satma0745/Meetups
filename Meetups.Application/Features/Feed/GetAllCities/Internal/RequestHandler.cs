@@ -15,9 +15,7 @@ public class RequestHandler : RequestHandlerBase<Request, Result, ErrorTypes>
     
     public override async Task<Response<Result, ErrorTypes>> HandleRequest(Request request)
     {
-        var cities = await context.Cities
-            .AsNoTracking()
-            .ToListAsync();
+        var cities = await context.Cities.ToListAsync();
 
         var cityModels = cities.Select(city => new CityModel(city.Id, city.Name));
         var result = new Result(cityModels);
