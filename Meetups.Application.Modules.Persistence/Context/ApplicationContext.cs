@@ -5,7 +5,7 @@ using Meetups.Domain.Entities.Meetup;
 using Meetups.Domain.Entities.User;
 using Microsoft.EntityFrameworkCore;
 
-internal class ApplicationContext : DbContext, IApplicationContext
+public class ApplicationContext : DbContext, IApplicationContext
 {
     public DbSet<City> Cities => Set<City>();
     public DbSet<Meetup> Meetups => Set<Meetup>();

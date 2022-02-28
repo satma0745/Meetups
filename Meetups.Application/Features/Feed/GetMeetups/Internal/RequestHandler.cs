@@ -16,7 +16,6 @@ public class RequestHandler : RequestHandlerBase<Request, Result, ErrorTypes>
     public override async Task<Response<Result, ErrorTypes>> HandleRequest(Request request)
     {
         var meetups = await context.Meetups
-            .AsNoTracking()
             .Include(meetup => meetup.SignedUpGuests)
             .Include(meetup => meetup.Place.City)
             .ApplyFilters(request.Filters)

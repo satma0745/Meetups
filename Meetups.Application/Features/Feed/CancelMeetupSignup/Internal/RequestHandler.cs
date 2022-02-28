@@ -14,9 +14,7 @@ public class RequestHandler : RequestHandlerBase<Request, Result, ErrorTypes>
     
     public override async Task<Response<Result, ErrorTypes>> HandleRequest(Request request)
     {
-        var meetup = await context.Meetups
-            .AsNoTracking()
-            .SingleOrDefaultAsync(meetup => meetup.Id == request.MeetupId);
+        var meetup = await context.Meetups.SingleOrDefaultAsync(meetup => meetup.Id == request.MeetupId);
         if (meetup is null)
         {
             return Failure(ErrorTypes.MeetupDoesNotExist);
