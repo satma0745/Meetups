@@ -1,0 +1,10 @@
+{
+  "name": "meetups",
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-concat": "^2.6.1"
+  },
+  "scripts": {
+    "build-migrations": "npx gulp buildMigrations"
+  }
+}

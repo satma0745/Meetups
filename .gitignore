@@ -1,5 +1,7 @@
 ﻿/.idea
 
+/node_modules
+
 /docker-compose.env
 
 /**/obj
