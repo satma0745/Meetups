@@ -24,9 +24,9 @@ internal class Startup
             .AddSwaggerDocs()
             .AddControllers();
 
-    public static void Configure(IApplicationBuilder application, IWebHostEnvironment environment) =>
+    public static void Configure(IApplicationBuilder application, IWebHostEnvironment _) =>
         application
-            .UseSwaggerDocs(environment)
+            .UseSwaggerDocs()
             .UseRouting()
             .UseAuth()
             .UseEndpoints(endpoints => endpoints.MapControllers());

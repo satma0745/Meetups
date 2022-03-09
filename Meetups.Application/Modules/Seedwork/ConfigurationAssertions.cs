@@ -2,6 +2,9 @@
 
 public static class ConfigurationAssertions
 {
+    public static bool Required(this bool? value, string parameterName) =>
+        value ?? throw new ConfigurationValidationException(parameterName, "parameter is required");
+    
     public static int Required(this int? value, string parameterName) =>
         value ?? throw new ConfigurationValidationException(parameterName, "parameter is required");
 

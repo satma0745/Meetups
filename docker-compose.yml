@@ -11,6 +11,9 @@
       Persistence__Database: postgres
       Persistence__Username: postgres
       Persistence__Password: $DB_PASSWORD
+      Swagger__SwaggerEnabled: $APP_ENABLE_SWAGGER
+      Swagger__SwaggerUiRoutePrefix: $APP_SWAGGER_UI_ROUTE_PREFIX
+      Swagger__ShowSchemasInSwaggerUi: $APP_SHOW_SCHEMAS_IN_SWAGGER
     depends_on:
       - pg
     ports:
