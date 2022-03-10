@@ -7,7 +7,7 @@ on:
       - dev
 
 jobs:
-  check-migrations:
+  check-unified-migrations-file:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -25,7 +25,15 @@ jobs:
           chmod +x ./.github/scripts/ckeck-migrations-file.sh
           ./.github/scripts/ckeck-migrations-file.sh
 
-  dotnet-test:
+  build-dockerfile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Build docker image
+        run: docker build --no-cache ./        
+
+  run-dotnet-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
