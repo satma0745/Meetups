@@ -357,4 +357,4 @@ BEGIN
     END IF;
 END $EF$;
 
-COMMIT;
+COMMIT;x
