@@ -7,20 +7,38 @@ on:
       - dev
 
 jobs:
-  test:
+  check-migrations:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install npm dependencies
+        run: npm install
+
+      - name: Check migrations file
+        run: chmod +x ./github/scripts/check-migrations-file.sh && ./github/scripts/check-migrations-file.sh
+        shell: bash
+
+  dotnet-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
       - name: Setup .Net Core
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 6.0.x
-      
+
       - name: Restore dependencies
         run: dotnet restore
-      
+
       - name: Build solution
         run: dotnet build --no-restore 
-      
+
       - name: Run unit tests
         run: dotnet test ./Meetups.Tests --no-build --verbosity normal
