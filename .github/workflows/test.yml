@@ -23,8 +23,7 @@ jobs:
       - name: Check migrations file
         run: |
           chmod +x ./.github/scripts/ckeck-migrations-file.sh
-          ./.github/scripts/ckeck-migrations-file.sh
-        shell: bash
+          bash ./.github/scripts/ckeck-migrations-file.sh
 
   dotnet-test:
     runs-on: ubuntu-latest
