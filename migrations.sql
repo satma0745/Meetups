@@ -323,9 +323,6 @@ BEGIN
         );
         CREATE UNIQUE INDEX ux_cities_name ON cities (name);
         
-        INSERT INTO cities(id, name)
-        VALUES ('0863abb7-b3fc-4ae8-ab91-81ae9780a14e', 'Oslo');
-        
         ALTER TABLE meetups RENAME COLUMN place TO place_address;
         ALTER TABLE meetups ADD place_city_id uuid NOT NULL DEFAULT '0863abb7-b3fc-4ae8-ab91-81ae9780a14e';
         CREATE INDEX ix_meetups_place_city_id ON meetups (place_city_id);
