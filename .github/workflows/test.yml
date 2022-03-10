@@ -21,8 +21,10 @@ jobs:
         run: npm install
 
       - name: Check migrations file
-        run: chmod +x ./.github/scripts/ckeck-migrations-file.sh && ./.github/scripts/ckeck-migrations-file.sh
-        shell: sh
+        run: |
+          chmod +x ./.github/scripts/ckeck-migrations-file.sh
+          ./.github/scripts/ckeck-migrations-file.sh
+        shell: bash
 
   dotnet-test:
     runs-on: ubuntu-latest
