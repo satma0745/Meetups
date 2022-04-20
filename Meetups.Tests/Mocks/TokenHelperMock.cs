@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
-using Meetups.Application.Features.Shared.Contracts.Auth;
+using Meetups.Application.Features.Shared.Auth;
 using Meetups.Application.Modules.Auth;
 using Meetups.Domain.Entities.User;
 

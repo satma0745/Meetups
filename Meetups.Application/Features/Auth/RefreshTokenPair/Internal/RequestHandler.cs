@@ -2,9 +2,9 @@
 
 using System;
 using System.Threading.Tasks;
-using Meetups.Application.Features.Shared.Infrastructure.Internal;
 using Meetups.Application.Modules.Auth;
 using Meetups.Application.Modules.Persistence;
+using Meetups.Application.Seedwork.Internal;
 using Meetups.Domain.Entities.User;
 using Microsoft.EntityFrameworkCore;
 

@@ -3,9 +3,9 @@
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using BCrypt.Net;
-using Meetups.Application.Features.Shared.Contracts.Auth;
-using Meetups.Application.Features.Shared.Infrastructure.Internal;
+using Meetups.Application.Features.Shared.Auth;
 using Meetups.Application.Modules.Persistence;
+using Meetups.Application.Seedwork.Internal;
 using Meetups.Domain.Entities.User;
 using Microsoft.EntityFrameworkCore;
 

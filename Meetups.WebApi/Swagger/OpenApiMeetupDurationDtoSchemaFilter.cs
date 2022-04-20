@@ -1,6 +1,6 @@
 ﻿namespace Meetups.WebApi.Swagger;
 
-using Meetups.Application.Features.Shared.Contracts.PrimitiveDtos;
+using Meetups.Application.Features.Shared.PrimitiveDtos;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;

@@ -3,7 +3,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using Meetups.Application.Modules.Auth;
-using Meetups.Application.Modules.Auth.Injection;
+using Meetups.Auth.Injection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;

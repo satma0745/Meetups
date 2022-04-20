@@ -5,9 +5,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Meetups.Application.Modules.Auth\Meetups.Application.Modules.Auth.csproj" />
-      <ProjectReference Include="..\Meetups.Application.Modules.Persistence\Meetups.Application.Modules.Persistence.csproj" />
       <ProjectReference Include="..\Meetups.Application\Meetups.Application.csproj" />
+      <ProjectReference Include="..\Meetups.Auth\Meetups.Auth.csproj" />
+      <ProjectReference Include="..\Meetups.Persistence\Meetups.Persistence.csproj" />
     </ItemGroup>
 
     <ItemGroup>

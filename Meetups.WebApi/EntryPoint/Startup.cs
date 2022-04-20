@@ -1,7 +1,7 @@
 ﻿namespace Meetups.WebApi.EntryPoint;
 
-using Meetups.Application.Features.Shared.Infrastructure.Internal;
-using Meetups.Application.Modules.Persistence.Injection;
+using Meetups.Application.Seedwork.Internal;
+using Meetups.Persistence.Injection;
 using Meetups.WebApi.Auth;
 using Meetups.WebApi.Swagger;
 using Microsoft.AspNetCore.Builder;

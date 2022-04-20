@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
-using Meetups.Application.Features.Shared.Contracts.PrimitiveDtos;
+using Meetups.Application.Features.Shared.PrimitiveDtos;
 
 public class ResponseDto : List<MeetupDto>
 {

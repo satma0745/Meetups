@@ -1,8 +1,8 @@
 ﻿namespace Meetups.Application.Features.Studio.RegisterNewCity.Internal;
 
 using System.Threading.Tasks;
-using Meetups.Application.Features.Shared.Infrastructure.Internal;
 using Meetups.Application.Modules.Persistence;
+using Meetups.Application.Seedwork.Internal;
 using Meetups.Domain.Entities.Meetup;
 using Microsoft.EntityFrameworkCore;
 

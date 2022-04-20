@@ -2,10 +2,10 @@
 
 using System.Linq;
 using System.Threading.Tasks;
-using Meetups.Application.Features.Shared.Contracts.Auth;
-using Meetups.Application.Features.Shared.Contracts.PrimitiveDtos;
-using Meetups.Application.Features.Shared.Infrastructure.Api;
+using Meetups.Application.Features.Shared.Auth;
+using Meetups.Application.Features.Shared.PrimitiveDtos;
 using Meetups.Application.Features.Studio.GetOrganizedMeetups.Internal;
+using Meetups.Application.Seedwork.Api;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

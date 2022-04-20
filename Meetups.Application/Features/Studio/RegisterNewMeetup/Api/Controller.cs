@@ -1,9 +1,9 @@
 ﻿namespace Meetups.Application.Features.Studio.RegisterNewMeetup.Api;
 
 using System.Threading.Tasks;
-using Meetups.Application.Features.Shared.Contracts.Auth;
-using Meetups.Application.Features.Shared.Infrastructure.Api;
+using Meetups.Application.Features.Shared.Auth;
 using Meetups.Application.Features.Studio.RegisterNewMeetup.Internal;
+using Meetups.Application.Seedwork.Api;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

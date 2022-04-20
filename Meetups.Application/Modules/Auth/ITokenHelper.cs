@@ -1,7 +1,7 @@
 ﻿namespace Meetups.Application.Modules.Auth;
 
 using System;
-using Meetups.Application.Features.Shared.Contracts.Auth;
+using Meetups.Application.Features.Shared.Auth;
 using Meetups.Domain.Entities.User;
 
 public interface ITokenHelper

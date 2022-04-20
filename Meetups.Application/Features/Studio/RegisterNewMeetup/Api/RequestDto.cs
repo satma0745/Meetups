@@ -3,7 +3,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using Meetups.Application.Features.Shared.Contracts.PrimitiveDtos;
+using Meetups.Application.Features.Shared.PrimitiveDtos;
 
 public class RequestDto
 {

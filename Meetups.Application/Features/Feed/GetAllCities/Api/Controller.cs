@@ -3,7 +3,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Meetups.Application.Features.Feed.GetAllCities.Internal;
-using Meetups.Application.Features.Shared.Infrastructure.Api;
+using Meetups.Application.Seedwork.Api;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

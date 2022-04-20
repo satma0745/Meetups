@@ -3,7 +3,7 @@
 using System.Threading.Tasks;
 using BCrypt.Net;
 using Meetups.Application.Features.Auth.RegisterNewUser.Internal;
-using Meetups.Application.Features.Shared.Contracts.Auth;
+using Meetups.Application.Features.Shared.Auth;
 using Meetups.Application.Modules.Persistence;
 using Meetups.Domain.Entities.User;
 using Meetups.Tests.Seedwork;

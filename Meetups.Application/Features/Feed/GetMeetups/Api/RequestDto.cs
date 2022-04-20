@@ -3,7 +3,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using JetBrains.Annotations;
-using Meetups.Application.Features.Shared.Infrastructure.Api;
+using Meetups.Application.Seedwork.Api;
 
 public class RequestDto
 {

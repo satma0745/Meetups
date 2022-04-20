@@ -2,8 +2,8 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using Meetups.Application.Features.Shared.Contracts.Auth;
-using Meetups.Application.Features.Shared.Infrastructure.Api;
+using Meetups.Application.Features.Shared.Auth;
+using Meetups.Application.Seedwork.Api;
 
 public class RequestDto
 {

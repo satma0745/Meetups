@@ -3,8 +3,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using BCrypt.Net;
-using Meetups.Application.Features.Shared.Infrastructure.Internal;
 using Meetups.Application.Modules.Persistence;
+using Meetups.Application.Seedwork.Internal;
 using Microsoft.EntityFrameworkCore;
 
 public class RequestHandler : RequestHandlerBase<Request, Result, ErrorTypes>

@@ -2,7 +2,7 @@
 
 using System.Threading.Tasks;
 using Meetups.Application.Features.Auth.GetCurrentUserInfo.Internal;
-using Meetups.Application.Features.Shared.Infrastructure.Api;
+using Meetups.Application.Seedwork.Api;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
