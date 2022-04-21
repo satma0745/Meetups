@@ -2,6 +2,10 @@
 MIGRATIONS_SQL_FILE_NAME="migrations.sql"
 GENERATE_MIGRATIONS_SQL_FILE_COMMAND="npm run build-migrations"
 
+echo "Migrations sql file name: $MIGRATIONS_SQL_FILE_NAME"
+echo "Migrations sql file exists: $([ -f "./$MIGRATIONS_SQL_FILE_NAME" ])"
+echo "Generate migrations sql file command: $GENERATE_MIGRATIONS_SQL_FILE_COMMAND"
+
 if [[ ! -f "./$MIGRATIONS_SQL_FILE_NAME" ]]; then
     echo "FAILURE: The merged migrations file \"$MIGRATIONS_SQL_FILE_NAME\" is missing."
     echo "HINT: You can generate this file using the \"$GENERATE_MIGRATIONS_SQL_FILE_COMMAND\" command in the root directory of the repository."
