@@ -2,7 +2,7 @@
 
 using System;
 using Meetups.Application.Modules.Persistence;
-using Meetups.Application.Modules.Persistence.Context;
+using Meetups.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 
 internal static class ContextFactory

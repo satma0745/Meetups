@@ -22,8 +22,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Meetups.Application.Modules.Persistence\Meetups.Application.Modules.Persistence.csproj" />
       <ProjectReference Include="..\Meetups.Application\Meetups.Application.csproj" />
+      <ProjectReference Include="..\Meetups.Persistence\Meetups.Persistence.csproj" />
     </ItemGroup>
 
 </Project>
