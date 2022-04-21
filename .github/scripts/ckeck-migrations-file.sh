@@ -1,9 +1,10 @@
 ﻿
 MIGRATIONS_SQL_FILE_NAME="migrations.sql"
+MIGRATIONS_SQL_FILE_EXISTS=$([ -f "./$MIGRATIONS_SQL_FILE_NAME" ])
 GENERATE_MIGRATIONS_SQL_FILE_COMMAND="npm run build-migrations"
 
 echo "Migrations sql file name: $MIGRATIONS_SQL_FILE_NAME"
-echo "Migrations sql file exists: $([ -f "./$MIGRATIONS_SQL_FILE_NAME" ])"
+echo "Migrations sql file exists: $MIGRATIONS_SQL_FILE_EXISTS"
 echo "Generate migrations sql file command: $GENERATE_MIGRATIONS_SQL_FILE_COMMAND"
 
 if [[ ! -f "./$MIGRATIONS_SQL_FILE_NAME" ]]; then
